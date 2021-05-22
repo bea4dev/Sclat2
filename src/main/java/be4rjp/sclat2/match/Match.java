@@ -1,7 +1,11 @@
 package be4rjp.sclat2.match;
 
+import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.util.BlockUpdater;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -13,8 +17,35 @@ public abstract class Match {
     protected MatchRunnable matchRunnable;
     //この試合のチーム
     protected Set<SclatTeam> sclatTeams;
-    
-    
+    //この試合のブロックアップデーター
+    protected BlockUpdater blockUpdater = new BlockUpdater(this);
+
+    public Match(){
+        this.blockUpdater.start();
+    }
+
+
+    /**
+     * この試合のスケジューラーをスタートさせる
+     */
+    public void startMatchRunnable(){
+        this.matchRunnable.runTaskTimerAsynchronously(Sclat.getPlugin(), 0, 20);
+    }
+
+    /**
+     * この試合のスケジューラーを停止させる
+     */
+    public void stopMatchRunnable(){
+        this.matchRunnable.cancel();
+    }
+
+
+    /**
+     * ブロックアップデーターを取得する
+     * @return BlockUpdater
+     */
+    public BlockUpdater getBlockUpdater() {return blockUpdater;}
+
     /**
      * 試合終了判定
      * @return boolean 試合が終了したかどうか
@@ -31,7 +62,18 @@ public abstract class Match {
     
     /**
      * この試合に存在する全てのチームを取得する
-     * @return
+     * @return Set<SclatTeam>
      */
     public Set<SclatTeam> getSclatTeams() {return sclatTeams;}
+
+
+    /**
+     * この試合に参加しているプレイヤーを取得する
+     * @return
+     */
+    public Set<SclatPlayer> getPlayers(){
+        Set<SclatPlayer> players = new HashSet<>();
+        sclatTeams.forEach(sclatTeam -> players.addAll(sclatTeam.getTeamMembers()));
+        return players;
+    }
 }

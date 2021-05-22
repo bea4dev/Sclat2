@@ -58,7 +58,10 @@ public class SclatPlayer {
     public SclatPlayer(String uuid){
         this.uuid = uuid;
     }
-    
+
+
+    public String getUUID() {return uuid;}
+
     /**
      * BukkitのPlayerを取得します。
      * @return Player
