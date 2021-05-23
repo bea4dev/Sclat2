@@ -1,12 +1,16 @@
 package be4rjp.sclat2.match;
 
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.block.PaintData;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
-import be4rjp.sclat2.util.BlockUpdater;
+import be4rjp.sclat2.block.BlockUpdater;
+import org.bukkit.block.Block;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 各試合の親クラス
@@ -19,6 +23,8 @@ public abstract class Match {
     protected Set<SclatTeam> sclatTeams;
     //この試合のブロックアップデーター
     protected BlockUpdater blockUpdater = new BlockUpdater(this);
+    //塗られたブロックとその情報のマップ
+    protected Map<Block, PaintData> paintDataMap = new ConcurrentHashMap<>();
 
     public Match(){
         this.blockUpdater.start();
@@ -69,7 +75,7 @@ public abstract class Match {
 
     /**
      * この試合に参加しているプレイヤーを取得する
-     * @return
+     * @return Set<SclatPlayer>
      */
     public Set<SclatPlayer> getPlayers(){
         Set<SclatPlayer> players = new HashSet<>();

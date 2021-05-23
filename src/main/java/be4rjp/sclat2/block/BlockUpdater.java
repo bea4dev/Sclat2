@@ -1,4 +1,4 @@
-package be4rjp.sclat2.util;
+package be4rjp.sclat2.block;
 
 import be4rjp.parallel.ParallelWorld;
 import be4rjp.sclat2.Sclat;
@@ -64,7 +64,6 @@ public class BlockUpdater extends BukkitRunnable {
             if(UPDATE_RATE == index) break;
             index++;
         }
-
 
         //Parallelを使ってプレイヤーごとにブロックを設置
         for(SclatPlayer sclatPlayer : match.getPlayers()){

@@ -7,7 +7,6 @@ public class MatchRunnable extends BukkitRunnable {
     private final Match match;
     private int sec = 0;
     
-    
     /**
      * 試合のスケジューラーを作成します。
      * @param match 試合のインスタンス
@@ -15,6 +14,7 @@ public class MatchRunnable extends BukkitRunnable {
      */
     public MatchRunnable(Match match, int timeLimit){
         this.match = match;
+        this.sec = timeLimit;
     }
     
     @Override
