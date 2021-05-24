@@ -58,10 +58,14 @@ public class SclatPlayer {
     public SclatPlayer(String uuid){
         this.uuid = uuid;
     }
-
-
+    
+    
     public String getUUID() {return uuid;}
-
+    
+    public SclatTeam getSclatTeam() {return sclatTeam;}
+    
+    public void setSclatTeam(SclatTeam sclatTeam) {this.sclatTeam = sclatTeam;}
+    
     /**
      * BukkitのPlayerを取得します。
      * @return Player
@@ -82,10 +86,22 @@ public class SclatPlayer {
     
     
     /**
+     * メッセージを送信します
+     * @param message メッセージ
+     */
+    public void sendMessage(String message){
+        Player player = this.getBukkitPlayer();
+        if(player == null) return;
+        player.sendMessage("[§6Sclat§r] " + message);
+    }
+    
+    
+    /**
      * 非同期でテレポートさせます。
      * @param location テレポート先
      */
     public void teleportAsync(Location location){
+        Player player = this.getBukkitPlayer();
         if(player == null) return;
         player.teleportAsync(location);
     }

@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BlockUpdater extends BukkitRunnable {
 
     //一度にアップデートするブロックの最大数
-    private static final int UPDATE_RATE = 50;
+    private static final int UPDATE_RATE = 100;
 
     //このアップデーターを使用する試合のインスタンス
     private final Match match;

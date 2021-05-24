@@ -2,6 +2,7 @@ package be4rjp.sclat2.match.team;
 
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.player.SclatPlayer;
+import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +32,8 @@ public class SclatTeam {
     public SclatTeam(Match match, SclatColor sclatColor){
         this.match = match;
         this.sclatColor = sclatColor;
+        
+        this.match.addSclatTeam(this);
     }
     
     
@@ -41,6 +44,17 @@ public class SclatTeam {
     public Match getMatch() {return match;}
     
     public SclatColor getSclatColor() {return sclatColor;}
+    
+    
+    /**
+     * プレイヤーをチームに参加させる
+     * @param sclatPlayer 参加させるプレイヤー
+     */
+    public void join(SclatPlayer sclatPlayer){
+        sclatPlayer.setSclatTeam(this);
+        teamMembers.add(sclatPlayer);
+        sclatPlayer.sendMessage("§a試合に参加しました");
+    }
 
     /**
      * 同じ試合のほかのチームを取得する

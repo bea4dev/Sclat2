@@ -20,14 +20,14 @@ public abstract class Match {
     //試合のスケジューラー
     protected MatchRunnable matchRunnable;
     //この試合のチーム
-    protected Set<SclatTeam> sclatTeams;
+    protected Set<SclatTeam> sclatTeams = new HashSet<>();
     //この試合のブロックアップデーター
     protected BlockUpdater blockUpdater = new BlockUpdater(this);
     //塗られたブロックとその情報のマップ
     protected Map<Block, PaintData> paintDataMap = new ConcurrentHashMap<>();
 
     public Match(){
-        this.blockUpdater.start();
+    
     }
 
 
@@ -43,6 +43,13 @@ public abstract class Match {
      */
     public void stopMatchRunnable(){
         this.matchRunnable.cancel();
+    }
+    
+    /**
+     * ブロックのアップデートをスタートさせる
+     */
+    public void startBlockUpdate(){
+        this.blockUpdater.start();
     }
 
 
@@ -71,6 +78,13 @@ public abstract class Match {
      * @return Set<SclatTeam>
      */
     public Set<SclatTeam> getSclatTeams() {return sclatTeams;}
+    
+    
+    /**
+     * チームを追加します
+     * @param sclatTeam 追加するチーム
+     */
+    public void addSclatTeam(SclatTeam sclatTeam){this.sclatTeams.add(sclatTeam);}
 
 
     /**
