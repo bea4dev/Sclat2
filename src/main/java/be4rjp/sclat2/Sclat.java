@@ -6,6 +6,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Sclat extends JavaPlugin {
     
+    public static double ENTITY_DRAW_DISTANCE_SQUARE = 400.0;
+    
     private static Sclat plugin;
     
     @Override

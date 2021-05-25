@@ -1,8 +1,11 @@
 package be4rjp.sclat2.player;
 
 import be4rjp.sclat2.match.team.SclatTeam;
+import net.minecraft.server.v1_15_R1.EntityPlayer;
+import net.minecraft.server.v1_15_R1.Packet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -95,6 +98,29 @@ public class SclatPlayer {
         player.sendMessage("[§6Sclat§r] " + message);
     }
     
+    /**
+     * パケットを送信します
+     * @param packet 送信するパケット
+     */
+    public void sendPacket(Packet packet){
+        Player player = this.getBukkitPlayer();
+        if(player == null) return;
+        EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
+        entityPlayer.playerConnection.sendPacket(packet);
+    }
+    
+    /**
+     * プレイヤーの座標を返します
+     * @return Location
+     */
+    public Location getLocation(){
+        Player player = this.getBukkitPlayer();
+        if(player == null){
+            return new Location(Bukkit.getWorld("world"), 0, 0, 0);
+        }else{
+            return player.getLocation();
+        }
+    }
     
     /**
      * 非同期でテレポートさせます。

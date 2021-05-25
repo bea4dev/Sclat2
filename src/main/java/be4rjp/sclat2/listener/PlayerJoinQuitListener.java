@@ -1,5 +1,6 @@
 package be4rjp.sclat2.listener;
 
+import be4rjp.sclat2.entity.InkBullet;
 import be4rjp.sclat2.match.PlayerLobbyMatch;
 import be4rjp.sclat2.match.team.SclatColor;
 import be4rjp.sclat2.match.team.SclatTeam;
@@ -35,8 +36,9 @@ public class PlayerJoinQuitListener implements Listener {
         SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
         
         Location loc = player.getLocation();
-        RegionBlocks regionBlocks = new RegionBlocks(loc.clone().add(-10, -10, -10), loc.clone().add(10, 10, 10));
-        regionBlocks.getBlocks().forEach(block -> sclatPlayer.getSclatTeam().getMatch().getBlockUpdater().setBlock(block, Material.BLUE_WOOL));
+        InkBullet inkBullet = new InkBullet(sclatPlayer.getSclatTeam().getMatch(), player.getEyeLocation());
+        inkBullet.shootInitialize(sclatPlayer, player.getEyeLocation().getDirection(), 3);
+        inkBullet.spawn();
     }
 
 
