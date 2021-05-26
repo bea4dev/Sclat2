@@ -1,12 +1,13 @@
 package be4rjp.sclat2;
 
+import be4rjp.sclat2.listener.InkHitBlockListener;
+import be4rjp.sclat2.listener.PlayerItemClickListener;
 import be4rjp.sclat2.listener.PlayerJoinQuitListener;
+import be4rjp.sclat2.weapon.WeaponManager;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Sclat extends JavaPlugin {
-    
-    public static double ENTITY_DRAW_DISTANCE_SQUARE = 400.0;
     
     private static Sclat plugin;
     
@@ -17,6 +18,10 @@ public final class Sclat extends JavaPlugin {
     
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerJoinQuitListener(), this);
+        pluginManager.registerEvents(new InkHitBlockListener(), this);
+        pluginManager.registerEvents(new PlayerItemClickListener(), this);
+    
+        WeaponManager.loadAllWeapon();
     }
     
     @Override

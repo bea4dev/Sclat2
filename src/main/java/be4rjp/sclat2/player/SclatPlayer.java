@@ -1,6 +1,9 @@
 package be4rjp.sclat2.player;
 
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.util.SclatSound;
+import be4rjp.sclat2.weapon.MainWeapon;
+import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
 import net.minecraft.server.v1_15_R1.EntityPlayer;
 import net.minecraft.server.v1_15_R1.Packet;
 import org.bukkit.Bukkit;
@@ -53,6 +56,8 @@ public class SclatPlayer {
     private Player player = null;
     //所属しているチーム
     private SclatTeam sclatTeam = null;
+    //メインウエポンのスケジューラーのマップ
+    private final Map<MainWeapon, MainWeaponRunnable> mainWeaponTaskMap = new ConcurrentHashMap<>();
     
     /**
      * SclatPlayerを新しく作成
@@ -130,5 +135,32 @@ public class SclatPlayer {
         Player player = this.getBukkitPlayer();
         if(player == null) return;
         player.teleportAsync(location);
+    }
+    
+    /**
+     * メインウエポンのスケジューラーのマップを取得する
+     * @return Map<MainWeapon, MainWeaponRunnable>
+     */
+    public Map<MainWeapon, MainWeaponRunnable> getMainWeaponTaskMap(){return this.mainWeaponTaskMap;}
+    
+    /**
+     * 音を再生する
+     * @param sound SclatSound
+     */
+    public void playSound(SclatSound sound){
+        Player player = this.getBukkitPlayer();
+        if(player == null) return;
+        sound.play(player, player.getLocation());
+    }
+    
+    /**
+     * 音を再生する
+     * @param sound SclatSound
+     * @param location 音を再生する座標
+     */
+    public void playSound(SclatSound sound, Location location){
+        Player player = this.getBukkitPlayer();
+        if(player == null) return;
+        sound.play(player, location);
     }
 }

@@ -1,0 +1,19 @@
+type: SHOOTER
+display-name: 'わかばシューター'
+material: WOODEN_HOE
+custom-model-data: 0
+paint-radius: 2.0
+need-ink: 0.015
+damage: 6.0
+particle: true
+sound: 'ENTITY_PIG_STEP/0.3/1.0'
+
+fall-tick: 1
+shoot-tick: 2
+shoot-speed: 1.5
+recoil:
+  shoot-random: 0.3
+  shoot-max-random: 0.5
+  increase-min-tick: 10
+  increase-max-tick: 30
+  increase-reset-tick: 35
