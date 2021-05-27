@@ -5,6 +5,10 @@ import be4rjp.sclat2.block.PaintData;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.block.BlockUpdater;
+import be4rjp.sclat2.util.SclatParticle;
+import be4rjp.sclat2.util.SclatSound;
+import be4rjp.sclat2.util.SphereBlocks;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 import java.util.HashSet;
@@ -95,5 +99,43 @@ public abstract class Match {
         Set<SclatPlayer> players = new HashSet<>();
         sclatTeams.forEach(sclatTeam -> players.addAll(sclatTeam.getTeamMembers()));
         return players;
+    }
+    
+    
+    /**
+     * この試合に参加しているプレイヤー全員に音を聞かせる
+     * @param sound サウンド
+     * @param location 再生する座標
+     */
+    public void playSound(SclatSound sound, Location location){this.getPlayers().forEach(sclatPlayer -> sclatPlayer.playSound(sound, location));}
+    
+    /**
+     * この試合に参加しているプレイヤー全員に音を聞かせる
+     * @param sound サウンド
+     */
+    public void playSound(SclatSound sound){this.getPlayers().forEach(sclatPlayer -> sclatPlayer.playSound(sound));}
+    
+    /**
+     * この試合に参加しているプレイヤー全員にパーティクルを表示する
+     * @param particle パーティクル
+     * @param location パーティクルを表示する座標
+     */
+    public void spawnParticle(SclatParticle particle, Location location){this.getPlayers().forEach(sclatPlayer -> sclatPlayer.spawnParticle(particle, location));}
+    
+    
+    /**
+     * 球状に塗る
+     * @param sclatPlayer 塗るプレイヤー
+     * @param center 塗る中心座標
+     * @param radius 塗る半径
+     */
+    public void paint(SclatPlayer sclatPlayer, Location center, double radius){
+        SphereBlocks sphereBlocks = new SphereBlocks(radius, center);
+        Set<Block> blocks = sphereBlocks.getBlocks();
+        int paint = blocks.size();
+        sclatPlayer.addPaints(paint);
+        SclatTeam team = sclatPlayer.getSclatTeam();
+        team.addPaints(paint);
+        blocks.forEach(block -> blockUpdater.setBlock(block, team.getSclatColor().getWool()));
     }
 }

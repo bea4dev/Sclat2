@@ -22,20 +22,36 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 public class PlayerJoinQuitListener implements Listener {
+    
+    private static int i = 0;
+    private static PlayerLobbyMatch match;
+    private static SclatTeam blue;
+    private static SclatTeam orange;
+    
+    static {
+        match = new PlayerLobbyMatch();
+        blue = new SclatTeam(match, SclatColor.BLUE);
+        orange = new SclatTeam(match, SclatColor.ORANGE);
+        match.startBlockUpdate();
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
-    
-        PlayerLobbyMatch match = new PlayerLobbyMatch();
-        SclatTeam sclatTeam = new SclatTeam(match, SclatColor.BLUE);
+        
         SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
-        match.startBlockUpdate();
-        sclatTeam.join(sclatPlayer);
+        
+        if(i % 2 == 0){
+            orange.join(sclatPlayer);
+        }else{
+            blue.join(sclatPlayer);
+        }
     
         MainWeapon wakaba = MainWeapon.getMainWeapon("wakaba");
         wakaba.getType().createMainWeaponRunnableInstance(wakaba, sclatPlayer).runTaskTimerAsynchronously(Sclat.getPlugin(), 0, 1);
         player.getInventory().addItem(wakaba.getItemStack());
+        
+        i++;
     }
     
     

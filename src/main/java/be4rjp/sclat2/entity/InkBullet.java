@@ -3,11 +3,15 @@ package be4rjp.sclat2.entity;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.event.AsyncInkHitBlockEvent;
 import be4rjp.sclat2.match.Match;
+import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.util.BlockParticle;
+import be4rjp.sclat2.util.SclatParticle;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.main.Shooter;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -18,6 +22,7 @@ import org.bukkit.util.Vector;
 public class InkBullet implements SclatEntity{
     
     private final Match match;
+    private final SclatTeam team;
     private Location location;
     private final EntitySnowball snowball;
     private final MainWeapon mainWeapon;
@@ -26,18 +31,22 @@ public class InkBullet implements SclatEntity{
     private Vector direction = new Vector(0, 0, 0);
     private boolean hitSound = false;
     private boolean hitParticle = false;
+    private SclatParticle particle;
     
     private SclatEntityTickRunnable tickRunnable = null;
     private int tick = 0;
     private int fallTick = 0;
     
-    public InkBullet(Match match, Location location, MainWeapon mainWeapon){
-        this.match = match;
+    public InkBullet(SclatTeam team, Location location, MainWeapon mainWeapon){
+        this.team = team;
+        this.match = team.getMatch();
         this.location = location;
         this.mainWeapon = mainWeapon;
     
         WorldServer nmsWorld = ((CraftWorld)location.getWorld()).getHandle();
         this.snowball = new EntitySnowball(EntityTypes.SNOWBALL, nmsWorld);
+        
+        this.particle = new BlockParticle(Particle.BLOCK_DUST, 0, 0, -1, 0, 1, team.getSclatColor().getWool().createBlockData());
     }
     
     
@@ -52,9 +61,7 @@ public class InkBullet implements SclatEntity{
     }
     
     
-    public void setItemStack(ItemStack itemStack){
-        this.snowball.setItem(CraftItemStack.asNMSCopy(itemStack));
-    }
+    public void setItemStack(ItemStack itemStack){this.snowball.setItem(CraftItemStack.asNMSCopy(itemStack));}
     
     public SclatPlayer getShooter(){return this.shooter;}
     
@@ -75,7 +82,12 @@ public class InkBullet implements SclatEntity{
             remove();
         }
         
-        if(tick >= fallTick) direction.add(new Vector(0, -0.1, 0));
+        if(tick == fallTick) direction.multiply(0.7);
+        
+        if(tick >= fallTick) {
+            direction.normalize();
+            direction.add(new Vector(0, -0.2, 0));
+        }
         location.add(direction);
     
         snowball.setPosition(location.getX(), location.getY(), location.getZ());
@@ -84,25 +96,28 @@ public class InkBullet implements SclatEntity{
         try {
             RayTraceResult rayTraceResult = location.getWorld().rayTraceBlocks(location, direction, direction.length());
             if (rayTraceResult != null) {
-                AsyncInkHitBlockEvent hitBlockEvent = new AsyncInkHitBlockEvent(this, rayTraceResult.getHitBlock());
+                AsyncInkHitBlockEvent hitBlockEvent = new AsyncInkHitBlockEvent(this, rayTraceResult.getHitBlock(), rayTraceResult.getHitPosition().toLocation(location.getWorld()));
                 Sclat.getPlugin().getServer().getPluginManager().callEvent(hitBlockEvent);
                 this.remove();
                 return;
             }
-        }catch (Exception e){/**/}
+        }catch (Exception e){e.printStackTrace();}
         
-        boolean sendTeleport = tick % 5 == 0;
+        boolean sendTeleport = tick % 10 == 0;
         PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(snowball);
         PacketPlayOutEntityVelocity velocity = new PacketPlayOutEntityVelocity(snowball);
         for(SclatPlayer sclatPlayer : match.getPlayers()){
             Player player = sclatPlayer.getBukkitPlayer();
-            if(player == null) return;
+            if(player == null) continue;
             
             Location playerLoc = sclatPlayer.getLocation();
-            if(playerLoc.distanceSquared(location) > ENTITY_DRAW_DISTANCE_SQUARE) return;
+            if(playerLoc.distanceSquared(location) > ENTITY_DRAW_DISTANCE_SQUARE) continue;
             if(sendTeleport) sclatPlayer.sendPacket(teleport);
             sclatPlayer.sendPacket(velocity);
         }
+        
+        if(tick % 3 == 0) match.spawnParticle(particle, location);
+        
         tick++;
     }
     
@@ -117,10 +132,10 @@ public class InkBullet implements SclatEntity{
         PacketPlayOutEntityMetadata metadata = new PacketPlayOutEntityMetadata(snowball.getId(), snowball.getDataWatcher(), true);
         for(SclatPlayer sclatPlayer : match.getPlayers()) {
             Player player = sclatPlayer.getBukkitPlayer();
-            if (player == null) return;
+            if (player == null) continue;
     
             Location playerLoc = sclatPlayer.getLocation();
-            if (playerLoc.distanceSquared(location) > ENTITY_DRAW_DISTANCE_SQUARE) return;
+            if (playerLoc.distanceSquared(location) > ENTITY_DRAW_DISTANCE_SQUARE) continue;
             sclatPlayer.sendPacket(spawnEntity);
             sclatPlayer.sendPacket(metadata);
         }
@@ -133,10 +148,10 @@ public class InkBullet implements SclatEntity{
         PacketPlayOutEntityDestroy destroy = new PacketPlayOutEntityDestroy(snowball.getId());
         for(SclatPlayer sclatPlayer : match.getPlayers()) {
             Player player = sclatPlayer.getBukkitPlayer();
-            if (player == null) return;
+            if (player == null) continue;
     
             Location playerLoc = sclatPlayer.getLocation();
-            if (playerLoc.distanceSquared(location) > ENTITY_DRAW_DISTANCE_SQUARE) return;
+            if (playerLoc.distanceSquared(location) > ENTITY_DRAW_DISTANCE_SQUARE) continue;
             sclatPlayer.sendPacket(destroy);
         }
         

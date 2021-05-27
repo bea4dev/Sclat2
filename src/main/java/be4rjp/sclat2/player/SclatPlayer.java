@@ -1,6 +1,7 @@
 package be4rjp.sclat2.player;
 
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.util.SclatParticle;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
@@ -56,6 +57,10 @@ public class SclatPlayer {
     private Player player = null;
     //所属しているチーム
     private SclatTeam sclatTeam = null;
+    //塗りポイント
+    private int paints = 0;
+    //キルカウント
+    private int kills = 0;
     //メインウエポンのスケジューラーのマップ
     private final Map<MainWeapon, MainWeaponRunnable> mainWeaponTaskMap = new ConcurrentHashMap<>();
     
@@ -73,6 +78,14 @@ public class SclatPlayer {
     public SclatTeam getSclatTeam() {return sclatTeam;}
     
     public void setSclatTeam(SclatTeam sclatTeam) {this.sclatTeam = sclatTeam;}
+    
+    public int getPaints() {return paints;}
+    
+    public int getKills() {return kills;}
+    
+    public synchronized void addPaints(int paints) {this.paints += paints;}
+    
+    public synchronized void addKills(int kills) {this.kills += kills;}
     
     /**
      * BukkitのPlayerを取得します。
@@ -162,5 +175,16 @@ public class SclatPlayer {
         Player player = this.getBukkitPlayer();
         if(player == null) return;
         sound.play(player, location);
+    }
+    
+    /**
+     * パーティクルを表示する
+     * @param particle SclatParticle
+     * @param location パーティクルを表示する座標
+     */
+    public void spawnParticle(SclatParticle particle, Location location){
+        Player player = this.getBukkitPlayer();
+        if(player == null) return;
+        particle.spawn(player, location);
     }
 }

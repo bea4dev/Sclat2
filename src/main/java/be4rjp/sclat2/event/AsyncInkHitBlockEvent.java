@@ -12,11 +12,13 @@ public class AsyncInkHitBlockEvent extends Event {
     
     private final InkBullet inkBullet;
     private final Block hitBlock;
+    private final Location hitLocation;
     
-    public AsyncInkHitBlockEvent(InkBullet inkBullet, Block hitBlock){
+    public AsyncInkHitBlockEvent(InkBullet inkBullet, Block hitBlock, Location hitLocation){
         super(true);
         this.inkBullet = inkBullet;
         this.hitBlock = hitBlock;
+        this.hitLocation = hitLocation;
     }
     
     @Override
@@ -31,4 +33,6 @@ public class AsyncInkHitBlockEvent extends Event {
     public InkBullet getInkBullet() {return inkBullet;}
     
     public Block getHitBlock() {return hitBlock;}
+    
+    public Location getHitLocation() {return hitLocation;}
 }

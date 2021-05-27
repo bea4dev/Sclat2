@@ -41,6 +41,10 @@ public class SclatTeam {
     
     public int getPaints() {return paints;}
     
+    public synchronized void addPaints(int paints) {this.paints += paints;}
+    
+    public synchronized void addKills(int kills) {this.kills += kills;}
+    
     public Match getMatch() {return match;}
     
     public SclatColor getSclatColor() {return sclatColor;}

@@ -33,9 +33,9 @@ public class ShooterRunnable extends MainWeaponRunnable {
                 Player player = sclatPlayer.getBukkitPlayer();
                 if (player == null) return;
                 //射撃
-                InkBullet inkBullet = new InkBullet(sclatPlayer.getSclatTeam().getMatch(), player.getEyeLocation(), shooter);
+                InkBullet inkBullet = new InkBullet(sclatPlayer.getSclatTeam(), player.getEyeLocation(), shooter);
                 double range = shooter.getRecoil().getShootRandomRange(clickTick);
-                Vector randomVector = new Vector(Math.random() * range - range/2, Math.random() * (range/2) - range/4, Math.random() * range - range/2);
+                Vector randomVector = new Vector(Math.random() * range - range/2, 0, Math.random() * range - range/2);
                 inkBullet.shootInitialize(sclatPlayer, player.getEyeLocation().getDirection().multiply(shooter.getShootSpeed()).add(randomVector), shooter.getFallTick());
                 inkBullet.spawn();
                 sclatPlayer.playSound(shooter.getShootSound());
