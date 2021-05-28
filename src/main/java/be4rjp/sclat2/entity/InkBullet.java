@@ -75,33 +75,34 @@ public class InkBullet implements SclatEntity{
     
     public MainWeapon getMainWeapon(){return mainWeapon;}
     
+    
     @Override
     public void tick() {
         if(tick >= 2000){
             if(tickRunnable != null) tickRunnable.cancel();
             remove();
         }
-        
-        if(tick == fallTick) direction.multiply(0.7);
-        
-        if(tick >= fallTick) {
-            direction.normalize();
-            direction.add(new Vector(0, -0.2, 0));
-        }
-        location.add(direction);
     
-        snowball.setPosition(location.getX(), location.getY(), location.getZ());
-        snowball.setMot(direction.getX(), direction.getY(), direction.getZ());
-    
+        
         try {
             RayTraceResult rayTraceResult = location.getWorld().rayTraceBlocks(location, direction, direction.length());
             if (rayTraceResult != null) {
-                AsyncInkHitBlockEvent hitBlockEvent = new AsyncInkHitBlockEvent(this, rayTraceResult.getHitBlock(), rayTraceResult.getHitPosition().toLocation(location.getWorld()));
+                Location hitLocation = rayTraceResult.getHitPosition().toLocation(location.getWorld());
+                AsyncInkHitBlockEvent hitBlockEvent = new AsyncInkHitBlockEvent(this, rayTraceResult.getHitBlock(), hitLocation);
                 Sclat.getPlugin().getServer().getPluginManager().callEvent(hitBlockEvent);
                 this.remove();
                 return;
             }
         }catch (Exception e){e.printStackTrace();}
+        
+        if(tick >= fallTick) {
+            direction.normalize().multiply(0.9);
+            direction.add(new Vector(0, -0.21, 0));
+        }
+        location.add(direction);
+    
+        snowball.setPosition(location.getX(), location.getY(), location.getZ());
+        snowball.setMot(direction.getX(), direction.getY(), direction.getZ());
         
         boolean sendTeleport = tick % 10 == 0;
         PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(snowball);
