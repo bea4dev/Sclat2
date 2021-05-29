@@ -40,6 +40,7 @@ public class PlayerJoinQuitListener implements Listener {
         Player player = event.getPlayer();
         
         SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
+        sclatPlayer.updateBukkitPlayer();
         
         if(i % 2 == 0){
             orange.join(sclatPlayer);

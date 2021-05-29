@@ -1,7 +1,6 @@
 package be4rjp.sclat2.util;
 
 import net.minecraft.server.v1_15_R1.AxisAlignedBB;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
@@ -17,10 +16,10 @@ public class BoundingBox {
     }
     
     
-    public BoundingBox(Entity entity){
+    public BoundingBox(Entity entity, double plus){
         AxisAlignedBB bb = ((CraftEntity) entity).getHandle().getBoundingBox();
-        min = new Vector(bb.minX - 0.15, bb.minY, bb.minZ - 0.15);
-        max = new Vector(bb.maxX + 0.15, bb.maxY, bb.maxZ + 0.15);
+        min = new Vector(bb.minX - plus, bb.minY, bb.minZ - plus);
+        max = new Vector(bb.maxX + plus, bb.maxY, bb.maxZ + plus);
     }
     
     public BoundingBox (AxisAlignedBB bb){

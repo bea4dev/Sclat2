@@ -7,8 +7,11 @@ import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
 import net.minecraft.server.v1_15_R1.EntityPlayer;
 import net.minecraft.server.v1_15_R1.Packet;
+import net.minecraft.server.v1_15_R1.PacketPlayOutAnimation;
+import net.minecraft.server.v1_15_R1.PacketPlayOutUpdateHealth;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -49,6 +52,12 @@ public class SclatPlayer {
         return getSclatPlayer(player.getUniqueId().toString());
     }
     
+    //アーマーがインクをはじく音
+    private static final SclatSound REPEL_SOUND = new SclatSound(Sound.ENTITY_SPLASH_POTION_BREAK, 1F, 1.5F);
+    //プレイヤーが攻撃をヒットさせた時に鳴らす通知音
+    private static final SclatSound HIT_SOUND_FOR_ATTACKER = new SclatSound(Sound.ENTITY_PLAYER_HURT, 0.5F, 1F);
+    //プレイヤーが攻撃を受けた時に鳴らす音
+    private static final SclatSound HIT_SOUND = new SclatSound(Sound.ENTITY_PLAYER_HURT, 1F, 1F);
     
     
     //プレイヤーのUUID
@@ -63,6 +72,10 @@ public class SclatPlayer {
     private int kills = 0;
     //メインウエポンのスケジューラーのマップ
     private final Map<MainWeapon, MainWeaponRunnable> mainWeaponTaskMap = new ConcurrentHashMap<>();
+    //プレイヤーの体力
+    private float health = 20.0F;
+    //プレイヤーのアーマー値
+    private float armor = 0.0F;
     
     /**
      * SclatPlayerを新しく作成
@@ -83,6 +96,14 @@ public class SclatPlayer {
     
     public int getKills() {return kills;}
     
+    public synchronized float getArmor() {return armor;}
+    
+    public synchronized void setArmor(float armor) {this.armor = armor;}
+    
+    public synchronized float getHealth() {return health;}
+    
+    public synchronized void setHealth(float health) {this.health = health;}
+    
     public synchronized void addPaints(int paints) {this.paints += paints;}
     
     public synchronized void addKills(int kills) {this.kills += kills;}
@@ -92,17 +113,15 @@ public class SclatPlayer {
      * @return Player
      */
     public Player getBukkitPlayer(){
-        Player player = Bukkit.getPlayer(UUID.fromString(uuid));
-        if(player == null) return this.player;
-        
-        if(this.player == null){
-            this.player = player;
-        }else{
-            if(this.player != player){
-                this.player = player;
-            }
-        }
         return player;
+    }
+    
+    
+    /**
+     * BukkitのPlayerをアップデートする（再参加用）
+     */
+    public void updateBukkitPlayer(){
+        this.player = Bukkit.getPlayer(UUID.fromString(uuid));
     }
     
     
@@ -111,7 +130,6 @@ public class SclatPlayer {
      * @param message メッセージ
      */
     public void sendMessage(String message){
-        Player player = this.getBukkitPlayer();
         if(player == null) return;
         player.sendMessage("[§6Sclat§r] " + message);
     }
@@ -121,7 +139,6 @@ public class SclatPlayer {
      * @param packet 送信するパケット
      */
     public void sendPacket(Packet packet){
-        Player player = this.getBukkitPlayer();
         if(player == null) return;
         EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
         entityPlayer.playerConnection.sendPacket(packet);
@@ -132,7 +149,6 @@ public class SclatPlayer {
      * @return Location
      */
     public Location getLocation(){
-        Player player = this.getBukkitPlayer();
         if(player == null){
             return new Location(Bukkit.getWorld("world"), 0, 0, 0);
         }else{
@@ -145,7 +161,6 @@ public class SclatPlayer {
      * @param location テレポート先
      */
     public void teleportAsync(Location location){
-        Player player = this.getBukkitPlayer();
         if(player == null) return;
         player.teleportAsync(location);
     }
@@ -161,7 +176,6 @@ public class SclatPlayer {
      * @param sound SclatSound
      */
     public void playSound(SclatSound sound){
-        Player player = this.getBukkitPlayer();
         if(player == null) return;
         sound.play(player, player.getLocation());
     }
@@ -172,7 +186,6 @@ public class SclatPlayer {
      * @param location 音を再生する座標
      */
     public void playSound(SclatSound sound, Location location){
-        Player player = this.getBukkitPlayer();
         if(player == null) return;
         sound.play(player, location);
     }
@@ -183,8 +196,56 @@ public class SclatPlayer {
      * @param location パーティクルを表示する座標
      */
     public void spawnParticle(SclatParticle particle, Location location){
-        Player player = this.getBukkitPlayer();
         if(player == null) return;
         particle.spawn(player, location);
+    }
+    
+    
+    /**
+     * プレイヤーにダメージを与える
+     * @param damage 与えるダメージ
+     * @param attacker 攻撃者
+     */
+    public synchronized void giveDamage(float damage, SclatPlayer attacker){
+        if(player == null) return;
+        if(attacker.getBukkitPlayer() == null) return;
+        if(this.sclatTeam == null) return;
+        
+        if(this.getHealth() + this.getArmor() > damage){
+            if(this.getArmor() > damage){
+                this.setArmor(this.getArmor() - damage);
+                this.sclatTeam.getMatch().playSound(REPEL_SOUND, player.getLocation());
+            }else{
+                //give damage
+                float d = damage - this.getArmor();
+                this.setHealth(this.getHealth() - d);
+                this.setArmor(0.0F);
+    
+                PacketPlayOutUpdateHealth updateHealth = new PacketPlayOutUpdateHealth(getHealth(), 20, 5.0F);
+                PacketPlayOutAnimation animation = new PacketPlayOutAnimation(((CraftPlayer)player).getHandle(), 1);
+                this.sendPacket(updateHealth);
+                this.sclatTeam.getMatch().sendPacket(animation);
+    
+                attacker.playSound(HIT_SOUND_FOR_ATTACKER);
+                this.sclatTeam.getMatch().playSound(HIT_SOUND, player.getLocation());
+            }
+        }else{
+            this.sendMessage("死んでしまうとは情けない！");
+            this.sendMessage("Killed by: " + attacker.getDisplayName());
+            this.setHealth(20.0F);
+            //死亡処理
+        }
+    }
+    
+    
+    /**
+     * プレイヤーの表示名を取得する
+     * @return String
+     */
+    public String getDisplayName(){
+        if(player == null) return "";
+        if(sclatTeam == null) player.getName();
+        
+        return sclatTeam.getSclatColor().getChatColor() + player.getName() + "§r";
     }
 }

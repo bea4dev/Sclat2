@@ -1,6 +1,7 @@
 package be4rjp.sclat2;
 
 import be4rjp.sclat2.listener.InkHitBlockListener;
+import be4rjp.sclat2.listener.InkHitPlayerListener;
 import be4rjp.sclat2.listener.PlayerItemClickListener;
 import be4rjp.sclat2.listener.PlayerJoinQuitListener;
 import be4rjp.sclat2.weapon.WeaponManager;
@@ -20,6 +21,7 @@ public final class Sclat extends JavaPlugin {
         pluginManager.registerEvents(new PlayerJoinQuitListener(), this);
         pluginManager.registerEvents(new InkHitBlockListener(), this);
         pluginManager.registerEvents(new PlayerItemClickListener(), this);
+        pluginManager.registerEvents(new InkHitPlayerListener(), this);
     
         WeaponManager.loadAllWeapon();
     }

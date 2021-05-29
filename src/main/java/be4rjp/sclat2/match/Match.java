@@ -8,6 +8,7 @@ import be4rjp.sclat2.block.BlockUpdater;
 import be4rjp.sclat2.util.SclatParticle;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.util.SphereBlocks;
+import net.minecraft.server.v1_15_R1.Packet;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -122,6 +123,11 @@ public abstract class Match {
      */
     public void spawnParticle(SclatParticle particle, Location location){this.getPlayers().forEach(sclatPlayer -> sclatPlayer.spawnParticle(particle, location));}
     
+    /**
+     * この試合に参加しているプレイヤー全員にパケットを送信する
+     * @param packet 送信するパケット
+     */
+    public void sendPacket(Packet packet){this.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendPacket(packet));}
     
     /**
      * 球状に塗る

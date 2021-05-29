@@ -56,7 +56,7 @@ public abstract class MainWeapon extends SclatWeapon{
     //一発分の必要インク量
     protected float needInk = 0.0F;
     //一発分のダメージ
-    protected double damage = 0.0;
+    protected float damage = 0.0F;
     //塗った時にパーティクルを表示するかどうか
     protected boolean particle = false;
     //射撃時に鳴らすサウンド
@@ -106,7 +106,7 @@ public abstract class MainWeapon extends SclatWeapon{
      * 一発分のダメージを取得する
      * @return double
      */
-    public double getDamage() {return damage;}
+    public float getDamage() {return damage;}
     
     /**
      * CustomModelDataのIDを取得する
@@ -158,7 +158,7 @@ public abstract class MainWeapon extends SclatWeapon{
         if(yml.contains("custom-model-data")) this.modelID = yml.getInt("custom-model-data");
         if(yml.contains("paint-radius")) this.paintRadius = yml.getDouble("paint-radius");
         if(yml.contains("need-ink")) this.needInk = (float)yml.getDouble("need-ink");
-        if(yml.contains("damage")) this.damage = yml.getDouble("damage");
+        if(yml.contains("damage")) this.damage = (float)yml.getDouble("damage");
         if(yml.contains("particle")) this.particle = yml.getBoolean("particle");
         if(yml.contains("sound")){
             String[] args = yml.getString("sound").split("/");

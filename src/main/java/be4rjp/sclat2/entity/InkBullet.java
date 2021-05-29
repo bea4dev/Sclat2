@@ -2,10 +2,13 @@ package be4rjp.sclat2.entity;
 
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.event.AsyncInkHitBlockEvent;
+import be4rjp.sclat2.event.AsyncInkHitPlayerEvent;
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.BlockParticle;
+import be4rjp.sclat2.util.BoundingBox;
+import be4rjp.sclat2.util.RayTrace;
 import be4rjp.sclat2.util.SclatParticle;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.main.Shooter;
@@ -94,6 +97,22 @@ public class InkBullet implements SclatEntity{
                 return;
             }
         }catch (Exception e){e.printStackTrace();}
+    
+        RayTrace rayTrace = new RayTrace(location.toVector(), direction);
+        for(SclatPlayer sclatPlayer : match.getPlayers()) {
+            Player player = sclatPlayer.getBukkitPlayer();
+            if(player == null) continue;
+            if(sclatPlayer.getSclatTeam() == null) continue;
+            
+            BoundingBox boundingBox = new BoundingBox(player, 0.2);
+            if(!rayTrace.intersects(boundingBox, direction.length(), 0.1)) continue;
+            if(this.team == sclatPlayer.getSclatTeam()) continue;
+    
+            AsyncInkHitPlayerEvent event = new AsyncInkHitPlayerEvent(this, sclatPlayer);
+            Sclat.getPlugin().getServer().getPluginManager().callEvent(event);
+            this.remove();
+            return;
+        }
         
         if(tick >= fallTick) {
             direction.normalize().multiply(0.9);

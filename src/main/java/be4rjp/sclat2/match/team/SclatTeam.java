@@ -2,6 +2,7 @@ package be4rjp.sclat2.match.team;
 
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.player.SclatPlayer;
+import io.netty.util.internal.ConcurrentSet;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -22,7 +23,7 @@ public class SclatTeam {
     //チームのキルカウント
     private int kills = 0;
     //チームメンバー
-    private Set<SclatPlayer> teamMembers = new CopyOnWriteArraySet<>();
+    private Set<SclatPlayer> teamMembers = new ConcurrentSet<>();
     
     /**
      * チームのインスタンス作成
