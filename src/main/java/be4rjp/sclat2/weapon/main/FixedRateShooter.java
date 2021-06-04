@@ -3,9 +3,9 @@ package be4rjp.sclat2.weapon.main;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.weapon.MainWeapon;
-import be4rjp.sclat2.weapon.main.runnable.ShooterRunnable;
+import be4rjp.sclat2.weapon.main.runnable.FixedRateShooterRunnable;
 
-public class Shooter extends MainWeapon {
+public class FixedRateShooter extends MainWeapon {
     
     //撃ってから落ち始めるまでのtick
     private int fallTick = 0;
@@ -17,7 +17,7 @@ public class Shooter extends MainWeapon {
     private ShooterRecoil recoil = new ShooterRecoil();
     
     
-    public Shooter(String id) {
+    public FixedRateShooter(String id) {
         super(id);
     }
     
@@ -31,11 +31,11 @@ public class Shooter extends MainWeapon {
     
     @Override
     public void onRightClick(SclatPlayer sclatPlayer) {
-        ShooterRunnable runnable = (ShooterRunnable) sclatPlayer.getMainWeaponTaskMap().get(this);
+        FixedRateShooterRunnable runnable = (FixedRateShooterRunnable) sclatPlayer.getMainWeaponTaskMap().get(this);
         if(runnable == null){
             sclatPlayer.clearMainWeaponTasks();
-            runnable = new ShooterRunnable(this, sclatPlayer);
-            runnable.runTaskTimerAsynchronously(Sclat.getPlugin(), 0, 1);
+            runnable = new FixedRateShooterRunnable(this, sclatPlayer);
+            runnable.runTaskAsynchronously(Sclat.getPlugin());
             sclatPlayer.getMainWeaponTaskMap().put(this, runnable);
         }
         
@@ -43,9 +43,7 @@ public class Shooter extends MainWeapon {
     }
     
     @Override
-    public MainWeaponType getType() {
-        return MainWeaponType.SHOOTER;
-    }
+    public MainWeaponType getType() {return MainWeaponType.FIXED_RATE_SHOOTER;}
     
     @Override
     public void loadDetailsData() {
@@ -74,43 +72,43 @@ public class Shooter extends MainWeapon {
         private int maxTick = 30;
         //撃つのをやめてから散らばりがリセットされるtick
         private int resetTick = 40;
-    
+        
         /**
          * 散らばりが最大値に達するtick
          * @param maxTick
          */
         public void setMaxTick(int maxTick) {this.maxTick = maxTick;}
-    
+        
         /**
          * 散らばりが増加し始めるtick
          * @param minTick
          */
         public void setMinTick(int minTick) {this.minTick = minTick;}
-    
+        
         /**
          * 撃つのをやめてから散らばりがリセットされるtick
          * @param resetTick
          */
         public void setResetTick(int resetTick) {this.resetTick = resetTick;}
-    
+        
         /**
          * 撃った時の弾の散らばりの最大値
          * @param shootMaxRandom
          */
         public void setShootMaxRandom(double shootMaxRandom) {this.shootMaxRandom = shootMaxRandom;}
-    
+        
         /**
          * 撃った時の弾の散らばり
          * @param shootRandom
          */
         public void setShootRandom(double shootRandom) {this.shootRandom = shootRandom;}
-    
+        
         /**
          * 撃つのをやめてから散らばりがリセットされるtick
          * @return int
          */
         public int getResetTick() {return resetTick;}
-    
+        
         public double getShootRandomRange(int clickTick){
             if(clickTick <= minTick){
                 return shootRandom;

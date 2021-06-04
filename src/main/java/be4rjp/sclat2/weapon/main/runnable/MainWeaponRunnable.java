@@ -8,6 +8,7 @@ public abstract class MainWeaponRunnable extends BukkitRunnable {
     
     protected final SclatPlayer sclatPlayer;
     protected final MainWeapon mainWeapon;
+    protected int playerTick = 10;
     
     public MainWeaponRunnable(MainWeapon mainWeapon, SclatPlayer sclatPlayer){
         this.sclatPlayer = sclatPlayer;
@@ -15,6 +16,8 @@ public abstract class MainWeaponRunnable extends BukkitRunnable {
         
         sclatPlayer.getMainWeaponTaskMap().put(mainWeapon, this);
     }
+    
+    public void setPlayerTick(int tick){this.playerTick = tick;}
     
     @Override
     public abstract void run();

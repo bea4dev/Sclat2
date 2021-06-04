@@ -49,8 +49,9 @@ public class PlayerJoinQuitListener implements Listener {
         }
     
         MainWeapon wakaba = MainWeapon.getMainWeapon("wakaba");
-        wakaba.getType().createMainWeaponRunnableInstance(wakaba, sclatPlayer).runTaskTimerAsynchronously(Sclat.getPlugin(), 0, 1);
+        MainWeapon splat = MainWeapon.getMainWeapon("splat");
         player.getInventory().addItem(wakaba.getItemStack());
+        player.getInventory().addItem(splat.getItemStack());
         
         i++;
     }

@@ -16,13 +16,8 @@ public class ShooterRunnable extends MainWeaponRunnable {
     }
     
     private int taskTick = 0;
-    private int playerTick = 10;
     private int clickTick = 0;
     private int noClickTick = 0;
-    
-    public void setPlayerTick(int tick){
-        this.playerTick = tick;
-    }
     
     @Override
     public void run() {

@@ -1,5 +1,6 @@
 package be4rjp.sclat2.player;
 
+import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.util.SclatParticle;
 import be4rjp.sclat2.util.SclatSound;
@@ -62,6 +63,8 @@ public class SclatPlayer {
     
     //プレイヤーのUUID
     private final String uuid;
+    //プレイヤーの言語設定
+    private Lang lang = Lang.ja_JP;
     //プレイヤー
     private Player player = null;
     //所属しているチーム
@@ -87,6 +90,10 @@ public class SclatPlayer {
     
     
     public String getUUID() {return uuid;}
+    
+    public Lang getLang() {return lang;}
+    
+    public void setLang(Lang lang) {this.lang = lang;}
     
     public SclatTeam getSclatTeam() {return sclatTeam;}
     
@@ -170,6 +177,19 @@ public class SclatPlayer {
      * @return Map<MainWeapon, MainWeaponRunnable>
      */
     public Map<MainWeapon, MainWeaponRunnable> getMainWeaponTaskMap(){return this.mainWeaponTaskMap;}
+    
+    /**
+     * メインウエポンのスケジューラーを全て停止して削除する
+     */
+    public void clearMainWeaponTasks(){
+        for(MainWeaponRunnable runnable : mainWeaponTaskMap.values()){
+            try{
+                runnable.cancel();
+            }catch (Exception e){/**/}
+        }
+        
+        mainWeaponTaskMap.clear();
+    }
     
     /**
      * 音を再生する

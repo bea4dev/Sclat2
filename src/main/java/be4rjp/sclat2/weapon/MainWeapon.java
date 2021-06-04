@@ -2,6 +2,7 @@ package be4rjp.sclat2.weapon;
 
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.SclatSound;
+import be4rjp.sclat2.weapon.main.FixedRateShooter;
 import be4rjp.sclat2.weapon.main.Shooter;
 import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
 import be4rjp.sclat2.weapon.main.runnable.ShooterRunnable;
@@ -132,8 +133,11 @@ public abstract class MainWeapon extends SclatWeapon{
      */
     public SclatSound getShootSound() {return shootSound;}
     
+    
     @Override
-    public abstract void onLeftClick(SclatPlayer sclatPlayer);
+    public void onLeftClick(SclatPlayer sclatPlayer){
+        //None
+    }
     
     @Override
     public abstract void onRightClick(SclatPlayer sclatPlayer);
@@ -180,26 +184,18 @@ public abstract class MainWeapon extends SclatWeapon{
     
     
     public enum MainWeaponType{
-        SHOOTER(Shooter.class, ShooterRunnable.class);
+        SHOOTER(Shooter.class),
+        FIXED_RATE_SHOOTER(FixedRateShooter.class);
         
         private final Class<? extends MainWeapon> weaponClass;
-        private final Class<? extends MainWeaponRunnable> runnableClass;
         
-        MainWeaponType(Class<? extends MainWeapon> weaponClass, Class<? extends MainWeaponRunnable> runnableClass){
+        MainWeaponType(Class<? extends MainWeapon> weaponClass){
             this.weaponClass = weaponClass;
-            this.runnableClass = runnableClass;
         }
         
         public MainWeapon createMainWeaponInstance(String id){
             try{
                 return weaponClass.getConstructor(String.class).newInstance(id);
-            }catch (Exception e){e.printStackTrace();}
-            return null;
-        }
-        
-        public MainWeaponRunnable createMainWeaponRunnableInstance(MainWeapon mainWeapon, SclatPlayer sclatPlayer){
-            try{
-                return runnableClass.getConstructor(weaponClass, SclatPlayer.class).newInstance(mainWeapon, sclatPlayer);
             }catch (Exception e){e.printStackTrace();}
             return null;
         }
