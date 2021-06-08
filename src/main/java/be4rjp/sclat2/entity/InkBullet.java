@@ -114,16 +114,21 @@ public class InkBullet implements SclatEntity{
             return;
         }
         
-        if(tick >= fallTick) {
-            direction.normalize().multiply(0.9);
-            direction.add(new Vector(0, -0.21, 0));
+        if(tick == fallTick){
+            direction.multiply(direction.length() / 15);
+        }
+        
+        if(tick >= fallTick && tick <= fallTick + 10) {
+            //direction.normalize().multiply(0.9);
+            //direction.add(new Vector(0, -0.21, 0));
+            direction = direction.add(new Vector(0, -0.12, 0));
         }
         location.add(direction);
     
         snowball.setPosition(location.getX(), location.getY(), location.getZ());
         snowball.setMot(direction.getX(), direction.getY(), direction.getZ());
         
-        boolean sendTeleport = tick % 10 == 0;
+        boolean sendTeleport = tick % 30 == 0;
         PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(snowball);
         PacketPlayOutEntityVelocity velocity = new PacketPlayOutEntityVelocity(snowball);
         for(SclatPlayer sclatPlayer : match.getPlayers()){

@@ -1,5 +1,7 @@
 type: SHOOTER
-display-name: 'わかばシューター'
+display-name:
+  ja_JP: 'わかばシューター'
+  en_US: 'Wakaba Shooter'
 material: WOODEN_HOE
 custom-model-data: 0
 paint-radius: 2.0

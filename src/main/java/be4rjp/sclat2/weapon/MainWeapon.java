@@ -1,11 +1,13 @@
 package be4rjp.sclat2.weapon;
 
+import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.main.FixedRateShooter;
 import be4rjp.sclat2.weapon.main.Shooter;
 import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
 import be4rjp.sclat2.weapon.main.runnable.ShooterRunnable;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,7 +50,7 @@ public abstract class MainWeapon extends SclatWeapon{
     //設定ファイル
     protected YamlConfiguration yml;
     //武器の表示名
-    protected String displayName = "No name.";
+    protected Map<Lang, String> displayName = new HashMap<>();
     //武器のマテリアル
     protected Material material = Material.BARRIER;
     //CustomModelDataのID
@@ -73,10 +76,10 @@ public abstract class MainWeapon extends SclatWeapon{
      * ItemStackを取得する
      * @return ItemStack
      */
-    public ItemStack getItemStack(){
+    public ItemStack getItemStack(Lang lang){
         ItemStack itemStack = new ItemStack(material);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(displayName);
+        itemMeta.setDisplayName(this.getDisplayName(lang));
         itemMeta.setCustomModelData(modelID);
         itemStack.setItemMeta(itemMeta);
     
@@ -95,7 +98,14 @@ public abstract class MainWeapon extends SclatWeapon{
      * 表示名を取得する
      * @return String
      */
-    public String getDisplayName() {return displayName;}
+    public String getDisplayName(Lang lang) {
+        String name = displayName.get(lang);
+        if(name == null){
+            return "No name.";
+        }else{
+            return name;
+        }
+    }
     
     /**
      * マテリアルを取得する
@@ -157,7 +167,13 @@ public abstract class MainWeapon extends SclatWeapon{
     public void loadData(YamlConfiguration yml){
         this.yml = yml;
         
-        if(yml.contains("display-name")) this.displayName = yml.getString("display-name");
+        if(yml.contains("display-name")){
+            for(String languageName : yml.getConfigurationSection("display-name").getKeys(false)){
+                Lang lang = Lang.valueOf(languageName);
+                String name = yml.getString("display-name." + languageName);
+                this.displayName.put(lang, ChatColor.translateAlternateColorCodes('&', name));
+            }
+        }
         if(yml.contains("material")) this.material = Material.getMaterial(Objects.requireNonNull(yml.getString("material")));
         if(yml.contains("custom-model-data")) this.modelID = yml.getInt("custom-model-data");
         if(yml.contains("paint-radius")) this.paintRadius = yml.getDouble("paint-radius");

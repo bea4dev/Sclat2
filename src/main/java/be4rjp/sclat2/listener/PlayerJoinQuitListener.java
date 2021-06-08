@@ -2,6 +2,7 @@ package be4rjp.sclat2.listener;
 
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.entity.InkBullet;
+import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.PlayerLobbyMatch;
 import be4rjp.sclat2.match.team.SclatColor;
 import be4rjp.sclat2.match.team.SclatTeam;
@@ -50,8 +51,10 @@ public class PlayerJoinQuitListener implements Listener {
     
         MainWeapon wakaba = MainWeapon.getMainWeapon("wakaba");
         MainWeapon splat = MainWeapon.getMainWeapon("splat");
-        player.getInventory().addItem(wakaba.getItemStack());
-        player.getInventory().addItem(splat.getItemStack());
+        MainWeapon gal52 = MainWeapon.getMainWeapon("52gal");
+        player.getInventory().addItem(wakaba.getItemStack(Lang.en_US));
+        player.getInventory().addItem(splat.getItemStack(Lang.ja_JP));
+        player.getInventory().addItem(gal52.getItemStack(Lang.ja_JP));
         
         i++;
     }
