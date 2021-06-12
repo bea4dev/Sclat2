@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 
 public class InkHitBlockListener implements Listener {
     
-    private static SclatSound INK_HIT_SOUND = new SclatSound(Sound.ENTITY_SLIME_ATTACK, 0.3F, 2.0F);
+    private static SclatSound INK_HIT_SOUND = new SclatSound(Sound.ENTITY_SLIME_ATTACK, 0.25F, 2.0F);
     
     @EventHandler
     public void onInkHit(AsyncInkHitBlockEvent event){

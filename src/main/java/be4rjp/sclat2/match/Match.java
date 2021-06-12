@@ -2,6 +2,8 @@ package be4rjp.sclat2.match;
 
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.block.PaintData;
+import be4rjp.sclat2.match.map.SclatMap;
+import be4rjp.sclat2.match.runnable.MatchRunnable;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.block.BlockUpdater;
@@ -9,9 +11,14 @@ import be4rjp.sclat2.util.SclatParticle;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.util.SphereBlocks;
 import net.minecraft.server.v1_15_R1.Packet;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class Match {
     
+    //この試合のマップ
+    protected final SclatMap sclatMap;
     //試合のスケジューラー
     protected MatchRunnable matchRunnable;
     //この試合のチーム
@@ -30,12 +39,29 @@ public abstract class Match {
     protected BlockUpdater blockUpdater = new BlockUpdater(this);
     //塗られたブロックとその情報のマップ
     protected Map<Block, PaintData> paintDataMap = new ConcurrentHashMap<>();
-
-    public Match(){
+    //SclatTeamとスコアボードのチームのマップ
+    protected Map<SclatTeam, Team> teamMap = new HashMap<>();
     
+    //試合のスコアボード
+    protected final Scoreboard scoreboard;
+    
+
+    public Match(SclatMap sclatMap){
+        this.sclatMap = sclatMap;
+    
+        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+        this.scoreboard = scoreboardManager.getNewScoreboard();
     }
-
-
+    
+    
+    public abstract MatchType getType();
+    
+    /**
+     * この試合のスコアボードを取得する
+     * @return Scoreboard
+     */
+    public Scoreboard getScoreboard() {return scoreboard;}
+    
     /**
      * この試合のスケジューラーをスタートさせる
      */
@@ -143,5 +169,11 @@ public abstract class Match {
         SclatTeam team = sclatPlayer.getSclatTeam();
         team.addPaints(paint);
         blocks.forEach(block -> blockUpdater.setBlock(block, team.getSclatColor().getWool()));
+    }
+    
+    
+    public enum MatchType{
+        LOBBY,
+        PVP_2_TEAM
     }
 }

@@ -1,11 +1,12 @@
-package be4rjp.sclat2.match;
+package be4rjp.sclat2.match.runnable;
 
+import be4rjp.sclat2.match.Match;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class MatchRunnable extends BukkitRunnable {
+public abstract class MatchRunnable extends BukkitRunnable {
     
-    private final Match match;
-    private int sec = 0;
+    protected final Match match;
+    protected int timeLeft = 0;
     
     /**
      * 試合のスケジューラーを作成します。
@@ -14,11 +15,9 @@ public class MatchRunnable extends BukkitRunnable {
      */
     public MatchRunnable(Match match, int timeLimit){
         this.match = match;
-        this.sec = timeLimit;
+        this.timeLeft = timeLimit;
     }
     
     @Override
-    public void run() {
-    
-    }
+    public abstract void run();
 }

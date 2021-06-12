@@ -2,6 +2,7 @@ package be4rjp.sclat2.player;
 
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.message.MessageManager;
 import be4rjp.sclat2.util.SclatParticle;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.MainWeapon;
@@ -133,12 +134,33 @@ public class SclatPlayer {
     
     
     /**
-     * メッセージを送信します
+     * メッセージを送信します。
+     * 基本的にメッセージを送信するときはsendText()を使用してください。
      * @param message メッセージ
      */
+    @Deprecated
     public void sendMessage(String message){
         if(player == null) return;
         player.sendMessage("[§6Sclat§r] " + message);
+    }
+    
+    /**
+     * 言語別のメッセージを送信します。
+     * @param lang 言語
+     * @param textName message.ymlに設定されているテキストの名前
+     */
+    public void sendText(Lang lang, String textName){
+        if(player == null) return;
+        player.sendMessage("[§6Sclat§r] " + MessageManager.getText(lang, textName));
+    }
+    
+    /**
+     * 言語別のメッセージを送信します。
+     * @param textName message.ymlに設定されているテキストの名前
+     */
+    public void sendText(String textName){
+        if(player == null) return;
+        player.sendMessage("[§6Sclat§r] " + MessageManager.getText(lang, textName));
     }
     
     /**

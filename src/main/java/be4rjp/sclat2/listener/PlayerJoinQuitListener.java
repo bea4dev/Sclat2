@@ -4,6 +4,7 @@ import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.entity.InkBullet;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.PlayerLobbyMatch;
+import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.team.SclatColor;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
@@ -30,7 +31,7 @@ public class PlayerJoinQuitListener implements Listener {
     private static SclatTeam orange;
     
     static {
-        match = new PlayerLobbyMatch();
+        match = new PlayerLobbyMatch(SclatMap.getSclatMap("shionome"));
         blue = new SclatTeam(match, SclatColor.BLUE);
         orange = new SclatTeam(match, SclatColor.ORANGE);
         match.startBlockUpdate();

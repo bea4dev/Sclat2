@@ -4,6 +4,7 @@ import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.player.SclatPlayer;
 import io.netty.util.internal.ConcurrentSet;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Team;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +25,8 @@ public class SclatTeam {
     private int kills = 0;
     //チームメンバー
     private Set<SclatPlayer> teamMembers = new ConcurrentSet<>();
+    //スコアボードのチーム
+    private final Team team;
     
     /**
      * チームのインスタンス作成
@@ -33,6 +36,14 @@ public class SclatTeam {
     public SclatTeam(Match match, SclatColor sclatColor){
         this.match = match;
         this.sclatColor = sclatColor;
+        
+        this.team = match.getScoreboard().registerNewTeam(sclatColor.getDisplayName());
+        team.setColor(sclatColor.getChatColor());
+        team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OTHER_TEAMS);
+        team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OTHER_TEAMS);
+        team.setSuffix(sclatColor.getChatColor().toString());
+        team.setCanSeeFriendlyInvisibles(true);
+        team.setDisplayName(sclatColor.getDisplayName());
         
         this.match.addSclatTeam(this);
     }
@@ -56,9 +67,14 @@ public class SclatTeam {
      * @param sclatPlayer 参加させるプレイヤー
      */
     public void join(SclatPlayer sclatPlayer){
+        if(sclatPlayer.getBukkitPlayer() != null){
+            Player player = sclatPlayer.getBukkitPlayer();
+            player.setScoreboard(match.getScoreboard());
+            team.addEntry(player.getName());
+        }
         sclatPlayer.setSclatTeam(this);
         teamMembers.add(sclatPlayer);
-        sclatPlayer.sendMessage("§a試合に参加しました");
+        sclatPlayer.sendText("match-join");
     }
 
     /**

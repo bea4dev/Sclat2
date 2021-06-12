@@ -3,21 +3,21 @@ package be4rjp.sclat2.match;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.team.SclatTeam;
 
-public class PlayerLobbyMatch extends Match{
-    public PlayerLobbyMatch(SclatMap sclatMap) {
+public class PVPMatch extends Match{
+    public PVPMatch(SclatMap sclatMap) {
         super(sclatMap);
     }
     
     @Override
     public MatchType getType() {
-        return MatchType.LOBBY;
+        return MatchType.PVP_2_TEAM;
     }
     
     @Override
     public boolean checkWin() {
         return false;
     }
-
+    
     @Override
     public SclatTeam getWinner() {
         return null;
