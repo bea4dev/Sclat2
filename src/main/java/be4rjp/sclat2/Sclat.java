@@ -14,6 +14,8 @@ public final class Sclat extends JavaPlugin {
     
     private static Sclat plugin;
     
+    public static String VERSION = "v0.0.1 - α";
+    
     @Override
     public void onEnable() {
         // Plugin startup logic

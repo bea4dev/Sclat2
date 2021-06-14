@@ -3,17 +3,23 @@ package be4rjp.sclat2.listener;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.entity.InkBullet;
 import be4rjp.sclat2.language.Lang;
+import be4rjp.sclat2.match.Match;
+import be4rjp.sclat2.match.NawabariMatch;
 import be4rjp.sclat2.match.PlayerLobbyMatch;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.team.SclatColor;
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.packet.PacketHandler;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.RegionBlocks;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.WeaponManager;
 import be4rjp.sclat2.weapon.main.Shooter;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelPipeline;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,15 +32,17 @@ import org.bukkit.inventory.EquipmentSlot;
 public class PlayerJoinQuitListener implements Listener {
     
     private static int i = 0;
-    private static PlayerLobbyMatch match;
+    private static Match match;
     private static SclatTeam blue;
     private static SclatTeam orange;
     
     static {
-        match = new PlayerLobbyMatch(SclatMap.getSclatMap("shionome"));
+        match = new NawabariMatch(SclatMap.getSclatMap("shionome"));
         blue = new SclatTeam(match, SclatColor.BLUE);
         orange = new SclatTeam(match, SclatColor.ORANGE);
+        match.initialize();
         match.startBlockUpdate();
+        match.start();
     }
 
     @EventHandler
@@ -62,22 +70,34 @@ public class PlayerJoinQuitListener implements Listener {
     
     
     @EventHandler
-    public void onClick(PlayerInteractEvent event){
+    public void onjoin(PlayerJoinEvent event){
+        //Inject packet handler
         Player player = event.getPlayer();
-        if(!event.hasItem()) return;
-        if(event.getHand() == null) return;
-        if(event.getHand() != EquipmentSlot.HAND) return;
-        SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
         
-        Location loc = player.getLocation();
-        //InkBullet inkBullet = new InkBullet(sclatPlayer.getSclatTeam().getMatch(), player.getEyeLocation());
-        //inkBullet.shootInitialize(sclatPlayer, player.getEyeLocation().getDirection(), 3);
-        //inkBullet.spawn();
+        PacketHandler packetHandler = new PacketHandler(player);
+        
+        try {
+            ChannelPipeline pipeline = ((CraftPlayer)player).getHandle().playerConnection.networkManager.channel.pipeline();
+            pipeline.addBefore("packet_handler", Sclat.getPlugin().getName() + "PacketInjector:" + player.getName(), packetHandler);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-
+    
+    
     @EventHandler
-    public void onQuit(PlayerQuitEvent event){
+    public void onleave(PlayerQuitEvent event){
         Player player = event.getPlayer();
+        
+        try {
+            Channel channel = ((CraftPlayer)player).getHandle().playerConnection.networkManager.channel;
+            
+            channel.eventLoop().submit(() -> {
+                channel.pipeline().remove(Sclat.getPlugin().getName() + "PacketInjector:" + player.getName());
+                return null;
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

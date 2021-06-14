@@ -37,7 +37,7 @@ public class SclatTeam {
         this.match = match;
         this.sclatColor = sclatColor;
         
-        this.team = match.getScoreboard().registerNewTeam(sclatColor.getDisplayName());
+        this.team = match.getScoreboard().getBukkitScoreboard().registerNewTeam(sclatColor.getDisplayName());
         team.setColor(sclatColor.getChatColor());
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OTHER_TEAMS);
         team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OTHER_TEAMS);
@@ -61,6 +61,7 @@ public class SclatTeam {
     
     public SclatColor getSclatColor() {return sclatColor;}
     
+    public Team getScoreBoardTeam() {return team;}
     
     /**
      * プレイヤーをチームに参加させる
@@ -69,7 +70,7 @@ public class SclatTeam {
     public void join(SclatPlayer sclatPlayer){
         if(sclatPlayer.getBukkitPlayer() != null){
             Player player = sclatPlayer.getBukkitPlayer();
-            player.setScoreboard(match.getScoreboard());
+            //player.setScoreboard(match.getScoreboard().getBukkitScoreboard());
             team.addEntry(player.getName());
         }
         sclatPlayer.setSclatTeam(this);

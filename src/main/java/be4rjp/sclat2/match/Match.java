@@ -2,21 +2,21 @@ package be4rjp.sclat2.match;
 
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.block.PaintData;
+import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.runnable.MatchRunnable;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.block.BlockUpdater;
 import be4rjp.sclat2.util.SclatParticle;
+import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.util.SphereBlocks;
 import net.minecraft.server.v1_15_R1.Packet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
+import org.bukkit.scoreboard.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,24 +43,42 @@ public abstract class Match {
     protected Map<SclatTeam, Team> teamMap = new HashMap<>();
     
     //試合のスコアボード
-    protected final Scoreboard scoreboard;
+    protected final SclatScoreboard scoreboard;
     
 
     public Match(SclatMap sclatMap){
         this.sclatMap = sclatMap;
     
         ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
-        this.scoreboard = scoreboardManager.getNewScoreboard();
+        this.scoreboard = new SclatScoreboard("§6§lSclat2§r " + Sclat.VERSION, 8);
     }
     
     
     public abstract MatchType getType();
     
     /**
+     * 試合を開始
+     */
+    public void start(){
+        this.matchRunnable.start();
+    }
+    
+    /**
+     * 試合の初期化およびセットアップ
+     */
+    public abstract void initialize();
+    
+    /**
+     * この試合のゲームマップを取得する
+     * @return SclatMap
+     */
+    public SclatMap getSclatMap() {return sclatMap;}
+    
+    /**
      * この試合のスコアボードを取得する
      * @return Scoreboard
      */
-    public Scoreboard getScoreboard() {return scoreboard;}
+    public SclatScoreboard getScoreboard() {return scoreboard;}
     
     /**
      * この試合のスケジューラーをスタートさせる
@@ -99,6 +117,7 @@ public abstract class Match {
     
     /**
      * 試合に勝利したチームを取得する。
+     * 引き分けの場合はnull
      * @return SclatTeam
      */
     public abstract SclatTeam getWinner();
@@ -173,7 +192,28 @@ public abstract class Match {
     
     
     public enum MatchType{
-        LOBBY,
-        PVP_2_TEAM
+        LOBBY("§6§lロビー", "§6§lLobby"),
+        NAWABARI("§6§lナワバリバトル", "§6§lTurf War");
+        
+        private final HashMap<Lang, String> displayName;
+    
+        MatchType(String ja_JP, String en_US){
+            displayName = new HashMap<>();
+            displayName.put(Lang.ja_JP, ja_JP);
+            displayName.put(Lang.en_US, en_US);
+        }
+        
+        /**
+         * 表示名を取得する
+         * @return String
+         */
+        public String getDisplayName(Lang lang) {
+            String name = displayName.get(lang);
+            if(name == null){
+                return "No name.";
+            }else{
+                return name;
+            }
+        }
     }
 }

@@ -79,6 +79,20 @@ public abstract class SclatMap {
     //塗れないブロック
     protected Set<Material> unpaintableBlock = new HashSet<>();
     
+    
+    /**
+     * 表示名を取得する
+     * @return String
+     */
+    public String getDisplayName(Lang lang) {
+        String name = displayName.get(lang);
+        if(name == null){
+            return "No name.";
+        }else{
+            return name;
+        }
+    }
+    
     /**
      * 試合の待機場所を取得する
      * @return Location

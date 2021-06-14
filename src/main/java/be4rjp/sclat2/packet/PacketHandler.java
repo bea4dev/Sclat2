@@ -1,8 +1,11 @@
 package be4rjp.sclat2.packet;
 
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.packet.manager.ScoreUpdatePacketManager;
+import be4rjp.sclat2.player.SclatPlayer;
 import io.netty.channel.*;
 import net.minecraft.server.v1_15_R1.EntityPlayer;
+import net.minecraft.server.v1_15_R1.PacketPlayOutScoreboardScore;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -11,10 +14,12 @@ import java.nio.channels.ClosedChannelException;
 public class PacketHandler extends ChannelDuplexHandler {
     
     private final Player player;
+    private final SclatPlayer sclatPlayer;
     private final EntityPlayer entityPlayer;
     
     public PacketHandler(Player player){
         this.player = player;
+        this.sclatPlayer = SclatPlayer.getSclatPlayer(player);
         this.entityPlayer = ((CraftPlayer)player).getHandle();
     }
     
@@ -28,6 +33,12 @@ public class PacketHandler extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext channelHandlerContext, Object packet, ChannelPromise channelPromise) throws Exception {
     
+        if(packet instanceof PacketPlayOutScoreboardScore){
+            boolean send = ScoreUpdatePacketManager.write((PacketPlayOutScoreboardScore) packet, sclatPlayer);
+            if(!send) return;
+        }
+        
+        
         super.write(channelHandlerContext, packet, channelPromise);
     }
     

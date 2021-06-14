@@ -14,6 +14,11 @@ public class PlayerLobbyMatch extends Match{
     }
     
     @Override
+    public void initialize() {
+    
+    }
+    
+    @Override
     public boolean checkWin() {
         return false;
     }

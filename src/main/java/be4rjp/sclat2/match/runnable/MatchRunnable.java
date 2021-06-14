@@ -1,5 +1,6 @@
 package be4rjp.sclat2.match.runnable;
 
+import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.match.Match;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -20,4 +21,12 @@ public abstract class MatchRunnable extends BukkitRunnable {
     
     @Override
     public abstract void run();
+    
+    
+    /**
+     * 試合のスケジューラー開始
+     */
+    public void start(){
+        this.runTaskTimerAsynchronously(Sclat.getPlugin(), 0, 20);
+    }
 }

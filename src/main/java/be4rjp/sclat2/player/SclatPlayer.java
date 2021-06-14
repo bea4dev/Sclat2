@@ -4,6 +4,7 @@ import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.message.MessageManager;
 import be4rjp.sclat2.util.SclatParticle;
+import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
@@ -34,7 +35,7 @@ public class SclatPlayer {
      * @param uuid プレイヤーのUUID
      * @return SclatPlayer
      */
-    public static SclatPlayer getSclatPlayer(String uuid){
+    public synchronized static SclatPlayer getSclatPlayer(String uuid){
         if(playerMap.containsKey(uuid)){
             return playerMap.get(uuid);
         }else{
@@ -50,7 +51,7 @@ public class SclatPlayer {
      * @param player プレイヤー
      * @return SclatPlayer
      */
-    public static SclatPlayer getSclatPlayer(Player player) {
+    public synchronized static SclatPlayer getSclatPlayer(Player player) {
         return getSclatPlayer(player.getUniqueId().toString());
     }
     
@@ -70,6 +71,8 @@ public class SclatPlayer {
     private Player player = null;
     //所属しているチーム
     private SclatTeam sclatTeam = null;
+    //スコアボード
+    private SclatScoreboard scoreBoard;
     //塗りポイント
     private int paints = 0;
     //キルカウント
@@ -85,7 +88,7 @@ public class SclatPlayer {
      * SclatPlayerを新しく作成
      * @param uuid プレイヤーのUUID
      */
-    public SclatPlayer(String uuid){
+    private SclatPlayer(String uuid){
         this.uuid = uuid;
     }
     
@@ -115,6 +118,13 @@ public class SclatPlayer {
     public synchronized void addPaints(int paints) {this.paints += paints;}
     
     public synchronized void addKills(int kills) {this.kills += kills;}
+    
+    public SclatScoreboard getScoreBoard() {return scoreBoard;}
+    
+    public void setScoreBoard(SclatScoreboard scoreBoard) {
+        this.scoreBoard = scoreBoard;
+        if(player != null) player.setScoreboard(scoreBoard.getBukkitScoreboard());
+    }
     
     /**
      * BukkitのPlayerを取得します。
