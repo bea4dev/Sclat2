@@ -2,7 +2,9 @@ ja_JP:
   match-join: '&a試合に参加しました'
   match-map: 'マップ'
   match-mode: 'ゲームモード'
+  match-time: '残り時間'
 en_US:
   match-join: '&aYou have joined the game.'
   match-map: 'Map'
   match-mode: 'Game mode'
+  match-time: 'Time left'

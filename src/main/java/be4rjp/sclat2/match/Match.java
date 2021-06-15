@@ -180,14 +180,28 @@ public abstract class Match {
      * @param center 塗る中心座標
      * @param radius 塗る半径
      */
-    public void paint(SclatPlayer sclatPlayer, Location center, double radius){
+    public synchronized void paint(SclatPlayer sclatPlayer, Location center, double radius){
         SphereBlocks sphereBlocks = new SphereBlocks(radius, center);
         Set<Block> blocks = sphereBlocks.getBlocks();
         int paint = blocks.size();
         sclatPlayer.addPaints(paint);
         SclatTeam team = sclatPlayer.getSclatTeam();
         team.addPaints(paint);
-        blocks.forEach(block -> blockUpdater.setBlock(block, team.getSclatColor().getWool()));
+        for (Block block : blocks) {
+            if(paintDataMap.containsKey(block)){
+                PaintData paintData = paintDataMap.get(block);
+                if(paintData.getSclatTeam() != team) {
+                    paintData.getSclatTeam().addPaints(-1);
+                    paintData.setSclatTeam(team);
+                    team.addPaints(1);
+                    blockUpdater.setBlock(block, team.getSclatColor().getWool());
+                }
+            }else {
+                PaintData paintData = new PaintData(this, block, team);
+                paintData.getSclatTeam().addPaints(1);
+                blockUpdater.setBlock(block, team.getSclatColor().getWool());
+            }
+        }
     }
     
     
