@@ -104,7 +104,7 @@ public class InkBullet implements SclatEntity{
             if(player == null) continue;
             if(sclatPlayer.getSclatTeam() == null) continue;
             
-            BoundingBox boundingBox = new BoundingBox(player, 0.2);
+            BoundingBox boundingBox = new BoundingBox(player, 0);
             if(!rayTrace.intersects(boundingBox, direction.length(), 0.1)) continue;
             if(this.team == sclatPlayer.getSclatTeam()) continue;
     

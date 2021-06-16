@@ -2,3 +2,11 @@ type: NORMAL_PVP
 display-name:
   ja_JP: 'シオノメ油田'
   en_US: 'Shionome Oil Field'
+
+wait-location: 'Shionome, -943, 50, 1798'
+team-spawn-locations:
+  - 'Shionome, -979, 18, 1801, 0, 0'
+  - 'Shionome, -907, 18, 1801, 0, 0'
+
+intro-movie: 'intro-shionome'
+result-movie: 'result-shionome'

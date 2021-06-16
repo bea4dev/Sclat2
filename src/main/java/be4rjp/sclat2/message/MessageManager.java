@@ -42,6 +42,8 @@ public class MessageManager {
      * @return String テキスト
      */
     public static String getText(Lang lang, String textName){
+        if(textName == null) return "";
+        
         Map<String, String> textMap = languageMap.get(lang);
         if(textMap == null){
             Sclat.getPlugin().getLogger().warning("The specified language was not found.");

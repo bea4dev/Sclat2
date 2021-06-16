@@ -7,6 +7,7 @@ import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.NawabariMatch;
 import be4rjp.sclat2.match.PlayerLobbyMatch;
 import be4rjp.sclat2.match.map.SclatMap;
+import be4rjp.sclat2.match.runnable.MatchWaitRunnable;
 import be4rjp.sclat2.match.team.SclatColor;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.packet.PacketHandler;
@@ -35,14 +36,15 @@ public class PlayerJoinQuitListener implements Listener {
     private static Match match;
     private static SclatTeam blue;
     private static SclatTeam orange;
+    private static MatchWaitRunnable waitRunnable;
     
     static {
         match = new NawabariMatch(SclatMap.getSclatMap("shionome"));
         blue = new SclatTeam(match, SclatColor.BLUE);
         orange = new SclatTeam(match, SclatColor.ORANGE);
         match.initialize();
-        match.startBlockUpdate();
-        match.start();
+        waitRunnable = new MatchWaitRunnable(match);
+        waitRunnable.start();
     }
 
     @EventHandler
@@ -57,13 +59,16 @@ public class PlayerJoinQuitListener implements Listener {
         }else{
             blue.join(sclatPlayer);
         }
+        sclatPlayer.setLang(Lang.ja_JP);
     
         MainWeapon wakaba = MainWeapon.getMainWeapon("wakaba");
         MainWeapon splat = MainWeapon.getMainWeapon("splat");
         MainWeapon gal52 = MainWeapon.getMainWeapon("52gal");
-        player.getInventory().addItem(wakaba.getItemStack(Lang.en_US));
-        player.getInventory().addItem(splat.getItemStack(Lang.ja_JP));
-        player.getInventory().addItem(gal52.getItemStack(Lang.ja_JP));
+        Lang lang = sclatPlayer.getLang();
+        player.getInventory().clear();
+        player.getInventory().addItem(wakaba.getItemStack(lang));
+        player.getInventory().addItem(splat.getItemStack(lang));
+        player.getInventory().addItem(gal52.getItemStack(lang));
         
         i++;
     }

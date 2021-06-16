@@ -1,7 +1,9 @@
 package be4rjp.sclat2.match.runnable;
 
+import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.Match;
+import be4rjp.sclat2.match.intro.IntroManager;
 import be4rjp.sclat2.message.MessageManager;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.SclatScoreboard;
@@ -20,9 +22,7 @@ public class MatchWaitRunnable extends BukkitRunnable {
     private final Match match;
     private int timeLeft = DEFAULT_WAIT_TIME;
 
-    public MatchWaitRunnable(Match match){
-        this.match = match;
-    }
+    public MatchWaitRunnable(Match match){this.match = match;}
 
 
     @Override
@@ -52,8 +52,14 @@ public class MatchWaitRunnable extends BukkitRunnable {
 
         if(timeLeft == 0){
             //開始処理
+            IntroManager.playIntro(match);
             this.cancel();
         }
         timeLeft--;
+    }
+    
+    
+    public void start(){
+        this.runTaskTimerAsynchronously(Sclat.getPlugin(), 0, 20);
     }
 }

@@ -1,5 +1,6 @@
 package be4rjp.sclat2.player;
 
+import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.message.MessageManager;
@@ -8,15 +9,18 @@ import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
+import io.papermc.lib.PaperLib;
 import net.minecraft.server.v1_15_R1.EntityPlayer;
 import net.minecraft.server.v1_15_R1.Packet;
 import net.minecraft.server.v1_15_R1.PacketPlayOutAnimation;
 import net.minecraft.server.v1_15_R1.PacketPlayOutUpdateHealth;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -174,6 +178,28 @@ public class SclatPlayer {
     }
     
     /**
+     * 言語別のタイトルメッセージを送信します
+     * @param titleTextName message.ymlに設定されているタイトルテキストの名前
+     * @param subTitleTextName message.ymlに設定されているサブタイトルテキストの名前
+     * @param fadeIn 文字のフェードイン[tick]
+     * @param stay 文字の表示時間[tick]
+     * @param fadeOut 文字のフェードアウト[tick]
+     */
+    public void sendTextTitle(String titleTextName, String subTitleTextName, int fadeIn, int stay, int fadeOut){
+        if(player == null) return;
+        player.sendTitle(MessageManager.getText(lang, titleTextName), MessageManager.getText(lang, subTitleTextName), fadeIn, stay, fadeOut);
+    }
+    
+    /**
+     * 言語別のアクションバーメッセージを送信します。
+     * @param textName message.ymlに設定されているテキストの名前
+     */
+    public void sendTextActionbar(String textName){
+        if(player == null) return;
+        player.sendActionBar(MessageManager.getText(lang, textName));
+    }
+    
+    /**
      * パケットを送信します
      * @param packet 送信するパケット
      */
@@ -196,13 +222,34 @@ public class SclatPlayer {
     }
     
     /**
-     * 非同期でテレポートさせます。
+     * テレポートさせます。
      * @param location テレポート先
      */
-    public void teleportAsync(Location location){
+    public void teleport(Location location){
         if(player == null) return;
-        player.teleportAsync(location);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PaperLib.teleportAsync(player, location);
+            }
+        }.runTask(Sclat.getPlugin());
     }
+    
+    
+    /**
+     * ゲームモードを変更します
+     * @param gameMode 設定するゲームモード
+     */
+    public void setGameMode(GameMode gameMode){
+        if(player == null) return;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.setGameMode(gameMode);
+            }
+        }.runTask(Sclat.getPlugin());
+    }
+    
     
     /**
      * メインウエポンのスケジューラーのマップを取得する

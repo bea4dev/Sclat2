@@ -5,6 +5,8 @@ import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ReadyRunnable extends BukkitRunnable {
@@ -14,22 +16,29 @@ public class ReadyRunnable extends BukkitRunnable {
 
     private int count = 0;
 
-    public ReadyRunnable(SclatMap sclatMap, Match match){
-        this.sclatMap = sclatMap;
+    public ReadyRunnable(Match match){
+        this.sclatMap = match.getSclatMap();
         this.match = match;
-
-        for(SclatPlayer sclatPlayer : match.getPlayers()){
-            SclatTeam sclatTeam = sclatPlayer.getSclatTeam();
-            if(sclatTeam == null) continue;
-
-            int index = match.getSclatTeams().indexOf(sclatTeam);
-            sclatPlayer.teleportAsync(match.getSclatMap().getTeamLocation(index));
-        }
+    
+        match.getPlayers().forEach(match::teleportToTeamLocation);
+        match.getPlayers().forEach(sclatPlayer -> sclatPlayer.setGameMode(GameMode.ADVENTURE));
     }
 
     @Override
     public void run() {
-
+        match.getPlayers().forEach(match::teleportToTeamLocation);
+        
+        if(count > 5 && count < 12){
+            match.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendTextTitle("match-ready-" + (count - 5), null, 0, 10, 0));
+        }
+        
+        if(count == 20){
+            match.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendTextTitle("match-ready-go", null, 2, 7, 2));
+            match.start();
+            this.cancel();
+        }
+        
+        count++;
     }
 
 

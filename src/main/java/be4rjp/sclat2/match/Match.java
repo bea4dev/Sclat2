@@ -55,6 +55,7 @@ public abstract class Match {
      */
     public void start(){
         this.matchRunnable.start();
+        this.startBlockUpdate();
     }
     
     /**
@@ -129,6 +130,19 @@ public abstract class Match {
      * @param sclatTeam 追加するチーム
      */
     public void addSclatTeam(SclatTeam sclatTeam){this.sclatTeams.add(sclatTeam);}
+    
+    
+    /**
+     * プレイヤーをチームのスポーン場所にテレポートさせます
+     * @param sclatPlayer
+     */
+    public void teleportToTeamLocation(SclatPlayer sclatPlayer){
+        SclatTeam sclatTeam = sclatPlayer.getSclatTeam();
+        if(sclatTeam == null) return;
+    
+        int index = this.getSclatTeams().indexOf(sclatTeam);
+        sclatPlayer.teleport(sclatMap.getTeamLocation(index));
+    }
 
 
     /**
