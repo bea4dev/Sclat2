@@ -1,5 +1,7 @@
 package be4rjp.sclat2.match.map;
 
+import be4rjp.cinema4c.data.play.MovieData;
+import be4rjp.cinema4c.player.PlayManager;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.util.ConfigUtil;
@@ -78,6 +80,10 @@ public abstract class SclatMap {
     protected final List<Location> teamLocations = new ArrayList<>();
     //塗れないブロック
     protected Set<Material> unpaintableBlock = new HashSet<>();
+    //マップ紹介ムービー
+    protected MovieData introMovie = null;
+    //リザルト用ムービー
+    protected MovieData resultMovie = null;
     
     
     /**
@@ -141,6 +147,18 @@ public abstract class SclatMap {
                 this.teamLocations.add(ConfigUtil.getLocationByString(locString));
             }
         }
+
+        if(yml.contains("intro-movie")){
+            String movieName = yml.getString("intro-movie");
+            this.introMovie = PlayManager.getMovieData(movieName);
+            if(introMovie == null) throw new IllegalArgumentException("No movie data with the name '" + movieName + "' was found.");
+        }
+
+        if(yml.contains("result-movie")){
+            String movieName = yml.getString("result-movie");
+            this.introMovie = PlayManager.getMovieData(movieName);
+            if(introMovie == null) throw new IllegalArgumentException("No movie data with the name '" + movieName + "' was found.");
+        }
         
         loadDetailsData();
     }
@@ -150,8 +168,20 @@ public abstract class SclatMap {
      * 各マップの詳細データを取得する
      */
     public abstract void loadDetailsData();
-    
-    
+
+    /**
+     * マップ紹介ムービーを取得する
+     * @return MovieData
+     */
+    public MovieData getIntroMovie() {return introMovie;}
+
+    /**
+     * リザルト用ムービーを取得する
+     * @return MovieData
+     */
+    public MovieData getResultMovie() {return resultMovie;}
+
+
     
     public enum MapType{
         NORMAL_PVP(NormalPVPMap.class);

@@ -13,15 +13,11 @@ import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.util.SphereBlocks;
 import net.minecraft.server.v1_15_R1.Packet;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.scoreboard.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -34,7 +30,7 @@ public abstract class Match {
     //試合のスケジューラー
     protected MatchRunnable matchRunnable;
     //この試合のチーム
-    protected Set<SclatTeam> sclatTeams = new HashSet<>();
+    protected List<SclatTeam> sclatTeams = new ArrayList<>();
     //この試合のブロックアップデーター
     protected BlockUpdater blockUpdater = new BlockUpdater(this);
     //塗られたブロックとその情報のマップ
@@ -48,12 +44,10 @@ public abstract class Match {
 
     public Match(SclatMap sclatMap){
         this.sclatMap = sclatMap;
-    
-        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
-        this.scoreboard = new SclatScoreboard("§6§lSclat2§r " + Sclat.VERSION, 8);
+
+        this.scoreboard = new SclatScoreboard("§6§lSclat2§r " + Sclat.VERSION, 10);
     }
-    
-    
+
     public abstract MatchType getType();
     
     /**
@@ -125,9 +119,9 @@ public abstract class Match {
     
     /**
      * この試合に存在する全てのチームを取得する
-     * @return Set<SclatTeam>
+     * @return List<SclatTeam>
      */
-    public Set<SclatTeam> getSclatTeams() {return sclatTeams;}
+    public List<SclatTeam> getSclatTeams() {return sclatTeams;}
     
     
     /**
