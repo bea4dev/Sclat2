@@ -16,7 +16,7 @@ public class BlockParticle extends SclatParticle{
     
     @Override
     public void spawn(Player player, Location location) {
-        if(player.getLocation().distanceSquared(location) > PARTICLE_DRAW_DISTANCE_SQUARE) return;
+        if(LocationUtil.distanceSquaredSafeDifferentWorld(player.getLocation(), location) > PARTICLE_DRAW_DISTANCE_SQUARE) return;
         player.spawnParticle(particle, location, count, x_offset, y_offset, z_offset, extra, blockData);
     }
 }

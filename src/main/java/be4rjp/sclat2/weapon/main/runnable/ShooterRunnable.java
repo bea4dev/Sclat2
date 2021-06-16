@@ -3,6 +3,7 @@ package be4rjp.sclat2.weapon.main.runnable;
 import be4rjp.sclat2.entity.InkBullet;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.weapon.main.Shooter;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -28,10 +29,13 @@ public class ShooterRunnable extends MainWeaponRunnable {
                 Player player = sclatPlayer.getBukkitPlayer();
                 if (player == null) return;
                 //射撃
-                InkBullet inkBullet = new InkBullet(sclatPlayer.getSclatTeam(), player.getEyeLocation(), shooter);
+                Vector direction = player.getEyeLocation().getDirection();
+                Location origin = player.getEyeLocation();
+                
+                InkBullet inkBullet = new InkBullet(sclatPlayer.getSclatTeam(), origin, shooter);
                 double range = shooter.getRecoil().getShootRandomRange(clickTick);
                 Vector randomVector = new Vector(Math.random() * range - range/2, 0, Math.random() * range - range/2);
-                inkBullet.shootInitialize(sclatPlayer, player.getEyeLocation().getDirection().multiply(shooter.getShootSpeed()).add(randomVector), shooter.getFallTick());
+                inkBullet.shootInitialize(sclatPlayer, direction.multiply(shooter.getShootSpeed()).add(randomVector), shooter.getFallTick());
                 inkBullet.spawn();
                 sclatPlayer.playSound(shooter.getShootSound());
                 

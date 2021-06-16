@@ -17,7 +17,7 @@ public class MatchWaitRunnable extends BukkitRunnable {
     //デフォルトのプレイヤー待機時間[sec]
     private static final int DEFAULT_WAIT_TIME = 20;
     //試合を開始するのに必要な最低人数
-    private static final int START_MIN_PLAYER = 2;
+    private static final int START_MIN_PLAYER = 1;
 
     private final Match match;
     private int timeLeft = DEFAULT_WAIT_TIME;

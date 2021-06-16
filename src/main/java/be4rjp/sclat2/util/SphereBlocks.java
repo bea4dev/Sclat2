@@ -28,7 +28,7 @@ public class SphereBlocks {
         RegionBlocks regionBlocks = new RegionBlocks(center.clone().add(-radius, -radius, -radius), center.clone().add(radius, radius, radius));
         Set<Block> blocks = regionBlocks.getBlocks();
         double radiusSquare = radius * radius;
-        blocks.removeIf(block -> block.getLocation().distanceSquared(center) > radiusSquare);
+        blocks.removeIf(block -> LocationUtil.distanceSquaredSafeDifferentWorld(block.getLocation(), center) > radiusSquare);
         blocks.removeIf(block -> block.getType().toString().endsWith("AIR"));
         return blocks;
     }
