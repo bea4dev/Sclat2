@@ -19,12 +19,6 @@ public class NormalPVPMap extends SclatMap{
     public static void initialize(){normalPVPMaps.clear();}
     
     
-    //マップ紹介ムービー
-    private MovieData introMovie;
-    //リザルト用ムービー
-    private MovieData resultMovie;
-    
-    
     public NormalPVPMap(String id) {
         super(id);
         normalPVPMaps.add(this);
@@ -37,28 +31,6 @@ public class NormalPVPMap extends SclatMap{
     
     @Override
     public void loadDetailsData() {
-        if(yml.contains("intro-movie")){
-            String movieName = yml.getString("intro-movie");
-            this.introMovie = PlayManager.getMovieData(movieName);
-            if(introMovie == null) throw new IllegalArgumentException("No movie data with the name '" + movieName + "' was found.");
-        }
-    
-        if(yml.contains("result-movie")){
-            String movieName = yml.getString("result-movie");
-            this.introMovie = PlayManager.getMovieData(movieName);
-            if(introMovie == null) throw new IllegalArgumentException("No movie data with the name '" + movieName + "' was found.");
-        }
+
     }
-    
-    /**
-     * マップ紹介ムービーを取得する
-     * @return MovieData
-     */
-    public MovieData getIntroMovie() {return introMovie;}
-    
-    /**
-     * リザルト用ムービーを取得する
-     * @return MovieData
-     */
-    public MovieData getResultMovie() {return resultMovie;}
 }
