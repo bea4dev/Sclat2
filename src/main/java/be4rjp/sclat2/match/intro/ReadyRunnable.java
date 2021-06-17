@@ -5,11 +5,15 @@ import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.util.SclatSound;
 import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ReadyRunnable extends BukkitRunnable {
+    
+    private static final SclatSound GO_SOUND = new SclatSound(Sound.ENTITY_ZOMBIE_INFECT, 10.0F, 2.0F);
 
     private final SclatMap sclatMap;
     private final Match match;
@@ -28,13 +32,14 @@ public class ReadyRunnable extends BukkitRunnable {
     public void run() {
         match.getPlayers().forEach(match::teleportToTeamLocation);
         
-        if(count > 5 && count < 12){
-            match.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendTextTitle("match-ready-" + (count - 5), null, 0, 10, 0));
+        if(count > 10 && count < 17){
+            match.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendTextTitle("match-ready-" + (count - 10), null, 0, 10, 0));
         }
         
-        if(count == 20){
+        if(count == 30){
             match.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendTextTitle("match-ready-go", null, 2, 7, 2));
             match.start();
+            match.playSound(GO_SOUND);
             this.cancel();
         }
         

@@ -40,7 +40,7 @@ public class SclatTeam {
         this.team = match.getScoreboard().getBukkitScoreboard().registerNewTeam(sclatColor.getDisplayName());
         team.setColor(sclatColor.getChatColor());
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OTHER_TEAMS);
-        team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OTHER_TEAMS);
+        team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
         team.setSuffix(sclatColor.getChatColor().toString());
         team.setCanSeeFriendlyInvisibles(true);
         team.setDisplayName(sclatColor.getDisplayName());

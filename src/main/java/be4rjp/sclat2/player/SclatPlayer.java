@@ -1,5 +1,6 @@
 package be4rjp.sclat2.player;
 
+import be4rjp.cinema4c.util.SkinManager;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
@@ -21,6 +22,7 @@ import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.Map;
 import java.util.UUID;
@@ -87,6 +89,8 @@ public class SclatPlayer {
     private float health = 20.0F;
     //プレイヤーのアーマー値
     private float armor = 0.0F;
+    //プレイヤーのスキンデータ
+    private String[] skin = null;
     
     /**
      * SclatPlayerを新しく作成
@@ -125,6 +129,8 @@ public class SclatPlayer {
     
     public SclatScoreboard getScoreBoard() {return scoreBoard;}
     
+    public String[] getSkin() {return skin;}
+    
     public void setScoreBoard(SclatScoreboard scoreBoard) {
         this.scoreBoard = scoreBoard;
         if(player != null) player.setScoreboard(scoreBoard.getBukkitScoreboard());
@@ -140,10 +146,17 @@ public class SclatPlayer {
     
     
     /**
-     * BukkitのPlayerをアップデートする（再参加用）
+     * BukkitのPlayerをアップデートする（参加時用）
      */
     public void updateBukkitPlayer(){
         this.player = Bukkit.getPlayer(UUID.fromString(uuid));
+        
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                skin = SkinManager.getSkin(uuid);
+            }
+        }.runTaskAsynchronously(Sclat.getPlugin());
     }
     
     
@@ -188,6 +201,20 @@ public class SclatPlayer {
     public void sendTextTitle(String titleTextName, String subTitleTextName, int fadeIn, int stay, int fadeOut){
         if(player == null) return;
         player.sendTitle(MessageManager.getText(lang, titleTextName), MessageManager.getText(lang, subTitleTextName), fadeIn, stay, fadeOut);
+    }
+    
+    /**
+     * タイトルメッセージを送信します
+     * @param titleText タイトルテキスト
+     * @param subTitleText サブタイトルテキスト
+     * @param fadeIn 文字のフェードイン[tick]
+     * @param stay 文字の表示時間[tick]
+     * @param fadeOut 文字のフェードアウト[tick]
+     */
+    @Deprecated
+    public void sendTitle(String titleText, String subTitleText, int fadeIn, int stay, int fadeOut){
+        if(player == null) return;
+        player.sendTitle(titleText, subTitleText, fadeIn, stay, fadeOut);
     }
     
     /**
@@ -305,10 +332,16 @@ public class SclatPlayer {
      * @param damage 与えるダメージ
      * @param attacker 攻撃者
      */
-    public synchronized void giveDamage(float damage, SclatPlayer attacker){
+    public synchronized void giveDamage(float damage, SclatPlayer attacker, Vector velocity){
         if(player == null) return;
         if(attacker.getBukkitPlayer() == null) return;
         if(this.sclatTeam == null) return;
+        
+        if(this.getArmor() > 0.0 && velocity != null && player != null){
+            Vector XZVec = new Vector(velocity.getX(), 0.0, velocity.getZ());
+            if(XZVec.lengthSquared() > 0.0) XZVec.normalize();
+            player.setVelocity(XZVec);
+        }
         
         if(this.getHealth() + this.getArmor() > damage){
             if(this.getArmor() > damage){

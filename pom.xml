@@ -109,7 +109,7 @@
         <dependency>
             <groupId>com.github.Be4rJP</groupId>
             <artifactId>Cinema4C</artifactId>
-            <version>832240cdad</version>
+            <version>15b6c870fc</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

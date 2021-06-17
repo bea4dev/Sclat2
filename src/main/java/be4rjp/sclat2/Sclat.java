@@ -1,5 +1,6 @@
 package be4rjp.sclat2;
 
+import be4rjp.sclat2.cinema4c.BridgeManager;
 import be4rjp.sclat2.listener.*;
 import be4rjp.sclat2.match.PlayerLobbyMatch;
 import be4rjp.sclat2.match.map.SclatMap;
@@ -34,6 +35,12 @@ public final class Sclat extends JavaPlugin {
         WeaponManager.loadAllWeapon();
 
         lobbyMatch = new PlayerLobbyMatch(null);
+        
+        //For cinema4c extensions
+        if(getServer().getPluginManager().getPlugin("Cinema4C") != null){
+            getLogger().info("Registering cinema4c extensions...");
+            BridgeManager.registerPluginBridge();
+        }
     }
     
     @Override

@@ -144,7 +144,7 @@ public abstract class SclatMap {
         
         if(yml.contains("team-spawn-locations")){
             for(String locString : yml.getStringList("team-spawn-locations")){
-                this.teamLocations.add(ConfigUtil.getLocationByString(locString));
+                this.teamLocations.add(ConfigUtil.getLocationByString(locString).add(0.5, 0.0, 0.5));
             }
         }
 
@@ -156,8 +156,8 @@ public abstract class SclatMap {
 
         if(yml.contains("result-movie")){
             String movieName = yml.getString("result-movie");
-            this.introMovie = PlayManager.getMovieData(movieName);
-            if(introMovie == null) throw new IllegalArgumentException("No movie data with the name '" + movieName + "' was found.");
+            this.resultMovie = PlayManager.getMovieData(movieName);
+            if(resultMovie == null) throw new IllegalArgumentException("No movie data with the name '" + movieName + "' was found.");
         }
         
         loadDetailsData();

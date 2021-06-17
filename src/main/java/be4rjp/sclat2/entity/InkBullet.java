@@ -12,6 +12,7 @@ import be4rjp.sclat2.weapon.MainWeapon;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -24,6 +25,8 @@ import java.util.Set;
 
 public class InkBullet implements SclatEntity{
     
+    private static SclatSound INK_HIT_SOUND = new SclatSound(Sound.ENTITY_SLIME_ATTACK, 0.25F, 2.0F);
+    
     private final Match match;
     private final SclatTeam team;
     private Location location;
@@ -34,7 +37,8 @@ public class InkBullet implements SclatEntity{
     private Vector direction = new Vector(0, 0, 0);
     private boolean hitSound = false;
     private boolean hitParticle = false;
-    private SclatParticle particle;
+    private final SclatParticle INK_PARTICLE;
+    private final SclatParticle INK_HIT_PARTICLE;
     
     private SclatEntityTickRunnable tickRunnable = null;
     private int tick = 0;
@@ -51,7 +55,8 @@ public class InkBullet implements SclatEntity{
         WorldServer nmsWorld = ((CraftWorld)location.getWorld()).getHandle();
         this.snowball = new EntitySnowball(nmsWorld, location.getX(), location.getY(), location.getZ());
         
-        this.particle = new BlockParticle(Particle.BLOCK_DUST, 0, 0, -1, 0, 1, team.getSclatColor().getWool().createBlockData());
+        this.INK_PARTICLE = new BlockParticle(Particle.BLOCK_DUST, 0, 0, -1, 0, 1, team.getSclatColor().getWool().createBlockData());
+        this.INK_HIT_PARTICLE = new BlockParticle(Particle.BLOCK_DUST, 5, 0.5, 0.5, 0.5, 1, team.getSclatColor().getWool().createBlockData());
     }
     
     
@@ -122,6 +127,12 @@ public class InkBullet implements SclatEntity{
                 Location hitLocation = rayTraceResult.getHitPosition().toLocation(oldLocation.getWorld());
                 AsyncInkHitBlockEvent hitBlockEvent = new AsyncInkHitBlockEvent(this, rayTraceResult.getHitBlock(), hitLocation);
                 Sclat.getPlugin().getServer().getPluginManager().callEvent(hitBlockEvent);
+                
+                //ブロックへのヒット
+                match.paint(shooter, hitLocation, mainWeapon.getPaintRadius());
+                match.playSound(INK_HIT_SOUND, hitLocation);
+                match.spawnParticle(INK_HIT_PARTICLE, hitLocation);
+                
                 this.remove();
                 return;
             }
@@ -139,6 +150,11 @@ public class InkBullet implements SclatEntity{
         
             AsyncInkHitPlayerEvent event = new AsyncInkHitPlayerEvent(this, sclatPlayer);
             Sclat.getPlugin().getServer().getPluginManager().callEvent(event);
+            
+            //プレイヤーへのヒット
+            sclatPlayer.giveDamage(mainWeapon.getDamage(), shooter, direction);
+            match.spawnParticle(INK_HIT_PARTICLE, sclatPlayer.getLocation().add(0.0, 1.0, 0.0));
+            
             this.remove();
             return;
         }
@@ -158,7 +174,7 @@ public class InkBullet implements SclatEntity{
         snowball.setPosition(location.getX(), location.getY(), location.getZ());
         snowball.setMot(direction.getX(), direction.getY(), direction.getZ());
         
-        if(tick != 0) match.spawnParticle(particle, oldLocation);
+        if(tick != 0) match.spawnParticle(INK_PARTICLE, oldLocation);
         
         tick++;
     }
