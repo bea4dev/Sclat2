@@ -24,7 +24,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -61,6 +63,15 @@ public class SclatPlayer {
         return getSclatPlayer(player.getUniqueId().toString());
     }
     
+    /**
+     * 指定されたUUIDのSclatPlayerが既に作成されているかどうかを取得します
+     * @param uuid プレイヤーのUUID
+     * @return 既に作成されている場合は true されていない場合は false
+     */
+    public synchronized static boolean isCreated(String uuid){
+        return playerMap.containsKey(uuid);
+    }
+    
     //アーマーがインクをはじく音
     private static final SclatSound REPEL_SOUND = new SclatSound(Sound.ENTITY_SPLASH_POTION_BREAK, 1F, 1.5F);
     //プレイヤーが攻撃をヒットさせた時に鳴らす通知音
@@ -91,6 +102,8 @@ public class SclatPlayer {
     private float armor = 0.0F;
     //プレイヤーのスキンデータ
     private String[] skin = null;
+    //どのプレイヤーを表示するかのオプション
+    private ObservableOption observableOption = ObservableOption.ALL_PLAYER;
     
     /**
      * SclatPlayerを新しく作成
@@ -131,6 +144,8 @@ public class SclatPlayer {
     
     public String[] getSkin() {return skin;}
     
+    public ObservableOption getObservableOption() {return observableOption;}
+    
     public void setScoreBoard(SclatScoreboard scoreBoard) {
         this.scoreBoard = scoreBoard;
         if(player != null) player.setScoreboard(scoreBoard.getBukkitScoreboard());
@@ -143,7 +158,6 @@ public class SclatPlayer {
     public Player getBukkitPlayer(){
         return player;
     }
-    
     
     /**
      * BukkitのPlayerをアップデートする（参加時用）
@@ -159,6 +173,75 @@ public class SclatPlayer {
         }.runTaskAsynchronously(Sclat.getPlugin());
     }
     
+    /**
+     * 試合に参加しているプレイヤー全員に、表示するプレイヤーを設定する
+     * @param option ObservableOption
+     */
+    public void setObservableOption(ObservableOption option){
+        this.observableOption = option;
+        
+        switch (observableOption){
+            case ALONE:{
+                if(this.player == null) break;
+                if(this.sclatTeam == null) break;
+                
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        for(Player op : Bukkit.getServer().getOnlinePlayers()) {
+                            if(player != op) player.hidePlayer(Sclat.getPlugin(), op);
+                        }
+                    }
+                }.runTask(Sclat.getPlugin());
+                break;
+            }
+            
+            case ONLY_MATCH_PLAYER:{
+                if(this.player == null) break;
+                if(this.sclatTeam == null) break;
+                Set<Player> hidePlayers = new HashSet<>();
+                Set<Player> showPlayers = new HashSet<>();
+                
+                for(Player op : Bukkit.getServer().getOnlinePlayers()){
+                    SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(op);
+                    if(sclatPlayer.getSclatTeam() == null) continue;
+                    
+                    if(sclatPlayer.getSclatTeam().getMatch() == this.sclatTeam.getMatch()){
+                        showPlayers.add(op);
+                    }else{
+                        hidePlayers.add(op);
+                    }
+                }
+    
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        for(Player op : hidePlayers) {
+                            if(player != op) player.hidePlayer(Sclat.getPlugin(), op);
+                        }
+                        for(Player op : showPlayers) {
+                            if(player != op) player.showPlayer(Sclat.getPlugin(), op);
+                        }
+                    }
+                }.runTask(Sclat.getPlugin());
+                break;
+            }
+            
+            case ALL_PLAYER:{
+                if(this.player == null) break;
+    
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        for(Player op : Bukkit.getServer().getOnlinePlayers()) {
+                            if(player != op) player.showPlayer(Sclat.getPlugin(), op);
+                        }
+                    }
+                }.runTask(Sclat.getPlugin());
+                break;
+            }
+        }
+    }
     
     /**
      * メッセージを送信します。

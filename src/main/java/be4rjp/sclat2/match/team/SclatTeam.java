@@ -8,7 +8,6 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * チーム
@@ -76,6 +75,8 @@ public class SclatTeam {
         sclatPlayer.setSclatTeam(this);
         teamMembers.add(sclatPlayer);
         sclatPlayer.sendText("match-join");
+        
+        sclatPlayer.teleport(match.getSclatMap().getWaitLocation());
     }
 
     /**

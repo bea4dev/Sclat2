@@ -6,6 +6,7 @@ import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.runnable.MatchRunnable;
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.player.ObservableOption;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.block.BlockUpdater;
 import be4rjp.sclat2.util.SclatParticle;
@@ -210,6 +211,15 @@ public abstract class Match {
                 blockUpdater.setBlock(block, team.getSclatColor().getWool());
             }
         }
+    }
+    
+    
+    /**
+     * 試合に参加しているプレイヤー全員に、表示するプレイヤーを設定する
+     * @param option ObservableOption
+     */
+    public void setPlayerObservableOption(ObservableOption option){
+        this.getPlayers().forEach(sclatPlayer -> sclatPlayer.setObservableOption(option));
     }
     
     

@@ -4,12 +4,16 @@ import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.player.ObservableOption;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.SclatSound;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ReadyRunnable extends BukkitRunnable {
     
@@ -49,5 +53,13 @@ public class ReadyRunnable extends BukkitRunnable {
 
     public void start(){
         this.runTaskTimerAsynchronously(Sclat.getPlugin(), 0, 2);
+    }
+    
+    
+    @Override
+    public synchronized void cancel() throws IllegalStateException {
+        match.setPlayerObservableOption(ObservableOption.ONLY_MATCH_PLAYER);
+        
+        super.cancel();
     }
 }

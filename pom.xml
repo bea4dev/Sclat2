@@ -36,7 +36,7 @@
                     <relocations>
                         <relocation>
                             <pattern>io.papermc.lib</pattern>
-                            <shadedPattern>be4rjp.cinema4c.paperlib</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>be4rjp.sclat2.paperlib</shadedPattern> <!-- Replace this -->
                         </relocation>
                     </relocations>
                     <filters>

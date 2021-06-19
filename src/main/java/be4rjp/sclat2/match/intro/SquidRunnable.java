@@ -37,7 +37,7 @@ public class SquidRunnable extends BukkitRunnable {
         
         Vec3D position = npc.getPositionVector();
         this.location = new Location(npc.getWorldServer().getWorld(), position.x, position.y + 3.5, position.z, npc.getBukkitYaw(), 0);
-        this.SQUID_INK_PARTICLE = new BlockParticle(Particle.BLOCK_DUST, 5, 0.5, 0.5, 0.5, 1, team.getSclatColor().getWool().createBlockData());
+        this.SQUID_INK_PARTICLE = new BlockParticle(Particle.BLOCK_DUST, 10, 0.2, 0.2, 0.2, 1, team.getSclatColor().getWool().createBlockData());
     }
     
     
@@ -45,7 +45,7 @@ public class SquidRunnable extends BukkitRunnable {
     public void run() {
         
         if(count >= 0 && count <= 7){
-            match.getPlayers().forEach(sclatPlayer -> sclatPlayer.spawnParticle(SQUID_INK_PARTICLE, location));
+            match.getPlayers().forEach(sclatPlayer -> sclatPlayer.spawnParticle(SQUID_INK_PARTICLE, location.clone().add(0.0, 0.25, 0.0)));
         }
         
         if(count == 7){

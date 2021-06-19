@@ -4,6 +4,7 @@ import be4rjp.cinema4c.data.play.MovieData;
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.player.ObservableOption;
 import be4rjp.sclat2.player.SclatPlayer;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -30,21 +31,13 @@ public class IntroManager {
     //イントロのイカのマップ
     private static Map<UUID, EntitySquid> squidMap = new ConcurrentHashMap<>();
 
-    public static Match getMatchByMoviePlayID(int playID){
-        return matchMap.get(playID);
-    }
+    public static Match getMatchByMoviePlayID(int playID){return matchMap.get(playID);}
 
-    private static void registerMatch(Match match, int playID){
-        matchMap.put(playID, match);
-    }
+    private static void registerMatch(Match match, int playID){matchMap.put(playID, match);}
     
-    public static EntityPlayer getNPC(UUID uuid){
-        return npcMap.get(uuid);
-    }
+    public static EntityPlayer getNPC(UUID uuid){return npcMap.get(uuid);}
     
-    public static EntitySquid getSquid(UUID uuid){
-        return squidMap.get(uuid);
-    }
+    public static EntitySquid getSquid(UUID uuid){return squidMap.get(uuid);}
 
 
     public static void playIntro(Match match){
@@ -56,6 +49,9 @@ public class IntroManager {
         match.getPlayers().stream()
                 .filter(sclatPlayer -> sclatPlayer.getBukkitPlayer() != null)
                 .forEach(sclatPlayer -> players.add(sclatPlayer.getBukkitPlayer()));
+    
+        match.setPlayerObservableOption(ObservableOption.ALONE);
+        
         int playID = movieData.play(players);
         initializeNPC(match);
         registerMatch(match, playID);
@@ -116,7 +112,7 @@ public class IntroManager {
                 
                 EntitySquid squid = new EntitySquid(EntityTypes.SQUID, nmsWorld);
                 squid.setLocation(playerLocation.getX(), playerLocation.getY(), playerLocation.getZ(), playerLocation.getYaw(), 0);
-                squid.setCustomName(CraftChatMessage.fromStringOrNull(player.getName()));
+                squid.setCustomName(CraftChatMessage.fromStringOrNull(sclatPlayer.getDisplayName()));
                 squid.setCustomNameVisible(true);
                 PacketPlayOutSpawnEntityLiving squidSpawn = new PacketPlayOutSpawnEntityLiving(squid);
                 PacketPlayOutEntityMetadata squidMetadata = new PacketPlayOutEntityMetadata(squid.getId(), squid.getDataWatcher(), true);

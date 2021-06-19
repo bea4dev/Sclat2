@@ -59,7 +59,7 @@ public class PlayerJoinQuitListener implements Listener {
         }else{
             blue.join(sclatPlayer);
         }
-        sclatPlayer.setLang(Lang.ja_JP);
+        sclatPlayer.setLang(Lang.en_US);
     
         MainWeapon wakaba = MainWeapon.getMainWeapon("wakaba");
         MainWeapon splat = MainWeapon.getMainWeapon("splat");
