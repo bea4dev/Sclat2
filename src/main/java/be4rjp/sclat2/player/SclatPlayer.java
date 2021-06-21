@@ -11,10 +11,7 @@ import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
 import io.papermc.lib.PaperLib;
-import net.minecraft.server.v1_15_R1.EntityPlayer;
-import net.minecraft.server.v1_15_R1.Packet;
-import net.minecraft.server.v1_15_R1.PacketPlayOutAnimation;
-import net.minecraft.server.v1_15_R1.PacketPlayOutUpdateHealth;
+import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -89,7 +86,7 @@ public class SclatPlayer {
     //所属しているチーム
     private SclatTeam sclatTeam = null;
     //スコアボード
-    private SclatScoreboard scoreBoard;
+    private SclatScoreboard scoreBoard = null;
     //塗りポイント
     private int paints = 0;
     //キルカウント
@@ -100,10 +97,28 @@ public class SclatPlayer {
     private float health = 20.0F;
     //プレイヤーのアーマー値
     private float armor = 0.0F;
+    //インク残量
+    private float ink = 1.0F;
+    //クライアントの視野角
+    private float field_of_view = 0.1F;
     //プレイヤーのスキンデータ
     private String[] skin = null;
     //どのプレイヤーを表示するかのオプション
     private ObservableOption observableOption = ObservableOption.ALL_PLAYER;
+    //イカ状態であるかどうか
+    private boolean isSquid = false;
+    //インク上にいるかどうか
+    private boolean isOnInk = false;
+    //フライ状態であるかどうか
+    private boolean isFly = false;
+    //移動速度
+    private float walkSpeed = 0.2F;
+    
+    //インク系の動作の同期用インスタンス
+    private final Object INK_LOCK = new Object();
+    //フライ系の動作の同期用インスタンス
+    private final Object FLY_LOCK = new Object();
+    
     
     /**
      * SclatPlayerを新しく作成
@@ -140,6 +155,14 @@ public class SclatPlayer {
     
     public synchronized void addKills(int kills) {this.kills += kills;}
     
+    public boolean isSquid() {return isSquid;}
+    
+    public void setSquid(boolean squid) {isSquid = squid;}
+    
+    public boolean isOnInk() {return isOnInk;}
+    
+    public void setOnInk(boolean onInk) {isOnInk = onInk;}
+    
     public SclatScoreboard getScoreBoard() {return scoreBoard;}
     
     public String[] getSkin() {return skin;}
@@ -152,6 +175,25 @@ public class SclatPlayer {
     }
     
     /**
+     * 情報をリセットする
+     */
+    public void reset(){
+        this.sclatTeam = null;
+        this.scoreBoard = null;
+        this.paints = 0;
+        this.kills = 0;
+        this.health = 20.0F;
+        this.armor = 0.0F;
+        this.ink = 1.0F;
+        this.observableOption = ObservableOption.ALL_PLAYER;
+        this.isSquid = false;
+        this.isOnInk = false;
+        this.setFOV(0.1F);
+        this.setFly(false);
+        this.setWalkSpeed(0.2F);
+    }
+    
+    /**
      * BukkitのPlayerを取得します。
      * @return Player
      */
@@ -160,11 +202,35 @@ public class SclatPlayer {
     }
     
     /**
+     * プレイヤーのエンティティIDを取得します
+     * @return
+     */
+    public int getEntityID(){
+        if(player == null) return 0;
+        return player.getEntityId();
+    }
+    
+    /**
+     * プレイヤーがオンラインであるかどうかを取得する
+     * @return
+     */
+    public boolean isOnline(){
+        if(player == null) return false;
+        return player.isOnline();
+    }
+    
+    /**
      * BukkitのPlayerをアップデートする（参加時用）
      */
     public void updateBukkitPlayer(){
-        this.player = Bukkit.getPlayer(UUID.fromString(uuid));
-        
+        Player bukkitPlayer = Bukkit.getPlayer(UUID.fromString(uuid));
+        if(bukkitPlayer != null) this.player = bukkitPlayer;
+    }
+    
+    /**
+     * Mojangのセッションサーバーへスキンデータのリクエストを送信して取得する
+     */
+    public void sendSkinRequest(){
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -174,7 +240,7 @@ public class SclatPlayer {
     }
     
     /**
-     * 試合に参加しているプレイヤー全員に、表示するプレイヤーを設定する
+     * 表示するプレイヤーを設定する
      * @param option ObservableOption
      */
     public void setObservableOption(ObservableOption option){
@@ -240,6 +306,119 @@ public class SclatPlayer {
                 }.runTask(Sclat.getPlugin());
                 break;
             }
+        }
+    }
+    
+    /**
+     * プレイヤーのインク値を取得します(0 ~ 1)
+     * @return
+     */
+    public float getInk() {synchronized (INK_LOCK){ return ink; }}
+    
+    /**
+     * インク値を設定して経験値バーのパケットを送信する
+     * @param ink float(0 ~ 1)
+     */
+    public void setInk(float ink) {
+        synchronized (INK_LOCK){
+            this.ink = ink;
+            PacketPlayOutExperience experience = new PacketPlayOutExperience(this.ink, (int)(this.ink * 100.0F), 0);
+            this.sendPacket(experience);
+        }
+    }
+    
+    /**
+     * インクを消費させます
+     * @param CInk 消費させるインク float(0 ~ 1)
+     * @return インクが足りていたかどうか
+     */
+    public boolean consumeInk(float CInk){
+        synchronized (INK_LOCK) {
+            if (this.getInk() < CInk) {
+                this.sendTextTitle(null, "weapon-no-ink", 0, 40, 10);
+                return false;
+            } else {
+                this.setInk(this.getInk() - CInk);
+                return true;
+            }
+        }
+    }
+    
+    /**
+     * インクを追加します
+     * @param addInk 追加するインク量 float(0 ~ 1)
+     */
+    public void addInk(float addInk){
+        synchronized (INK_LOCK){
+            if(this.getInk() + addInk >= 1.0F){
+                this.setInk(1.0F);
+            }else{
+                this.setInk(this.getInk() + addInk);
+            }
+        }
+    }
+    
+    /**
+     * クライアントの視野角を取得します
+     * @return float
+     */
+    public float getFOV() {return field_of_view;}
+    
+    /**
+     * クライアントの視野角を変更します
+     * @param field_of_view
+     */
+    public void setFOV(float field_of_view) {
+        this.field_of_view = field_of_view;
+        
+        PlayerAbilities abilities = new PlayerAbilities();
+        abilities.walkSpeed = field_of_view;
+        PacketPlayOutAbilities abilitiesPacket = new PacketPlayOutAbilities(abilities);
+        this.sendPacket(abilitiesPacket);
+    }
+    
+    /**
+     * プレイヤーの移動速度を取得する
+     * @return float
+     */
+    public float getWalkSpeed() {return walkSpeed;}
+    
+    /**
+     * プレイヤーの移動速度を設定する
+     * @param speed
+     */
+    public void setWalkSpeed(float speed){
+        if(player == null) return;
+        this.walkSpeed = walkSpeed;
+        player.setWalkSpeed(speed);
+    }
+    
+    /**
+     * プレイヤーの飛行状態を設定します
+     * @param fly
+     */
+    public void setFly(boolean fly){
+        synchronized (FLY_LOCK) {
+            if (player == null) return;
+            isFly = fly;
+            //new BukkitRunnable() {
+                //@Override
+                //public void run() {
+                    //if (player == null) return;
+                    player.setAllowFlight(fly);
+                    player.setFlying(fly);
+                //}
+            //}.runTask(Sclat.getPlugin());
+        }
+    }
+    
+    /**
+     * プレイヤーが飛行状態であるかどうかを取得します
+     * @return
+     */
+    public boolean isFly() {
+        synchronized (FLY_LOCK) {
+            return isFly;
         }
     }
     
@@ -336,10 +515,10 @@ public class SclatPlayer {
      * @param location テレポート先
      */
     public void teleport(Location location){
-        if(player == null) return;
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (player == null) return;
                 PaperLib.teleportAsync(player, location);
             }
         }.runTask(Sclat.getPlugin());
@@ -351,10 +530,10 @@ public class SclatPlayer {
      * @param gameMode 設定するゲームモード
      */
     public void setGameMode(GameMode gameMode){
-        if(player == null) return;
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (player == null) return;
                 player.setGameMode(gameMode);
             }
         }.runTask(Sclat.getPlugin());

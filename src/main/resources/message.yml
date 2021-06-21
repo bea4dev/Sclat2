@@ -15,6 +15,7 @@ ja_JP:
   match-ready-go: '&lGO!'
   match-NAWABARI: '§6§lナワバリバトル'
   match-NAWABARI-des: 'たくさんナワバリを確保しろ！'
+  weapon-no-ink: '&cインクが足りない！'
 en_US:
   word-sec: 'sec'
   match-join: '&aYou have joined the game.'
@@ -32,3 +33,4 @@ en_US:
   match-ready-go: '&lGO!'
   match-NAWABARI: '§6§lTurf War'
   match-NAWABARI-des: 'Ink the most turf to win!'
+  weapon-no-ink: '&cLow ink!'

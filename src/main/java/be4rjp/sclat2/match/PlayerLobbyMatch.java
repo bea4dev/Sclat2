@@ -2,6 +2,7 @@ package be4rjp.sclat2.match;
 
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.player.SclatPlayer;
 
 public class PlayerLobbyMatch extends Match{
     public PlayerLobbyMatch(SclatMap sclatMap) {
@@ -11,6 +12,16 @@ public class PlayerLobbyMatch extends Match{
     @Override
     public MatchType getType() {
         return MatchType.LOBBY;
+    }
+    
+    @Override
+    public void initializePlayer(SclatPlayer sclatPlayer) {
+    
+    }
+    
+    @Override
+    public void end() {
+    
     }
     
     @Override

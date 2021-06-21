@@ -53,6 +53,7 @@ public class PlayerJoinQuitListener implements Listener {
         
         SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
         sclatPlayer.updateBukkitPlayer();
+        sclatPlayer.sendSkinRequest();
         
         if(i % 2 == 0){
             orange.join(sclatPlayer);

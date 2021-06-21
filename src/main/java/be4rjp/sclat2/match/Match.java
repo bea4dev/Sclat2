@@ -7,12 +7,14 @@ import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.runnable.MatchRunnable;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.ObservableOption;
+import be4rjp.sclat2.player.PlayerSquidRunnable;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.block.BlockUpdater;
 import be4rjp.sclat2.util.SclatParticle;
 import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.util.SphereBlocks;
+import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.server.v1_15_R1.Packet;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -38,6 +40,8 @@ public abstract class Match {
     protected Map<Block, PaintData> paintDataMap = new ConcurrentHashMap<>();
     //SclatTeamとスコアボードのチームのマップ
     protected Map<SclatTeam, Team> teamMap = new HashMap<>();
+    //イカ動作のスケジューラーのリスト
+    protected Set<PlayerSquidRunnable> squidRunnableSet = new ConcurrentSet<>();
     
     //試合のスコアボード
     protected final SclatScoreboard scoreboard;
@@ -57,7 +61,20 @@ public abstract class Match {
     public void start(){
         this.matchRunnable.start();
         this.startBlockUpdate();
+        
+        this.getPlayers().forEach(this::initializePlayer);
     }
+    
+    /**
+     * 試合開始時のプレイヤーの準備処理
+     * @param sclatPlayer
+     */
+    public abstract void initializePlayer(SclatPlayer sclatPlayer);
+    
+    /**
+     * 終了処理
+     */
+    public abstract void end();
     
     /**
      * 試合の初期化およびセットアップ
@@ -208,9 +225,19 @@ public abstract class Match {
             }else {
                 PaintData paintData = new PaintData(this, block, team);
                 paintData.getSclatTeam().addPaints(1);
+                paintDataMap.put(block, paintData);
                 blockUpdater.setBlock(block, team.getSclatColor().getWool());
             }
         }
+    }
+    
+    /**
+     * 指定されたブロックのPaintDataを返します
+     * @param block 取得するブロック
+     * @return PaintData 設定されていなければ null が返ってくる
+     */
+    public PaintData getPaintData(Block block){
+        return paintDataMap.get(block);
     }
     
     

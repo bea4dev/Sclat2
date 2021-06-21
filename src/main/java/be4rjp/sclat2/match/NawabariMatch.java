@@ -3,6 +3,8 @@ package be4rjp.sclat2.match;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.runnable.NawabariMatchRunnable;
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.player.PlayerSquidRunnable;
+import be4rjp.sclat2.player.SclatPlayer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +20,17 @@ public class NawabariMatch extends Match{
         return MatchType.NAWABARI;
     }
     
+    @Override
+    public void initializePlayer(SclatPlayer sclatPlayer) {
+        PlayerSquidRunnable squidRunnable = new PlayerSquidRunnable(sclatPlayer);
+        squidRunnable.start();
+        squidRunnableSet.add(squidRunnable);
+    }
+    
+    @Override
+    public void end() {
+    
+    }
     
     
     @Override

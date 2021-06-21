@@ -31,6 +31,7 @@ public final class Sclat extends JavaPlugin {
         pluginManager.registerEvents(new PlayerItemClickListener(), this);
         pluginManager.registerEvents(new InkHitPlayerListener(), this);
         pluginManager.registerEvents(new Cinema4CListener(), this);
+        pluginManager.registerEvents(new CancelListener(), this);
     
         WeaponManager.loadAllWeapon();
 
