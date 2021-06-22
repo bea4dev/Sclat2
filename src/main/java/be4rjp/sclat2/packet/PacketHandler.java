@@ -1,15 +1,10 @@
 package be4rjp.sclat2.packet;
 
 import be4rjp.sclat2.Sclat;
-import be4rjp.sclat2.packet.manager.PlayerAbilityPacketManager;
-import be4rjp.sclat2.packet.manager.PlayerSpawnPacketManager;
-import be4rjp.sclat2.packet.manager.ScoreUpdatePacketManager;
+import be4rjp.sclat2.packet.manager.*;
 import be4rjp.sclat2.player.SclatPlayer;
 import io.netty.channel.*;
-import net.minecraft.server.v1_15_R1.EntityPlayer;
-import net.minecraft.server.v1_15_R1.PacketPlayOutAbilities;
-import net.minecraft.server.v1_15_R1.PacketPlayOutNamedEntitySpawn;
-import net.minecraft.server.v1_15_R1.PacketPlayOutScoreboardScore;
+import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -49,6 +44,14 @@ public class PacketHandler extends ChannelDuplexHandler {
         
         if(packet instanceof PacketPlayOutAbilities){
             PlayerAbilityPacketManager.write((PacketPlayOutAbilities) packet, sclatPlayer);
+        }
+        
+        if(packet instanceof PacketPlayOutEntityMetadata){
+            PlayerMetadataPacketManager.write((PacketPlayOutEntityMetadata) packet, sclatPlayer);
+        }
+        
+        if(packet instanceof PacketPlayOutUpdateHealth){
+            HealthUpdatePacketManager.write((PacketPlayOutUpdateHealth) packet, sclatPlayer);
         }
         
         

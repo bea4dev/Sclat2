@@ -23,16 +23,14 @@ import java.util.Set;
 public class PlayerSquidRunnable extends BukkitRunnable {
     
     public static final MobEffect ON_INK_EFFECT = new MobEffect(MobEffectList.fromId(PotionEffectType.REGENERATION.getId()), Integer.MAX_VALUE, 0, false, false, true, null);
-    public static final MobEffect ON_INK_EFFECT_REMOVE = new MobEffect(MobEffectList.fromId(PotionEffectType.REGENERATION.getId()), 0, 0, false, false, true, ON_INK_EFFECT);
     public static final MobEffect ON_ENEMY_INK_EFFECT = new MobEffect(MobEffectList.fromId(PotionEffectType.POISON.getId()), Integer.MAX_VALUE, 0, false, false, true, null);
-    public static final MobEffect ON_ENEMY_INK_EFFECT_REMOVE = new MobEffect(MobEffectList.fromId(PotionEffectType.POISON.getId()), 0, 0, false, false, true, ON_ENEMY_INK_EFFECT);
     
     
     public static final float ON_INK_RECOVERY = 0.027F;
     public static final float NORMAL_RECOVERY = 0.0006F;
     
     public static final float ON_INK_SPEED = 0.25F;
-    public static final float NORMAL_SPEED = 0.13F;
+    public static final float NORMAL_SPEED = 0.15F;
     
     private static final SclatSound IN_INK_SOUND = new SclatSound(Sound.ITEM_BUCKET_FILL, 0.5F, 1F);
     private static final SclatSound OUT_INK_SOUND = new SclatSound(Sound.ENTITY_PLAYER_SWIM, 0.3F, 5F);
@@ -41,7 +39,10 @@ public class PlayerSquidRunnable extends BukkitRunnable {
     private final EntitySquid squid;
     
     private boolean isOnEnemyInk = false;
+    private boolean isBeforeSquid = false;
     private PacketSendFlag packetFlag = PacketSendFlag.SENT_DESTROY_PACKET;
+    
+    private int tick = 0;
     
     public PlayerSquidRunnable(SclatPlayer sclatPlayer){
         this.sclatPlayer = sclatPlayer;
@@ -87,9 +88,14 @@ public class PlayerSquidRunnable extends BukkitRunnable {
                 sclatPlayer.sendPacket(entityEffect);
                 isOnEnemyInk = true;
             }
+            
+            //毒ダメージ
+            if(tick % 10 == 0){
+                sclatPlayer.givePoisonDamage(2.0F);
+            }
         }else{
             if(isOnEnemyInk){
-                PacketPlayOutEntityEffect entityEffect = new PacketPlayOutEntityEffect(sclatPlayer.getEntityID(), ON_ENEMY_INK_EFFECT_REMOVE);
+                PacketPlayOutRemoveEntityEffect entityEffect = new PacketPlayOutRemoveEntityEffect(sclatPlayer.getEntityID(), MobEffectList.fromId(PotionEffectType.POISON.getId()));
                 sclatPlayer.sendPacket(entityEffect);
                 isOnEnemyInk = false;
             }
@@ -99,10 +105,10 @@ public class PlayerSquidRunnable extends BukkitRunnable {
         boolean onWallInk = false;
         Set<Block> blocks = new HashSet<>();
         Location head = sclatPlayer.getLocation().add(0.0, 0.5, 0.0);
-        blocks.add(head.clone().add(0.5, 0.0, 0.5).getBlock());
-        blocks.add(head.clone().add(-0.5, 0.0, 0.5).getBlock());
-        blocks.add(head.clone().add(0.5, 0.0, -0.5).getBlock());
-        blocks.add(head.clone().add(-0.5, 0.0, -0.5).getBlock());
+        blocks.add(head.clone().add(0.6, 0.0, 0.6).getBlock());
+        blocks.add(head.clone().add(-0.6, 0.0, 0.6).getBlock());
+        blocks.add(head.clone().add(0.6, 0.0, -0.6).getBlock());
+        blocks.add(head.clone().add(-0.6, 0.0, -0.6).getBlock());
         for(Block block : blocks){
             PaintData paintData = match.getPaintData(block);
             if(paintData == null) continue;
@@ -116,6 +122,24 @@ public class PlayerSquidRunnable extends BukkitRunnable {
         Player player = sclatPlayer.getBukkitPlayer();
         if(player != null) {
             if (player.getInventory().getItemInMainHand().getType() == Material.AIR) isSquid = true;
+    
+            //プレイヤー表示
+            if(isSquid){
+                if(!isBeforeSquid){
+                    EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
+                    entityPlayer.setInvisible(true);
+                    PacketPlayOutEntityMetadata metadata = new PacketPlayOutEntityMetadata(entityPlayer.getId(), entityPlayer.getDataWatcher(), true);
+                    match.getPlayers().forEach(op -> op.sendPacket(metadata));
+                }
+            }else{
+                if(isBeforeSquid){
+                    EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
+                    entityPlayer.setInvisible(false);
+                    PacketPlayOutEntityMetadata metadata = new PacketPlayOutEntityMetadata(entityPlayer.getId(), entityPlayer.getDataWatcher(), true);
+                    match.getPlayers().forEach(op -> op.sendPacket(metadata));
+                }
+            }
+            sclatPlayer.setSquid(isSquid);
             
             //イカ座標設定
             Location loc = sclatPlayer.getLocation();
@@ -152,54 +176,53 @@ public class PlayerSquidRunnable extends BukkitRunnable {
     
         //サウンド再生とプレイヤーの移動速度とプレイヤーの表示
         if(isSquid && (onInk || onWallInk)){
-            if(!(sclatPlayer.isSquid() && sclatPlayer.isOnInk())){
+            if(!(isBeforeSquid && sclatPlayer.isOnInk())){
                 sclatPlayer.playSound(IN_INK_SOUND);
                 sclatPlayer.setWalkSpeed(ON_INK_SPEED);
+                sclatPlayer.setFoodLevel(20);
                 PacketPlayOutEntityEffect entityEffect = new PacketPlayOutEntityEffect(sclatPlayer.getEntityID(), ON_INK_EFFECT);
                 sclatPlayer.sendPacket(entityEffect);
-    
-                //プレイヤー表示
-                EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
-                entityPlayer.setInvisible(true);
-                PacketPlayOutEntityMetadata metadata = new PacketPlayOutEntityMetadata(entityPlayer.getId(), entityPlayer.getDataWatcher(), true);
-                match.getPlayers().forEach(op -> op.sendPacket(metadata));
             }
         }else{
-            if(sclatPlayer.isSquid() && sclatPlayer.isOnInk()){
+            if(isBeforeSquid && sclatPlayer.isOnInk()){
                 sclatPlayer.playSound(OUT_INK_SOUND);
                 sclatPlayer.setWalkSpeed(NORMAL_SPEED);
-                PacketPlayOutEntityEffect entityEffect = new PacketPlayOutEntityEffect(sclatPlayer.getEntityID(), ON_INK_EFFECT_REMOVE);
+                sclatPlayer.setFoodLevel(4);
+                PacketPlayOutRemoveEntityEffect entityEffect = new PacketPlayOutRemoveEntityEffect(sclatPlayer.getEntityID(), MobEffectList.fromId(PotionEffectType.REGENERATION.getId()));
                 sclatPlayer.sendPacket(entityEffect);
-                
-                if(player != null){
-                    EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
-                    entityPlayer.setInvisible(false);
-                    PacketPlayOutEntityMetadata metadata = new PacketPlayOutEntityMetadata(entityPlayer.getId(), entityPlayer.getDataWatcher(), true);
-                    match.getPlayers().forEach(op -> op.sendPacket(metadata));
-                }
             }
         }
+        
     
         //SclatPlayerへ情報をセット
         sclatPlayer.setOnInk(onInk || onWallInk);
-        if(onWallInk){
+        if(onWallInk && isSquid){
             if(!sclatPlayer.isFly()){
                 sclatPlayer.setFly(true);
+            }
+            if(!player.isFlying()){
+                player.setFlying(true);
             }
         }else{
             if(sclatPlayer.isFly()){
                 sclatPlayer.setFly(false);
             }
         }
-        sclatPlayer.setSquid(isSquid);
-    
+        isBeforeSquid = isSquid;
         
-        //インク回復
+        
+        //インクとヘルス回復
         if(sclatPlayer.isOnInk() && sclatPlayer.isSquid()){
             sclatPlayer.addInk(ON_INK_RECOVERY);
+            if(tick % 10 == 0){
+                sclatPlayer.heal(2.0F);
+            }
         }else{
             sclatPlayer.addInk(NORMAL_RECOVERY);
         }
+        
+        
+        tick++;
     }
     
     
@@ -208,6 +231,6 @@ public class PlayerSquidRunnable extends BukkitRunnable {
     
     public enum PacketSendFlag{
         SENT_SPAWN_PACKET,
-        SENT_DESTROY_PACKET
+        SENT_DESTROY_PACKET,
     }
 }

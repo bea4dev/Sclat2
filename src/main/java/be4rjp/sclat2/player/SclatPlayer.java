@@ -113,6 +113,8 @@ public class SclatPlayer {
     private boolean isFly = false;
     //移動速度
     private float walkSpeed = 0.2F;
+    //フードレベル
+    private int foodLevel = 20;
     
     //インク系の動作の同期用インスタンス
     private final Object INK_LOCK = new Object();
@@ -191,6 +193,7 @@ public class SclatPlayer {
         this.setFOV(0.1F);
         this.setFly(false);
         this.setWalkSpeed(0.2F);
+        this.setFoodLevel(20);
     }
     
     /**
@@ -389,7 +392,7 @@ public class SclatPlayer {
      */
     public void setWalkSpeed(float speed){
         if(player == null) return;
-        this.walkSpeed = walkSpeed;
+        this.walkSpeed = speed;
         player.setWalkSpeed(speed);
     }
     
@@ -401,14 +404,8 @@ public class SclatPlayer {
         synchronized (FLY_LOCK) {
             if (player == null) return;
             isFly = fly;
-            //new BukkitRunnable() {
-                //@Override
-                //public void run() {
-                    //if (player == null) return;
-                    player.setAllowFlight(fly);
-                    player.setFlying(fly);
-                //}
-            //}.runTask(Sclat.getPlugin());
+            player.setAllowFlight(fly);
+            player.setFlying(fly);
         }
     }
     
@@ -588,6 +585,42 @@ public class SclatPlayer {
         particle.spawn(player, location);
     }
     
+    /**
+     * プレイヤーを回復させる
+     * @param plus
+     */
+    public synchronized void heal(float plus){
+        if(player == null) return;
+        if(this.sclatTeam == null) return;
+        
+        if(this.health + plus < 20.0F){
+            this.health += plus;
+            PacketPlayOutUpdateHealth updateHealth = new PacketPlayOutUpdateHealth(this.health, this.foodLevel, 0.0F);
+            this.sendPacket(updateHealth);
+        }else if(this.health != 20.0F){
+            this.health = 20.0F;
+            PacketPlayOutUpdateHealth updateHealth = new PacketPlayOutUpdateHealth(this.health, this.foodLevel, 0.0F);
+            this.sendPacket(updateHealth);
+        }
+    }
+    
+    /**
+     * プレイヤーに毒ダメージを与えます
+     * @param damage
+     */
+    public synchronized void givePoisonDamage(float damage){
+        if(player == null) return;
+        if(this.sclatTeam == null) return;
+        
+        if(this.health > damage){
+            this.health -= damage;
+            PacketPlayOutUpdateHealth updateHealth = new PacketPlayOutUpdateHealth(this.health, this.foodLevel, 0.0F);
+            PacketPlayOutAnimation animation = new PacketPlayOutAnimation(((CraftPlayer)player).getHandle(), 1);
+            this.sendPacket(updateHealth);
+            this.sclatTeam.getMatch().sendPacket(animation);
+            this.sclatTeam.getMatch().playSound(HIT_SOUND, player.getLocation());
+        }
+    }
     
     /**
      * プレイヤーにダメージを与える
@@ -615,7 +648,7 @@ public class SclatPlayer {
                 this.setHealth(this.getHealth() - d);
                 this.setArmor(0.0F);
     
-                PacketPlayOutUpdateHealth updateHealth = new PacketPlayOutUpdateHealth(getHealth(), 20, 5.0F);
+                PacketPlayOutUpdateHealth updateHealth = new PacketPlayOutUpdateHealth(this.health, this.foodLevel, 0.0F);
                 PacketPlayOutAnimation animation = new PacketPlayOutAnimation(((CraftPlayer)player).getHandle(), 1);
                 this.sendPacket(updateHealth);
                 this.sclatTeam.getMatch().sendPacket(animation);
@@ -631,6 +664,22 @@ public class SclatPlayer {
         }
     }
     
+    /**
+     * フードレベルを取得します
+     * @return
+     */
+    public synchronized int getFoodLevel() {return foodLevel;}
+    
+    /**
+     * フードレベルを設定します
+     * @param foodLevel
+     */
+    public synchronized void setFoodLevel(int foodLevel) {
+        this.foodLevel = foodLevel;
+        if(player == null) return;
+        PacketPlayOutUpdateHealth updateHealth = new PacketPlayOutUpdateHealth(this.health, this.foodLevel, 0.0F);
+        this.sendPacket(updateHealth);
+    }
     
     /**
      * プレイヤーの表示名を取得する
