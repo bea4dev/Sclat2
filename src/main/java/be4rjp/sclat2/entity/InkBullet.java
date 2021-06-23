@@ -152,7 +152,7 @@ public class InkBullet implements SclatEntity{
             Sclat.getPlugin().getServer().getPluginManager().callEvent(event);
             
             //プレイヤーへのヒット
-            sclatPlayer.giveDamage(mainWeapon.getDamage(), shooter, direction);
+            sclatPlayer.giveDamage(mainWeapon.getDamage(), shooter, direction, mainWeapon);
             match.spawnParticle(INK_HIT_PARTICLE, sclatPlayer.getLocation().add(0.0, 1.0, 0.0));
             
             this.remove();

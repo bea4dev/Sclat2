@@ -9,6 +9,7 @@ import be4rjp.sclat2.util.SclatParticle;
 import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.MainWeapon;
+import be4rjp.sclat2.weapon.SclatWeapon;
 import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
 import io.papermc.lib.PaperLib;
 import net.minecraft.server.v1_15_R1.*;
@@ -115,11 +116,19 @@ public class SclatPlayer {
     private float walkSpeed = 0.2F;
     //フードレベル
     private int foodLevel = 20;
-    
+    //死んでいるかどうか
+    private boolean isDeath = false;
+
+    //キルカウントの動作の同期用インスタンス
+    private final Object KILL_COUNT_LOCK = new Object();
+    //ペイントカウントの動作の同期用インスタンス
+    private final Object PAINT_COUNT_LOCK = new Object();
     //インク系の動作の同期用インスタンス
     private final Object INK_LOCK = new Object();
     //フライ系の動作の同期用インスタンス
     private final Object FLY_LOCK = new Object();
+    //死亡系の動作の同期用インスタンス
+    private final Object DEATH_LOCK = new Object();
     
     
     /**
@@ -141,9 +150,9 @@ public class SclatPlayer {
     
     public void setSclatTeam(SclatTeam sclatTeam) {this.sclatTeam = sclatTeam;}
     
-    public int getPaints() {return paints;}
+    public int getPaints() {synchronized (PAINT_COUNT_LOCK){return paints;}}
     
-    public int getKills() {return kills;}
+    public int getKills() {synchronized (KILL_COUNT_LOCK){return kills;}}
     
     public synchronized float getArmor() {return armor;}
     
@@ -153,9 +162,9 @@ public class SclatPlayer {
     
     public synchronized void setHealth(float health) {this.health = health;}
     
-    public synchronized void addPaints(int paints) {this.paints += paints;}
+    public void addPaints(int paints) {synchronized (PAINT_COUNT_LOCK){this.paints += paints;}}
     
-    public synchronized void addKills(int kills) {this.kills += kills;}
+    public void addKills(int kills) {synchronized (KILL_COUNT_LOCK){this.kills += kills;}}
     
     public boolean isSquid() {return isSquid;}
     
@@ -164,7 +173,11 @@ public class SclatPlayer {
     public boolean isOnInk() {return isOnInk;}
     
     public void setOnInk(boolean onInk) {isOnInk = onInk;}
-    
+
+    public boolean isDeath() {return isDeath;}
+
+    public void setDeath(boolean death) {isDeath = death;}
+
     public SclatScoreboard getScoreBoard() {return scoreBoard;}
     
     public String[] getSkin() {return skin;}
@@ -190,6 +203,7 @@ public class SclatPlayer {
         this.observableOption = ObservableOption.ALL_PLAYER;
         this.isSquid = false;
         this.isOnInk = false;
+        this.isDeath = false;
         this.setFOV(0.1F);
         this.setFly(false);
         this.setWalkSpeed(0.2F);
@@ -448,6 +462,16 @@ public class SclatPlayer {
         if(player == null) return;
         player.sendMessage("[§6Sclat§r] " + MessageManager.getText(lang, textName));
     }
+
+    /**
+     * 言語別のメッセージを送信します。
+     * @param textName message.ymlに設定されているテキストの名前
+     * @param args 置き換える値 (%d等)
+     */
+    public void sendText(String textName, Object... args){
+        if(player == null) return;
+        player.sendMessage("[§6Sclat§r] " + String.format(MessageManager.getText(lang, textName), args));
+    }
     
     /**
      * 言語別のタイトルメッセージを送信します
@@ -460,6 +484,21 @@ public class SclatPlayer {
     public void sendTextTitle(String titleTextName, String subTitleTextName, int fadeIn, int stay, int fadeOut){
         if(player == null) return;
         player.sendTitle(MessageManager.getText(lang, titleTextName), MessageManager.getText(lang, subTitleTextName), fadeIn, stay, fadeOut);
+    }
+
+    /**
+     * 言語別のタイトルメッセージを送信します
+     * @param titleTextName message.ymlに設定されているタイトルテキストの名前
+     * @param titleArgs 置き換える値 (%d等)
+     * @param subTitleTextName message.ymlに設定されているサブタイトルテキストの名前
+     * @param subTitleArgs 置き換える値 (%d等)
+     * @param fadeIn 文字のフェードイン[tick]
+     * @param stay 文字の表示時間[tick]
+     * @param fadeOut 文字のフェードアウト[tick]
+     */
+    public void sendTextTitle(String titleTextName, Object[] titleArgs, String subTitleTextName, Object[] subTitleArgs, int fadeIn, int stay, int fadeOut){
+        if(player == null) return;
+        player.sendTitle(String.format(MessageManager.getText(lang, titleTextName), titleArgs), String.format(MessageManager.getText(lang, subTitleTextName), subTitleArgs), fadeIn, stay, fadeOut);
     }
     
     /**
@@ -626,8 +665,9 @@ public class SclatPlayer {
      * プレイヤーにダメージを与える
      * @param damage 与えるダメージ
      * @param attacker 攻撃者
+     * @param sclatWeapon 攻撃に使用した武器
      */
-    public synchronized void giveDamage(float damage, SclatPlayer attacker, Vector velocity){
+    public synchronized void giveDamage(float damage, SclatPlayer attacker, Vector velocity, SclatWeapon sclatWeapon){
         if(player == null) return;
         if(attacker.getBukkitPlayer() == null) return;
         if(this.sclatTeam == null) return;

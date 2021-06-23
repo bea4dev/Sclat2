@@ -15,6 +15,10 @@ ja_JP:
   match-ready-go: '&lGO!'
   match-NAWABARI: '§6§lナワバリバトル'
   match-NAWABARI-des: 'たくさんナワバリを確保しろ！'
+  match-killed-title: '%s&rに&l%s&rでやられた！'
+  match-killed-sub-title: '&b復活まであと &r&l%d &r&b秒'
+  match-kill-message: '%s&rが%s&rを&l%s&rで倒した！'
+  match-kill-message-bold: '%s&r&lが%s&r&lを&l%s&r&lで倒した！'
   weapon-no-ink: '&cインクが足りない！'
 en_US:
   word-sec: 'sec'

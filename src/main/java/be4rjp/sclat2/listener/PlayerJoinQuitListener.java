@@ -54,13 +54,13 @@ public class PlayerJoinQuitListener implements Listener {
         SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
         sclatPlayer.updateBukkitPlayer();
         sclatPlayer.sendSkinRequest();
-        
+        sclatPlayer.setLang(Lang.ja_JP);
+
         if(i % 2 == 0){
             orange.join(sclatPlayer);
         }else{
             blue.join(sclatPlayer);
         }
-        sclatPlayer.setLang(Lang.en_US);
     
         MainWeapon wakaba = MainWeapon.getMainWeapon("wakaba");
         MainWeapon splat = MainWeapon.getMainWeapon("splat");

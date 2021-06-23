@@ -49,18 +49,12 @@ public abstract class MainWeapon extends SclatWeapon{
     protected final String id;
     //設定ファイル
     protected YamlConfiguration yml;
-    //武器の表示名
-    protected Map<Lang, String> displayName = new HashMap<>();
     //武器のマテリアル
     protected Material material = Material.BARRIER;
     //CustomModelDataのID
     protected int modelID = 0;
     //一発分の塗り半径
     protected double paintRadius = 0.0;
-    //一発分の必要インク量
-    protected float needInk = 0.0F;
-    //一発分のダメージ
-    protected float damage = 0.0F;
     //塗った時にパーティクルを表示するかどうか
     protected boolean particle = false;
     //射撃時に鳴らすサウンド
@@ -95,29 +89,10 @@ public abstract class MainWeapon extends SclatWeapon{
     public String getID() {return id;}
     
     /**
-     * 表示名を取得する
-     * @return String
-     */
-    public String getDisplayName(Lang lang) {
-        String name = displayName.get(lang);
-        if(name == null){
-            return "No name.";
-        }else{
-            return name;
-        }
-    }
-    
-    /**
      * マテリアルを取得する
      * @return Material
      */
     public Material getMaterial() {return material;}
-    
-    /**
-     * 一発分のダメージを取得する
-     * @return double
-     */
-    public float getDamage() {return damage;}
     
     /**
      * CustomModelDataのIDを取得する
@@ -130,12 +105,6 @@ public abstract class MainWeapon extends SclatWeapon{
      * @return double
      */
     public double getPaintRadius() {return paintRadius;}
-    
-    /**
-     * 一発分の必要インク量を取得する
-     * @return float
-     */
-    public float getNeedInk() {return needInk;}
     
     /**
      * 射撃時に鳴らすサウンドを取得する
