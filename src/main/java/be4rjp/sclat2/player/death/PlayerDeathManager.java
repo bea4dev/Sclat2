@@ -4,6 +4,8 @@ import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.weapon.SclatWeapon;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 
 public class PlayerDeathManager {
 
@@ -19,20 +21,31 @@ public class PlayerDeathManager {
 
         SclatTeam sclatTeam = target.getSclatTeam();
         if(sclatTeam == null) return;
+        target.setDeath(true);
+        target.setGameMode(GameMode.SPECTATOR);
         Match match = sclatTeam.getMatch();
 
-        //テキスト系
+        //チャットテキスト系
         switch (deathType){
             case KILLED_BY_PLAYER:{
                 for(SclatPlayer matchPlayer : match.getPlayers()){
                     if(matchPlayer == target || matchPlayer == killer){
-
+                        matchPlayer.sendText("match-kill-message-bold", killer.getDisplayName(true), target.getDisplayName(true), sclatWeapon.getDisplayName(matchPlayer.getLang()));
                     }else{
-                        matchPlayer.sendText("match-killed-title", killer.getDisplayName(), sclatWeapon.getDisplayName(matchPlayer.getLang()));
+                        matchPlayer.sendText("match-kill-message", killer.getDisplayName(), target.getDisplayName(), sclatWeapon.getDisplayName(matchPlayer.getLang()));
                     }
                 }
                 break;
             }
+            
+            case FELL_INTO_VOID:{
+                match.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendText("match-fall-void-message", target.getDisplayName()));
+                break;
+            }
         }
+    
+        int index = match.getSclatTeams().indexOf(sclatTeam);
+        Location respawnLocation = match.getSclatMap().getTeamLocation(index);
+        new PlayerDeathRunnable(respawnLocation, target, killer, sclatWeapon, deathType).start();
     }
 }

@@ -5,6 +5,8 @@ import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.message.MessageManager;
+import be4rjp.sclat2.player.death.DeathType;
+import be4rjp.sclat2.player.death.PlayerDeathManager;
 import be4rjp.sclat2.util.SclatParticle;
 import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
@@ -697,10 +699,9 @@ public class SclatPlayer {
                 this.sclatTeam.getMatch().playSound(HIT_SOUND, player.getLocation());
             }
         }else{
-            this.sendMessage("死んでしまうとは情けない！");
-            this.sendMessage("Killed by: " + attacker.getDisplayName());
-            this.setHealth(20.0F);
             //死亡処理
+            this.setHealth(20.0F);
+            PlayerDeathManager.death(this, attacker, sclatWeapon, DeathType.KILLED_BY_PLAYER);
         }
     }
     
@@ -726,9 +727,17 @@ public class SclatPlayer {
      * @return String
      */
     public String getDisplayName(){
+        return getDisplayName(false);
+    }
+    
+    /**
+     * プレイヤーの表示名を取得する
+     * @return String
+     */
+    public String getDisplayName(boolean bold){
         if(player == null) return "";
         if(sclatTeam == null) player.getName();
         
-        return sclatTeam.getSclatColor().getChatColor() + player.getName() + "§r";
+        return sclatTeam.getSclatColor().getChatColor() + (bold ? "§l" : "") + player.getName() + "§r";
     }
 }

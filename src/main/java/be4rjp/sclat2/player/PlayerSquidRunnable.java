@@ -90,7 +90,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
             }
             
             //毒ダメージ
-            if(tick % 10 == 0){
+            if(tick % 10 == 0 && !sclatPlayer.isDeath()){
                 sclatPlayer.givePoisonDamage(2.0F);
             }
         }else{
@@ -152,6 +152,8 @@ public class PlayerSquidRunnable extends BukkitRunnable {
                     showSquid = true;
                 }
             }
+            if(sclatPlayer.isDeath()) showSquid = false;
+            
             if(showSquid){
                 if(packetFlag == PacketSendFlag.SENT_DESTROY_PACKET){
                     PacketPlayOutSpawnEntityLiving spawn = new PacketPlayOutSpawnEntityLiving(squid);

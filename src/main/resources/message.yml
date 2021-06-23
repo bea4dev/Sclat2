@@ -1,4 +1,5 @@
 ja_JP:
+  none: ''
   word-sec: '秒'
   match-join: '&a試合に参加しました'
   match-map: 'マップ'
@@ -16,11 +17,14 @@ ja_JP:
   match-NAWABARI: '§6§lナワバリバトル'
   match-NAWABARI-des: 'たくさんナワバリを確保しろ！'
   match-killed-title: '%s&rに&l%s&rでやられた！'
-  match-killed-sub-title: '&b復活まであと &r&l%d &r&b秒'
   match-kill-message: '%s&rが%s&rを&l%s&rで倒した！'
   match-kill-message-bold: '%s&r&lが%s&r&lを&l%s&r&lで倒した！'
+  match-fall-void-message: '%s&rは奈落に落下した'
+  match-fall-void-title: '奈落に落ちてしまった！'
+  match-respawn-count: '&b復活まであと &r&l%d &r&b秒'
   weapon-no-ink: '&cインクが足りない！'
 en_US:
+  none: ''
   word-sec: 'sec'
   match-join: '&aYou have joined the game.'
   match-map: 'Map'
