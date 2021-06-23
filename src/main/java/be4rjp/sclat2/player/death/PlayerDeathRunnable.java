@@ -101,11 +101,11 @@ public class PlayerDeathRunnable extends BukkitRunnable {
                 }
             }
             target.teleport(center);
-            
+    
+            if(timeLeft == 0){
+                this.cancel();
+            }
             timeLeft--;
-        }
-        if(timeLeft == 0){
-            this.cancel();
         }
         
         tick++;

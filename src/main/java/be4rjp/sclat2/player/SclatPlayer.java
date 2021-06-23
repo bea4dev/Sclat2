@@ -90,6 +90,8 @@ public class SclatPlayer {
     private SclatTeam sclatTeam = null;
     //スコアボード
     private SclatScoreboard scoreBoard = null;
+    //最後にテレポートを実行した時間
+    private long teleportTime = 0;
     //塗りポイント
     private int paints = 0;
     //キルカウント
@@ -553,10 +555,13 @@ public class SclatPlayer {
      * @param location テレポート先
      */
     public void teleport(Location location){
+        long time = System.currentTimeMillis();
+        this.teleportTime = time;
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (player == null) return;
+                if (time != teleportTime) return;
                 PaperLib.teleportAsync(player, location);
             }
         }.runTask(Sclat.getPlugin());

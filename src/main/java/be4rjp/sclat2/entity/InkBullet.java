@@ -44,6 +44,9 @@ public class InkBullet implements SclatEntity{
     private int tick = 0;
     private int fallTick = 0;
     
+    private boolean remove = false;
+    private int removeTick = 0;
+    
     private Set<SclatPlayer> showPlayer = new HashSet<>();
     
     public InkBullet(SclatTeam team, Location location, MainWeapon mainWeapon){
@@ -88,10 +91,12 @@ public class InkBullet implements SclatEntity{
     
     @Override
     public void tick() {
-        if(tick >= 2000){
-            if(tickRunnable != null) tickRunnable.cancel();
+    
+        if(tick >= 2000 || (remove && removeTick == 1)){
             remove();
+            return;
         }
+        if(remove) removeTick++;
         
         Location oldLocation = location.clone();
         Vector oldDirection = direction.clone();
@@ -121,42 +126,45 @@ public class InkBullet implements SclatEntity{
         }
     
         
-        try {
-            RayTraceResult rayTraceResult = oldLocation.getWorld().rayTraceBlocks(oldLocation, oldDirection, oldDirection.length());
-            if (rayTraceResult != null) {
-                Location hitLocation = rayTraceResult.getHitPosition().toLocation(oldLocation.getWorld());
-                AsyncInkHitBlockEvent hitBlockEvent = new AsyncInkHitBlockEvent(this, rayTraceResult.getHitBlock(), hitLocation);
-                Sclat.getPlugin().getServer().getPluginManager().callEvent(hitBlockEvent);
-                
-                //ブロックへのヒット
-                match.paint(shooter, hitLocation, mainWeapon.getPaintRadius());
-                match.playSound(INK_HIT_SOUND, hitLocation);
-                match.spawnParticle(INK_HIT_PARTICLE, hitLocation);
-                
-                this.remove();
-                return;
+        if(!remove) {
+            try {
+                RayTraceResult rayTraceResult = oldLocation.getWorld().rayTraceBlocks(oldLocation, oldDirection, oldDirection.length());
+                if (rayTraceResult != null) {
+                    Location hitLocation = rayTraceResult.getHitPosition().toLocation(oldLocation.getWorld());
+                    AsyncInkHitBlockEvent hitBlockEvent = new AsyncInkHitBlockEvent(this, rayTraceResult.getHitBlock(), hitLocation);
+                    Sclat.getPlugin().getServer().getPluginManager().callEvent(hitBlockEvent);
+            
+                    //ブロックへのヒット
+                    match.paint(shooter, hitLocation, mainWeapon.getPaintRadius());
+                    match.playSound(INK_HIT_SOUND, hitLocation);
+                    match.spawnParticle(INK_HIT_PARTICLE, hitLocation);
+            
+                    remove = true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }catch (Exception e){e.printStackTrace();}
     
-        RayTrace rayTrace = new RayTrace(oldLocation.toVector(), oldDirection);
-        for(SclatPlayer sclatPlayer : match.getPlayers()) {
-            Player player = sclatPlayer.getBukkitPlayer();
-            if(player == null) continue;
-            if(sclatPlayer.getSclatTeam() == null) continue;
+            RayTrace rayTrace = new RayTrace(oldLocation.toVector(), oldDirection);
+            for (SclatPlayer sclatPlayer : match.getPlayers()) {
+                Player player = sclatPlayer.getBukkitPlayer();
+                if (player == null) continue;
+                if (sclatPlayer.getSclatTeam() == null) continue;
+                if (sclatPlayer.isDeath()) continue;
         
-            BoundingBox boundingBox = new BoundingBox(player, 0);
-            if(!rayTrace.intersects(boundingBox, oldDirection.length(), 0.1)) continue;
-            if(this.team == sclatPlayer.getSclatTeam()) continue;
+                BoundingBox boundingBox = new BoundingBox(player, 0);
+                if (!rayTrace.intersects(boundingBox, oldDirection.length(), 0.1)) continue;
+                if (this.team == sclatPlayer.getSclatTeam()) continue;
         
-            AsyncInkHitPlayerEvent event = new AsyncInkHitPlayerEvent(this, sclatPlayer);
-            Sclat.getPlugin().getServer().getPluginManager().callEvent(event);
-            
-            //プレイヤーへのヒット
-            sclatPlayer.giveDamage(mainWeapon.getDamage(), shooter, direction, mainWeapon);
-            match.spawnParticle(INK_HIT_PARTICLE, sclatPlayer.getLocation().add(0.0, 1.0, 0.0));
-            
-            this.remove();
-            return;
+                AsyncInkHitPlayerEvent event = new AsyncInkHitPlayerEvent(this, sclatPlayer);
+                Sclat.getPlugin().getServer().getPluginManager().callEvent(event);
+        
+                //プレイヤーへのヒット
+                sclatPlayer.giveDamage(mainWeapon.getDamage(), shooter, direction, mainWeapon);
+                match.spawnParticle(INK_HIT_PARTICLE, sclatPlayer.getLocation().add(0.0, 1.0, 0.0));
+        
+                remove = true;
+            }
         }
         
         
@@ -174,7 +182,7 @@ public class InkBullet implements SclatEntity{
         snowball.setPosition(location.getX(), location.getY(), location.getZ());
         snowball.setMot(direction.getX(), direction.getY(), direction.getZ());
         
-        if(tick != 0) match.spawnParticle(INK_PARTICLE, oldLocation);
+        if(tick != 0 && !remove) match.spawnParticle(INK_PARTICLE, oldLocation);
         
         tick++;
     }

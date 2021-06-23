@@ -181,6 +181,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
             if(!(isBeforeSquid && sclatPlayer.isOnInk())){
                 sclatPlayer.playSound(IN_INK_SOUND);
                 sclatPlayer.setWalkSpeed(ON_INK_SPEED);
+                sclatPlayer.setFOV(0.1F);
                 sclatPlayer.setFoodLevel(20);
                 PacketPlayOutEntityEffect entityEffect = new PacketPlayOutEntityEffect(sclatPlayer.getEntityID(), ON_INK_EFFECT);
                 sclatPlayer.sendPacket(entityEffect);
@@ -189,6 +190,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
             if(isBeforeSquid && sclatPlayer.isOnInk()){
                 sclatPlayer.playSound(OUT_INK_SOUND);
                 sclatPlayer.setWalkSpeed(NORMAL_SPEED);
+                sclatPlayer.setFOV(0.07F);
                 sclatPlayer.setFoodLevel(4);
                 PacketPlayOutRemoveEntityEffect entityEffect = new PacketPlayOutRemoveEntityEffect(sclatPlayer.getEntityID(), MobEffectList.fromId(PotionEffectType.REGENERATION.getId()));
                 sclatPlayer.sendPacket(entityEffect);
