@@ -79,7 +79,7 @@ public abstract class SclatMap {
     //チームのスポーン場所
     protected final List<Location> teamLocations = new ArrayList<>();
     //塗れないブロック
-    protected Set<Material> unpaintableBlock = new HashSet<>();
+    protected final Set<Material> unpaintableBlock = new HashSet<>();
     //マップ紹介ムービー
     protected MovieData introMovie = null;
     //リザルト用ムービー
@@ -125,6 +125,9 @@ public abstract class SclatMap {
     public abstract MapType getType();
     
     
+    public Set<Material> getUnpaintableBlock(){return unpaintableBlock;}
+    
+    
     /**
      * 設定ファイルからロードする
      * @param yml
@@ -158,6 +161,16 @@ public abstract class SclatMap {
             String movieName = yml.getString("result-movie");
             this.resultMovie = PlayManager.getMovieData(movieName);
             if(resultMovie == null) throw new IllegalArgumentException("No movie data with the name '" + movieName + "' was found.");
+        }
+        
+        if(yml.contains("unpaintable-block")){
+            String movieName = yml.getString("unpaintable-block");
+            String[] args = movieName.replace(" ", "").split(",");
+            for(String materialName : args){
+                try{
+                    unpaintableBlock.add(Material.getMaterial(materialName));
+                }catch (Exception e){e.printStackTrace();}
+            }
         }
         
         loadDetailsData();

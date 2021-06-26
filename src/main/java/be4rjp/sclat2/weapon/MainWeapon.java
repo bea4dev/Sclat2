@@ -3,6 +3,7 @@ package be4rjp.sclat2.weapon;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.SclatSound;
+import be4rjp.sclat2.weapon.main.Charger;
 import be4rjp.sclat2.weapon.main.FixedRateShooter;
 import be4rjp.sclat2.weapon.main.Shooter;
 import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
@@ -170,7 +171,8 @@ public abstract class MainWeapon extends SclatWeapon{
     
     public enum MainWeaponType{
         SHOOTER(Shooter.class),
-        FIXED_RATE_SHOOTER(FixedRateShooter.class);
+        FIXED_RATE_SHOOTER(FixedRateShooter.class),
+        CHARGER(Charger.class);
         
         private final Class<? extends MainWeapon> weaponClass;
         

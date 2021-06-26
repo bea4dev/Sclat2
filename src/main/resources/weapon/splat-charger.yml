@@ -1,0 +1,16 @@
+type: CHARGER
+display-name:
+  ja_JP: 'スプラチャージャー'
+  en_US: 'Splat charger'
+material: BOW
+custom-model-data: 0
+paint-radius: 1.5
+need-ink: 0.015
+damage: 0.7
+particle: true
+sound: 'ENTITY_FIREWORK_ROCKET_BLAST/1.0/0.8'
+
+max-charge: 20
+scope: false
+reach: 1.0
+ui: 'charger_x3'

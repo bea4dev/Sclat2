@@ -1,6 +1,7 @@
 package be4rjp.sclat2.block;
 
 import be4rjp.parallel.ParallelWorld;
+import be4rjp.parallel.enums.UpdatePacketType;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.player.SclatPlayer;
@@ -58,29 +59,7 @@ public class BlockUpdater extends BukkitRunnable {
         for(SclatPlayer sclatPlayer : match.getPlayers()){
             String uuid = sclatPlayer.getUUID();
             ParallelWorld parallelWorld = ParallelWorld.getParallelWorld(uuid);
-            parallelWorld.setBlocks(blockMap, false);
-        }
-    
-        //プレイヤーにブロックのアップデートパケットを送信する
-        Map<Chunk, Set<Block>> updateMap = new HashMap<>();
-        for(Block block : blockMap.keySet()){
-            Set<Block> blocks = updateMap.computeIfAbsent(block.getChunk(), k -> new HashSet<>());
-            blocks.add(block);
-        }
-        for(Map.Entry<Chunk, Set<Block>> entry : updateMap.entrySet()){
-            Chunk chunk = entry.getKey();
-            Set<Block> blocks = entry.getValue();
-            
-            short[] locations = new short[65535];
-            int index = 0;
-            for(Block block : blocks){
-                short loc = (short) ((block.getX() & 15) << 12 | (block.getZ() & 15) << 8 | block.getY());
-                locations[index] = loc;
-                index++;
-            }
-    
-            PacketPlayOutMultiBlockChange multiBlockChange = new PacketPlayOutMultiBlockChange(index, locations, ((CraftChunk)chunk).getHandle());
-            match.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendPacket(multiBlockChange));
+            parallelWorld.setBlocks(blockMap, UpdatePacketType.MULTI_BLOCK_CHANGE);
         }
         
         blockMap.clear();

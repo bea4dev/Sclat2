@@ -7,6 +7,7 @@ wait-location: 'Shionome, -943, 50, 1798'
 team-spawn-locations:
   - 'Shionome, -979, 18, 1801, 0, 0'
   - 'Shionome, -907, 18, 1801, 0, 0'
+unpaintable-block: 'NETHER_BRICK_SLAB, QUARTZ_SLAB'
 
 intro-movie: 'intro-shionome'
 result-movie: 'result-shionome'

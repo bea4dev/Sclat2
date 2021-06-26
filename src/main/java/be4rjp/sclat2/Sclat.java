@@ -6,6 +6,7 @@ import be4rjp.sclat2.match.PlayerLobbyMatch;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.message.MessageManager;
 import be4rjp.sclat2.weapon.WeaponManager;
+import be4rjp.sclat2.weapon.main.ui.ChargerUI;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -32,7 +33,9 @@ public final class Sclat extends JavaPlugin {
         pluginManager.registerEvents(new InkHitPlayerListener(), this);
         pluginManager.registerEvents(new Cinema4CListener(), this);
         pluginManager.registerEvents(new CancelListener(), this);
+        pluginManager.registerEvents(new ChargeShootListener(), this);
     
+        ChargerUI.loadAllUI();
         WeaponManager.loadAllWeapon();
 
         lobbyMatch = new PlayerLobbyMatch(null);

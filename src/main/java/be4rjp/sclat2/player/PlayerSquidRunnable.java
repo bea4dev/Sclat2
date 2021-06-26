@@ -25,6 +25,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
     public static final MobEffect ON_INK_EFFECT = new MobEffect(MobEffectList.fromId(PotionEffectType.REGENERATION.getId()), Integer.MAX_VALUE, 0, false, false, true, null);
     public static final MobEffect ON_ENEMY_INK_EFFECT = new MobEffect(MobEffectList.fromId(PotionEffectType.POISON.getId()), Integer.MAX_VALUE, 0, false, false, true, null);
     
+    public static final float NORMAL_DEFAULT_FOV = 0.07F;
     
     public static final float ON_INK_RECOVERY = 0.027F;
     public static final float NORMAL_RECOVERY = 0.0006F;
@@ -190,7 +191,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
             if(isBeforeSquid && sclatPlayer.isOnInk()){
                 sclatPlayer.playSound(OUT_INK_SOUND);
                 sclatPlayer.setWalkSpeed(NORMAL_SPEED);
-                sclatPlayer.setFOV(0.07F);
+                sclatPlayer.setFOV(NORMAL_DEFAULT_FOV);
                 sclatPlayer.setFoodLevel(4);
                 PacketPlayOutRemoveEntityEffect entityEffect = new PacketPlayOutRemoveEntityEffect(sclatPlayer.getEntityID(), MobEffectList.fromId(PotionEffectType.REGENERATION.getId()));
                 sclatPlayer.sendPacket(entityEffect);

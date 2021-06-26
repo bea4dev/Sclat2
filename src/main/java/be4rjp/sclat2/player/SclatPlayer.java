@@ -7,7 +7,7 @@ import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.message.MessageManager;
 import be4rjp.sclat2.player.death.DeathType;
 import be4rjp.sclat2.player.death.PlayerDeathManager;
-import be4rjp.sclat2.util.SclatParticle;
+import be4rjp.sclat2.util.particle.SclatParticle;
 import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.MainWeapon;
@@ -547,6 +547,18 @@ public class SclatPlayer {
             return new Location(Bukkit.getWorld("world"), 0, 0, 0);
         }else{
             return player.getLocation();
+        }
+    }
+    
+    /**
+     * プレイヤーの目線の座標を返します
+     * @return Location
+     */
+    public Location getEyeLocation(){
+        if(player == null){
+            return new Location(Bukkit.getWorld("world"), 0, 0, 0);
+        }else{
+            return player.getEyeLocation();
         }
     }
     

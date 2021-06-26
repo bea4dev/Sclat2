@@ -1,11 +1,13 @@
-package be4rjp.sclat2.util;
+package be4rjp.sclat2.util.particle;
 
+import be4rjp.sclat2.util.LocationUtil;
+import be4rjp.sclat2.util.particle.SclatParticle;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 
-public class BlockParticle extends SclatParticle{
+public class BlockParticle extends SclatParticle {
     
     private final BlockData blockData;
     

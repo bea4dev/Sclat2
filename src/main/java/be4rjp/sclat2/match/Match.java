@@ -10,7 +10,7 @@ import be4rjp.sclat2.player.ObservableOption;
 import be4rjp.sclat2.player.PlayerSquidRunnable;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.block.BlockUpdater;
-import be4rjp.sclat2.util.SclatParticle;
+import be4rjp.sclat2.util.particle.SclatParticle;
 import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.util.SphereBlocks;
@@ -214,15 +214,17 @@ public abstract class Match {
         SclatTeam team = sclatPlayer.getSclatTeam();
         team.addPaints(paint);
         for (Block block : blocks) {
-            if(paintDataMap.containsKey(block)){
+            if(!PaintManager.isCanPaint(block.getType(), sclatMap)) continue;
+            
+            if (paintDataMap.containsKey(block)) {
                 PaintData paintData = paintDataMap.get(block);
-                if(paintData.getSclatTeam() != team) {
+                if (paintData.getSclatTeam() != team) {
                     paintData.getSclatTeam().addPaints(-1);
                     paintData.setSclatTeam(team);
                     team.addPaints(1);
                     blockUpdater.setBlock(block, team.getSclatColor().getWool());
                 }
-            }else {
+            } else {
                 PaintData paintData = new PaintData(this, block, team);
                 paintData.getSclatTeam().addPaints(1);
                 paintDataMap.put(block, paintData);

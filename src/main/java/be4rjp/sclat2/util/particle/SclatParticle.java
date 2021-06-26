@@ -1,4 +1,4 @@
-package be4rjp.sclat2.util;
+package be4rjp.sclat2.util.particle;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;

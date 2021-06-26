@@ -8,6 +8,8 @@ import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.*;
 import be4rjp.sclat2.util.RayTrace;
+import be4rjp.sclat2.util.particle.BlockParticle;
+import be4rjp.sclat2.util.particle.SclatParticle;
 import be4rjp.sclat2.weapon.MainWeapon;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Location;
@@ -152,7 +154,7 @@ public class InkBullet implements SclatEntity{
                 if (sclatPlayer.getSclatTeam() == null) continue;
                 if (sclatPlayer.isDeath()) continue;
         
-                BoundingBox boundingBox = new BoundingBox(player, 0);
+                BoundingBox boundingBox = new BoundingBox(player, 0.2);
                 if (!rayTrace.intersects(boundingBox, oldDirection.length(), 0.1)) continue;
                 if (this.team == sclatPlayer.getSclatTeam()) continue;
         
