@@ -74,18 +74,16 @@ public class ChargerUI {
             float fov = Float.parseFloat(args[0]);
     
             int[] charArray = null;
-            /*
-            if(!args[1].equals("")) {
+            if(!args[1].equals("NULL")) {
                 String titleUnicode = args[1];
                 charArray = new int[]{Integer.parseInt(titleUnicode, 16)};
-            }*/
+            }
     
             int[] charArray2 = null;
-            /*
-            if(!args[2].equals("")) {
+            if(!args[2].equals("NULL")) {
                 String subtitleUnicode = args[2];
                 charArray2 = new int[]{Integer.parseInt(subtitleUnicode, 16)};
-            }*/
+            }
             
             ChargerUIInfo info = new ChargerUIInfo(fov, charArray != null ? new String(charArray, 0, charArray.length) : "", charArray2 != null ? new String(charArray2, 0, charArray2.length) : "");
             infoList.add(info);
@@ -99,7 +97,7 @@ public class ChargerUI {
         return infoList.get(tick);
     }
     
-    
+    public String getID() {return id;}
     
     public static class ChargerUIInfo{
         

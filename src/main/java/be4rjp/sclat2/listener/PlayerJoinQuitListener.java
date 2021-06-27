@@ -61,17 +61,12 @@ public class PlayerJoinQuitListener implements Listener {
         }else{
             blue.join(sclatPlayer);
         }
-    
-        MainWeapon wakaba = MainWeapon.getMainWeapon("wakaba");
-        MainWeapon splat = MainWeapon.getMainWeapon("splat");
-        MainWeapon gal52 = MainWeapon.getMainWeapon("52gal");
-        MainWeapon charger = MainWeapon.getMainWeapon("splat-charger");
+        
         Lang lang = sclatPlayer.getLang();
         player.getInventory().clear();
-        player.getInventory().addItem(wakaba.getItemStack(lang));
-        player.getInventory().addItem(splat.getItemStack(lang));
-        player.getInventory().addItem(gal52.getItemStack(lang));
-        player.getInventory().addItem(charger.getItemStack(lang));
+        for(MainWeapon mainWeapon : MainWeapon.getMainWeaponList()){
+            player.getInventory().addItem(mainWeapon.getItemStack(lang));
+        }
         
         i++;
     }

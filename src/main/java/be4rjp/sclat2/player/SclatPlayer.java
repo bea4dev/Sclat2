@@ -506,6 +506,27 @@ public class SclatPlayer {
     }
     
     /**
+     * タイトルテキストをリセットします
+     */
+    public void resetTitle(){
+        if(player == null) return;
+        player.resetTitle();
+    }
+    
+    /**
+     * アイコンのタイトルを送信します
+     * @param titleIcon タイトルに表示するアイコン
+     * @param subtitleIcon サブタイトルに表示するアイコン
+     * @param fadeIn 文字のフェードイン[tick]
+     * @param stay 文字の表示時間[tick]
+     * @param fadeOut 文字のフェードアウト[tick]
+     */
+    public void sendIconTitle(String titleIcon, String subtitleIcon, int fadeIn, int stay, int fadeOut){
+        if(player == null) return;
+        player.sendTitle(titleIcon, subtitleIcon, fadeIn, stay, fadeOut);
+    }
+    
+    /**
      * タイトルメッセージを送信します
      * @param titleText タイトルテキスト
      * @param subTitleText サブタイトルテキスト

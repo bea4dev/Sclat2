@@ -49,6 +49,7 @@ public class ChargerRunnable extends MainWeaponRunnable{
         ChargerUI.ChargerUIInfo info = charger.getChargerUI().getInfo(charge);
         if(charger.isScope() && info != null){
             sclatPlayer.setFOV(info.fov);
+            sclatPlayer.sendIconTitle(info.title, info.subtitle, 0, 20, 0);
         }
     
         if(tick % 2 == 0 && !sclatPlayer.isSquid()) {
@@ -65,7 +66,9 @@ public class ChargerRunnable extends MainWeaponRunnable{
     
             for (Vector vector : positions) {
                 Location position = vector.toLocation(sclatPlayer.getLocation().getWorld());
-                sclatTeam.getMatch().spawnParticle(CHARGE_PARTICLE, position);
+                for(SclatPlayer matchPlayer : sclatTeam.getMatch().getPlayers()){
+                    if(sclatPlayer != matchPlayer) matchPlayer.spawnParticle(CHARGE_PARTICLE, position);
+                }
             }
         }
         
@@ -77,7 +80,8 @@ public class ChargerRunnable extends MainWeaponRunnable{
     public void shoot(){
         try {
             this.cancel();
-            sclatPlayer.getMainWeaponTaskMap().remove(charger);
+            if(charger.isScope()) sclatPlayer.resetTitle();
+            sclatPlayer.clearMainWeaponTasks();
         }catch (Exception e){/**/}
         
         Match match = sclatTeam.getMatch();
