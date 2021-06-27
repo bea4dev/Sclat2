@@ -42,9 +42,7 @@ public class ChargerRunnable extends MainWeaponRunnable{
     
     @Override
     public void run() {
-        if(playerTick > 60){
-            this.shoot();
-        }
+        if(!sclatPlayer.getMainWeaponTaskMap().containsValue(this)) this.shoot();
     
         ChargerUI.ChargerUIInfo info = charger.getChargerUI().getInfo(charge);
         if(charger.isScope() && info != null){
