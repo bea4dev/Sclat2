@@ -32,16 +32,22 @@ public abstract class SclatWeapon {
     public static void registerSclatWeapon(String id, SclatWeapon sclatWeapon){
         weaponMap.put(id, sclatWeapon);
     }
-
-
-
-
+    
+    
+    
+    //武器の識別名
+    protected final String id;
     //武器の表示名
     protected Map<Lang, String> displayName = new HashMap<>();
     //一発分の必要インク量
     protected float needInk = 0.0F;
     //一発分のダメージ
     protected float damage = 0.0F;
+    
+    public SclatWeapon(String id){
+        this.id = id;
+        weaponMap.put(id, this);
+    }
 
     /**
      * 表示名を取得する

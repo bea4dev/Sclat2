@@ -75,6 +75,14 @@ public class ChargerRunnable extends MainWeaponRunnable{
         tick++;
     }
     
+    
+    @Override
+    public synchronized void cancel() throws IllegalStateException {
+        super.cancel();
+        sclatPlayer.resetTitle();
+        sclatPlayer.setFOV(PlayerSquidRunnable.NORMAL_DEFAULT_FOV);
+    }
+    
     public void shoot(){
         try {
             this.cancel();

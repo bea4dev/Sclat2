@@ -45,9 +45,6 @@ public abstract class MainWeapon extends SclatWeapon{
     public static Collection<MainWeapon> getMainWeaponList(){return mainWeaponMap.values();}
     
     
-    
-    //武器の識別名
-    protected final String id;
     //設定ファイル
     protected YamlConfiguration yml;
     //武器のマテリアル
@@ -62,9 +59,8 @@ public abstract class MainWeapon extends SclatWeapon{
     protected SclatSound shootSound = new SclatSound(Sound.ENTITY_PIG_STEP, 0.3F, 1F);
     
     public MainWeapon(String id){
-        this.id = id;
+        super(id);
         mainWeaponMap.put(id, this);
-        SclatWeapon.registerSclatWeapon(id, this);
     }
     
     /**
