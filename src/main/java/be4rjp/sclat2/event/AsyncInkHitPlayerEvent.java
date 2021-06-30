@@ -1,6 +1,6 @@
 package be4rjp.sclat2.event;
 
-import be4rjp.sclat2.entity.InkBullet;
+import be4rjp.sclat2.entity.ink.InkBullet;
 import be4rjp.sclat2.player.SclatPlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

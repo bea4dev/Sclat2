@@ -1,6 +1,8 @@
-package be4rjp.sclat2.entity;
+package be4rjp.sclat2.entity.ink;
 
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.entity.SclatEntity;
+import be4rjp.sclat2.entity.SclatEntityTickRunnable;
 import be4rjp.sclat2.event.AsyncInkHitBlockEvent;
 import be4rjp.sclat2.event.AsyncInkHitPlayerEvent;
 import be4rjp.sclat2.match.Match;
@@ -25,7 +27,7 @@ import org.bukkit.util.Vector;
 import java.util.HashSet;
 import java.util.Set;
 
-public class InkBullet implements SclatEntity{
+public class InkBullet implements SclatEntity {
     
     private static SclatSound INK_HIT_SOUND = new SclatSound(Sound.ENTITY_SLIME_ATTACK, 0.25F, 2.0F);
     

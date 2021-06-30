@@ -119,6 +119,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.Be4rJP</groupId>
+            <artifactId>BlockStudio</artifactId>
+            <version>1e03db37e6</version>
+        </dependency>
+        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.59.Final</version>

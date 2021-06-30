@@ -1,6 +1,6 @@
 package be4rjp.sclat2.event;
 
-import be4rjp.sclat2.entity.InkBullet;
+import be4rjp.sclat2.entity.ink.InkBullet;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;

@@ -1,6 +1,6 @@
 package be4rjp.sclat2.weapon.main.runnable;
 
-import be4rjp.sclat2.entity.InkBullet;
+import be4rjp.sclat2.entity.ink.InkBullet;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.main.FixedRateShooter;

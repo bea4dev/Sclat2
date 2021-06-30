@@ -2,4 +2,4 @@ name: Sclat2
 version: ${project.version}
 main: be4rjp.sclat2.Sclat
 api-version: 1.15
-depend: [Parallel, Cinema4C]
+depend: [Parallel, Cinema4C, BlockStudio]
