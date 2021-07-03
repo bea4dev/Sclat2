@@ -11,6 +11,8 @@ import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.packet.PacketHandler;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.weapon.MainWeapon;
+import be4rjp.sclat2.weapon.SclatWeapon;
+import be4rjp.sclat2.weapon.sub.SubWeapon;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
@@ -57,6 +59,9 @@ public class PlayerJoinQuitListener implements Listener {
         for(MainWeapon mainWeapon : MainWeapon.getMainWeaponList()){
             player.getInventory().addItem(mainWeapon.getItemStack(lang));
         }
+    
+        SubWeapon splash_bomb = (SubWeapon) SclatWeapon.getSclatWeapon("splash_bomb");
+        player.getInventory().addItem(splash_bomb.getItemStack(sclatPlayer.getSclatTeam(), lang));
         
         i++;
     }

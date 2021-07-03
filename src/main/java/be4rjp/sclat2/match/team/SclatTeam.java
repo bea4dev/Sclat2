@@ -90,6 +90,16 @@ public class SclatTeam {
         }
         return sclatTeams;
     }
+    
+    /**
+     * 他のチームのプレイヤーを取得する
+     * @return Set<SclatPlayer>
+     */
+    public Set<SclatPlayer> getOtherTeamPlayers(){
+        Set<SclatPlayer> players = new HashSet<>();
+        this.getOtherTeam().forEach(sclatTeam -> players.addAll(sclatTeam.getTeamMembers()));
+        return players;
+    }
 
     /**
      * チームメンバーを取得します

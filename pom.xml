@@ -122,6 +122,7 @@
             <groupId>com.github.Be4rJP</groupId>
             <artifactId>BlockStudio</artifactId>
             <version>1e03db37e6</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>

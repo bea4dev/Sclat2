@@ -509,8 +509,7 @@ public class SclatPlayer {
      * タイトルテキストをリセットします
      */
     public void resetTitle(){
-        if(player == null) return;
-        player.resetTitle();
+        sendTextTitle("none", "none", 0, 0, 0);
     }
     
     /**

@@ -214,7 +214,7 @@ public class InkBullet implements SclatEntity {
     @Override
     public void remove() {
         PacketPlayOutEntityDestroy destroy = new PacketPlayOutEntityDestroy(snowball.getId());
-        for(SclatPlayer sclatPlayer : match.getPlayers()) {
+        for(SclatPlayer sclatPlayer : showPlayer) {
             Player player = sclatPlayer.getBukkitPlayer();
             if (player == null) continue;
     

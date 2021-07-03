@@ -1,10 +1,21 @@
 package be4rjp.sclat2.weapon;
 
 import be4rjp.sclat2.language.Lang;
+import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.util.LocationUtil;
+import be4rjp.sclat2.util.SclatSound;
+import be4rjp.sclat2.util.math.Sphere;
+import be4rjp.sclat2.util.particle.BlockParticle;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.util.Vector;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class SclatWeapon {
@@ -32,6 +43,9 @@ public abstract class SclatWeapon {
     public static void registerSclatWeapon(String id, SclatWeapon sclatWeapon){
         weaponMap.put(id, sclatWeapon);
     }
+    
+    
+    public static Collection<SclatWeapon> getWeaponList(){return weaponMap.values();}
     
     
     
@@ -85,4 +99,47 @@ public abstract class SclatWeapon {
      * @param sclatPlayer
      */
     public abstract void onLeftClick(SclatPlayer sclatPlayer);
+    
+    
+    
+    private static SclatSound EXPLOSION_SOUND = new SclatSound(Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 0.8F);
+    
+    /**
+     * インクの爆発を作成する
+     * @param sclatPlayer 爆発を起こしたプレイヤー
+     * @param sclatWeapon 爆発を起こした武器
+     * @param center 爆発の中心
+     * @param radius 爆発の半径
+     * @param effectAccuracy エフェクトの細かさ(度数指定)
+     */
+    public static void createInkExplosion(SclatPlayer sclatPlayer, SclatWeapon sclatWeapon, Location center, double radius, int effectAccuracy){
+        SclatTeam sclatTeam = sclatPlayer.getSclatTeam();
+        if(sclatTeam == null) return;
+    
+        //エフェクト
+        org.bukkit.block.data.BlockData bd = sclatTeam.getSclatColor().getWool().createBlockData();
+        Set<Location> sphere = Sphere.getSphere(center, radius - 1.5, effectAccuracy);
+        for(Location loc : sphere){
+            sclatTeam.getMatch().spawnParticle(new BlockParticle(Particle.BLOCK_DUST, 0, loc.getX() - center.getX(), loc.getY() - center.getY(), loc.getZ() - center.getZ(), 1, bd), loc);
+        }
+        
+        //塗り
+        sclatTeam.getMatch().paint(sclatPlayer, center, radius - 1);
+        
+        //音
+        sclatTeam.getMatch().playSound(EXPLOSION_SOUND, center);
+        
+        //ダメージ
+        for(SclatPlayer otherTeamPlayer : sclatTeam.getOtherTeamPlayers()){
+            if(otherTeamPlayer.isDeath()) continue;
+            
+            double distance = Math.sqrt(LocationUtil.distanceSquaredSafeDifferentWorld(center, otherTeamPlayer.getLocation()));
+            if(distance >= radius) continue;
+    
+            Location loc = otherTeamPlayer.getLocation();
+            Vector velocity = new Vector(loc.getX() - center.getX(), loc.getY() - center.getY(), loc.getZ() - center.getZ());
+            double damage = ((radius - distance) / radius) * sclatWeapon.getDamage();
+            otherTeamPlayer.giveDamage((float) damage, sclatPlayer, velocity, sclatWeapon);
+        }
+    }
 }

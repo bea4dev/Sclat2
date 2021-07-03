@@ -32,15 +32,16 @@ public class PlayerItemClickListener implements Listener {
                 Sclat.getPlugin().getServer().getPluginManager().callEvent(weaponEvent);
     
                 MainWeapon mainWeapon = WeaponManager.getMainWeaponByItem(event.getItem());
-                if(mainWeapon == null) return;
-                AsyncUseMainWeaponEvent mainWeaponEvent = new AsyncUseMainWeaponEvent(sclatPlayer, mainWeapon, event.getAction());
-                Sclat.getPlugin().getServer().getPluginManager().callEvent(mainWeaponEvent);
+                if(mainWeapon != null) {
+                    AsyncUseMainWeaponEvent mainWeaponEvent = new AsyncUseMainWeaponEvent(sclatPlayer, mainWeapon, event.getAction());
+                    Sclat.getPlugin().getServer().getPluginManager().callEvent(mainWeaponEvent);
+                }
     
                 Action action = event.getAction();
                 if(action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK)
-                    mainWeapon.onLeftClick(sclatPlayer);
+                    sclatWeapon.onLeftClick(sclatPlayer);
                 if(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
-                    mainWeapon.onRightClick(sclatPlayer);
+                    sclatWeapon.onRightClick(sclatPlayer);
             }
         }.runTaskAsynchronously(Sclat.getPlugin());
     }
