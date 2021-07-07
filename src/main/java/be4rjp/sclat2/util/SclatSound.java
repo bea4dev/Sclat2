@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 
 public class SclatSound {
     
+    private static final double PLAY_SOUND_DISTANCE_SQUARE = 800.0;
+    
     private final Sound sound;
     private final float volume;
     private final float pitch;
@@ -17,6 +19,7 @@ public class SclatSound {
     }
     
     public void play(Player player, Location location){
+        if(LocationUtil.distanceSquaredSafeDifferentWorld(player.getLocation(), location) > PLAY_SOUND_DISTANCE_SQUARE) return;
         player.playSound(location, sound, volume, pitch);
     }
     

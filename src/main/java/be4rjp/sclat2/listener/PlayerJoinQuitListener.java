@@ -12,6 +12,7 @@ import be4rjp.sclat2.packet.PacketHandler;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.SclatWeapon;
+import be4rjp.sclat2.weapon.WeaponClass;
 import be4rjp.sclat2.weapon.sub.SubWeapon;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
@@ -60,8 +61,12 @@ public class PlayerJoinQuitListener implements Listener {
             player.getInventory().addItem(mainWeapon.getItemStack(lang));
         }
     
-        SubWeapon splash_bomb = (SubWeapon) SclatWeapon.getSclatWeapon("splash_bomb");
+        SubWeapon splash_bomb = (SubWeapon) SclatWeapon.getSclatWeapon("SPLASH_BOMB");
         player.getInventory().addItem(splash_bomb.getItemStack(sclatPlayer.getSclatTeam(), lang));
+    
+        WeaponClass wakaba = WeaponClass.getWeaponClass("wakaba");
+        if(wakaba == null) sclatPlayer.sendMessage("NULL!");
+        sclatPlayer.setWeaponClass(wakaba);
         
         i++;
     }

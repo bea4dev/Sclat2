@@ -27,4 +27,9 @@ public interface SclatEntity {
      * デスポーンさせる
      */
     void remove();
+    
+    /**
+     * デスポーンした後かどうか
+     */
+    boolean isDead();
 }

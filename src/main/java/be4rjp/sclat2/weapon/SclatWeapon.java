@@ -118,7 +118,7 @@ public abstract class SclatWeapon {
     
         //エフェクト
         org.bukkit.block.data.BlockData bd = sclatTeam.getSclatColor().getWool().createBlockData();
-        Set<Location> sphere = Sphere.getSphere(center, radius - 1.5, effectAccuracy);
+        Set<Location> sphere = Sphere.getSphere(center, radius - 1, effectAccuracy);
         for(Location loc : sphere){
             sclatTeam.getMatch().spawnParticle(new BlockParticle(Particle.BLOCK_DUST, 0, loc.getX() - center.getX(), loc.getY() - center.getY(), loc.getZ() - center.getZ(), 1, bd), loc);
         }

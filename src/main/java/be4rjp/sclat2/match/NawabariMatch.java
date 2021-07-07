@@ -29,7 +29,7 @@ public class NawabariMatch extends Match{
     
     @Override
     public void end() {
-    
+        super.end();
     }
     
     

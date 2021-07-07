@@ -4,7 +4,7 @@ import be4rjp.cinema4c.util.SkinManager;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
-import be4rjp.sclat2.message.MessageManager;
+import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.player.death.DeathType;
 import be4rjp.sclat2.player.death.PlayerDeathManager;
 import be4rjp.sclat2.util.particle.SclatParticle;
@@ -12,6 +12,7 @@ import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.SclatWeapon;
+import be4rjp.sclat2.weapon.WeaponClass;
 import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
 import io.papermc.lib.PaperLib;
 import net.minecraft.server.v1_15_R1.*;
@@ -90,6 +91,8 @@ public class SclatPlayer {
     private SclatTeam sclatTeam = null;
     //スコアボード
     private SclatScoreboard scoreBoard = null;
+    //クラス
+    private WeaponClass weaponClass = null;
     //最後にテレポートを実行した時間
     private long teleportTime = 0;
     //塗りポイント
@@ -164,7 +167,11 @@ public class SclatPlayer {
     
     public synchronized float getHealth() {return health;}
     
-    public synchronized void setHealth(float health) {this.health = health;}
+    public synchronized void setHealth(float health) {
+        this.health = health;
+        PacketPlayOutUpdateHealth updateHealth = new PacketPlayOutUpdateHealth(this.health, this.foodLevel, 0.0F);
+        this.sendPacket(updateHealth);
+    }
     
     public void addPaints(int paints) {synchronized (PAINT_COUNT_LOCK){this.paints += paints;}}
     
@@ -258,6 +265,15 @@ public class SclatPlayer {
                 skin = SkinManager.getSkin(uuid);
             }
         }.runTaskAsynchronously(Sclat.getPlugin());
+    }
+    
+    /**
+     * クラスをセットする
+     * @param weaponClass
+     */
+    public void setWeaponClass(WeaponClass weaponClass){
+        this.weaponClass = weaponClass;
+        weaponClass.setWeaponClass(this);
     }
     
     /**

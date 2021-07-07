@@ -4,7 +4,7 @@ import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.intro.IntroManager;
-import be4rjp.sclat2.message.MessageManager;
+import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.SclatScoreboard;
 import org.bukkit.scheduler.BukkitRunnable;

@@ -3,7 +3,7 @@ package be4rjp.sclat2.match.runnable;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.NawabariMatch;
 import be4rjp.sclat2.match.team.SclatTeam;
-import be4rjp.sclat2.message.MessageManager;
+import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.SclatScoreboard;
 

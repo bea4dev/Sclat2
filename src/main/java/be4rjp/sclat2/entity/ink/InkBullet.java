@@ -146,7 +146,7 @@ public class InkBullet implements SclatEntity {
                     remove = true;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                remove();
             }
     
             RayTrace rayTrace = new RayTrace(oldLocation.toVector(), oldDirection);
@@ -226,5 +226,10 @@ public class InkBullet implements SclatEntity {
         try{
             tickRunnable.cancel();
         }catch (Exception e){/**/}
+    }
+    
+    @Override
+    public boolean isDead() {
+        return tickRunnable.isCancelled();
     }
 }

@@ -4,7 +4,8 @@ import be4rjp.sclat2.cinema4c.BridgeManager;
 import be4rjp.sclat2.listener.*;
 import be4rjp.sclat2.match.PlayerLobbyMatch;
 import be4rjp.sclat2.match.map.SclatMap;
-import be4rjp.sclat2.message.MessageManager;
+import be4rjp.sclat2.language.MessageManager;
+import be4rjp.sclat2.weapon.WeaponClass;
 import be4rjp.sclat2.weapon.WeaponManager;
 import be4rjp.sclat2.weapon.main.ui.ChargerUI;
 import org.bukkit.plugin.PluginManager;
@@ -38,6 +39,7 @@ public final class Sclat extends JavaPlugin {
         ChargerUI.loadAllUI();
         WeaponManager.loadAllWeapon();
         WeaponManager.setupSubWeapon();
+        WeaponClass.loadAllClass();
 
         lobbyMatch = new PlayerLobbyMatch(null);
         

@@ -1,5 +1,6 @@
 package be4rjp.sclat2.match;
 
+import be4rjp.parallel.ParallelWorld;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.block.PaintData;
 import be4rjp.sclat2.language.Lang;
@@ -18,6 +19,7 @@ import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.server.v1_15_R1.Packet;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
 import java.util.*;
@@ -42,6 +44,8 @@ public abstract class Match {
     protected Map<SclatTeam, Team> teamMap = new HashMap<>();
     //イカ動作のスケジューラーのリスト
     protected Set<PlayerSquidRunnable> squidRunnableSet = new ConcurrentSet<>();
+    //試合中に動作するスケジューラー
+    protected Set<BukkitRunnable> runnableSet = new ConcurrentSet<>();
     
     //試合のスコアボード
     protected final SclatScoreboard scoreboard;
@@ -72,9 +76,27 @@ public abstract class Match {
     public abstract void initializePlayer(SclatPlayer sclatPlayer);
     
     /**
+     * スケジューラーを登録する
+     * @param bukkitRunnable
+     */
+    public void addBukkitRunnable(BukkitRunnable bukkitRunnable){runnableSet.add(bukkitRunnable);}
+    
+    /**
      * 終了処理
      */
-    public abstract void end();
+    public void end(){
+        for(BukkitRunnable runnable : runnableSet){
+            try {
+                runnable.cancel();
+            }catch (Exception e){/**/}
+        }
+        
+        this.getPlayers().forEach(SclatPlayer::reset);
+        this.getPlayers().forEach(sclatPlayer -> ParallelWorld.removeParallelWorld(sclatPlayer.getUUID()));
+        try {
+            this.blockUpdater.cancel();
+        }catch (Exception e){/**/}
+    }
     
     /**
      * 試合の初期化およびセットアップ

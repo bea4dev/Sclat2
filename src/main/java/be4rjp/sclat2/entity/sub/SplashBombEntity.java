@@ -6,16 +6,17 @@ import be4rjp.sclat2.entity.SclatEntityTickRunnable;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.LocationUtil;
+import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.SclatWeapon;
 import be4rjp.sclat2.weapon.sub.SubWeapon;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import java.util.Set;
 public class SplashBombEntity implements SclatEntity {
     
     private static final Set<BlockFace> REFLECT_FACE = new HashSet<>(Arrays.asList(BlockFace.EAST, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.WEST));
+    private static final SclatSound WARNING_SOUND = new SclatSound(Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1.6F);
     
     private final SclatTeam sclatTeam;
     private final EntityItem entityItem;
@@ -57,12 +59,17 @@ public class SplashBombEntity implements SclatEntity {
     @Override
     public void tick() {
         
-        if(ground >= 20 || tick > 2000){
+        if(ground >= 30 || tick > 2000){
             remove();
         }
         
         if(entityItem.locY() < 0){
             runnable.cancel();
+        }
+        
+        Location loc = new Location(location.getWorld(), entityItem.locX(), entityItem.locY(), entityItem.locZ());
+        if(ground > 10 && ground < 20 && ground % 2 == 0){
+            showPlayer.forEach(op -> op.playSound(WARNING_SOUND, loc));
         }
     
         showPlayer.forEach(this::sendVelocityPacket);
@@ -105,12 +112,17 @@ public class SplashBombEntity implements SclatEntity {
 
     @Override
     public void remove() {
-        SubWeapon splash_bomb = (SubWeapon) SclatWeapon.getSclatWeapon("splash_bomb");
+        SubWeapon splash_bomb = (SubWeapon) SclatWeapon.getSclatWeapon("SPLASH_BOMB");
         Location center = new Location(location.getWorld(), entityItem.locX(), entityItem.locY(), entityItem.locZ());
         SclatWeapon.createInkExplosion(sclatPlayer, splash_bomb, center, 5, 15);
         
         showPlayer.forEach(this::sendDestroyPacket);
         runnable.cancel();
+    }
+    
+    @Override
+    public boolean isDead() {
+        return runnable.isCancelled();
     }
     
     

@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -44,5 +45,11 @@ public class PlayerItemClickListener implements Listener {
                     sclatWeapon.onRightClick(sclatPlayer);
             }
         }.runTaskAsynchronously(Sclat.getPlugin());
+    }
+    
+    
+    @EventHandler
+    public void onThrowItem(PlayerDropItemEvent event){
+        event.setCancelled(true);
     }
 }

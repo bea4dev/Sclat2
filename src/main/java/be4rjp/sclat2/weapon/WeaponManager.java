@@ -64,6 +64,6 @@ public class WeaponManager {
     
     
     public static void setupSubWeapon(){
-        new SplashBomb("splash_bomb");
+        new SplashBomb("SPLASH_BOMB");
     }
 }

@@ -3,7 +3,7 @@ package be4rjp.sclat2.weapon.sub;
 import be4rjp.sclat2.entity.sub.SplashBombEntity;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
-import be4rjp.sclat2.message.MessageManager;
+import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.player.SclatPlayer;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;

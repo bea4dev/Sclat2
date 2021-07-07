@@ -1,7 +1,6 @@
-package be4rjp.sclat2.message;
+package be4rjp.sclat2.language;
 
 import be4rjp.sclat2.Sclat;
-import be4rjp.sclat2.language.Lang;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
