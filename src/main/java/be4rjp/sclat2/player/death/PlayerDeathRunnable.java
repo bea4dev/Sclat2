@@ -1,7 +1,6 @@
 package be4rjp.sclat2.player.death;
 
 import be4rjp.sclat2.Sclat;
-import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.weapon.SclatWeapon;
 import net.minecraft.server.v1_15_R1.*;
@@ -93,14 +92,14 @@ public class PlayerDeathRunnable extends BukkitRunnable {
                     break;
                 }
         
-                case FELL_INTO_VOID: {
+                case FELL_OUT_OF_THE_WORLD: {
                     target.sendTextTitle("match-respawn-count", new Object[]{timeLeft},
                             "match-fall-void-title", new Object[]{},
                             0, 30, 0);
                     break;
                 }
             }
-            target.teleport(center);
+            if(timeLeft == 3) target.teleport(center);
     
             if(timeLeft == 0){
                 this.cancel();

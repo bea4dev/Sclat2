@@ -38,7 +38,7 @@ public class PlayerDeathManager {
                 break;
             }
             
-            case FELL_INTO_VOID:{
+            case FELL_OUT_OF_THE_WORLD:{
                 match.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendText("match-fall-void-message", target.getDisplayName()));
                 break;
             }

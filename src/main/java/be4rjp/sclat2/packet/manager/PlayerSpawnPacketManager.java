@@ -1,5 +1,7 @@
 package be4rjp.sclat2.packet.manager;
 
+import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.player.ObservableOption;
 import be4rjp.sclat2.player.SclatPlayer;
 import net.minecraft.server.v1_15_R1.PacketPlayOutNamedEntitySpawn;
 
@@ -19,22 +21,25 @@ public class PlayerSpawnPacketManager {
     
     public static boolean write(PacketPlayOutNamedEntitySpawn spawnPacket, SclatPlayer sclatPlayer){
         try {
-            if(sclatPlayer.getSclatTeam() == null) return true;
-            
+
+            if(sclatPlayer.getObservableOption() == ObservableOption.ALL_PLAYER) return true;
+
             UUID uuid = (UUID) b.get(spawnPacket);
             if(uuid == null) return true;
             if(!SclatPlayer.isCreated(uuid.toString())) return true;
-            
+
+            SclatTeam sclatTeam = sclatPlayer.getSclatTeam();
+            if(sclatTeam == null){
+                return sclatPlayer.getObservableOption() != ObservableOption.ALONE;
+            }
+
             SclatPlayer op = SclatPlayer.getSclatPlayer(uuid.toString());
-            if(op.getSclatTeam() == null) return true;
+            SclatTeam otherTeam = op.getSclatTeam();
+            if(otherTeam == null) return false;
             
             switch (sclatPlayer.getObservableOption()){
-                case ALL_PLAYER:{
-                    return true;
-                }
-                
                 case ONLY_MATCH_PLAYER:{
-                    return sclatPlayer.getSclatTeam().getMatch() == op.getSclatTeam().getMatch();
+                    return sclatTeam.getMatch() == otherTeam.getMatch();
                 }
                 
                 case ALONE:{
