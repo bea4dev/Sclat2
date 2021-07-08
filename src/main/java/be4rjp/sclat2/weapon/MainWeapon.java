@@ -2,6 +2,7 @@ package be4rjp.sclat2.weapon;
 
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.player.passive.Passive;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.main.Charger;
 import be4rjp.sclat2.weapon.main.FixedRateShooter;
@@ -16,10 +17,7 @@ import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class MainWeapon extends SclatWeapon{
@@ -57,6 +55,8 @@ public abstract class MainWeapon extends SclatWeapon{
     protected boolean particle = false;
     //射撃時に鳴らすサウンド
     protected SclatSound shootSound = new SclatSound(Sound.ENTITY_PIG_STEP, 0.3F, 1F);
+    //武器のパッシブ効果
+    protected List<Passive> passiveList = new ArrayList<>();
     
     public MainWeapon(String id){
         super(id);
@@ -125,6 +125,11 @@ public abstract class MainWeapon extends SclatWeapon{
      */
     public abstract MainWeaponType getType();
     
+    /**
+     * この武器についているパッシブ効果を取得する
+     * @return List<Passive>
+     */
+    public List<Passive> getPassiveList() {return passiveList;}
     
     /**
      * ymlファイルからロードする

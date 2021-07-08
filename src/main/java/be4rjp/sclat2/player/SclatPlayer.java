@@ -7,6 +7,8 @@ import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.player.death.DeathType;
 import be4rjp.sclat2.player.death.PlayerDeathManager;
+import be4rjp.sclat2.player.passive.Gear;
+import be4rjp.sclat2.player.passive.PassiveInfluence;
 import be4rjp.sclat2.util.particle.SclatParticle;
 import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
@@ -25,11 +27,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * プレイヤーへの処理の全般は基本的にこのクラスで行う
@@ -125,6 +125,10 @@ public class SclatPlayer {
     private int foodLevel = 20;
     //死んでいるかどうか
     private boolean isDeath = false;
+    //ギアのリスト
+    private List<Gear> gearList = new CopyOnWriteArrayList<>();
+    //パッシブ効果
+    private PassiveInfluence passiveInfluence = new PassiveInfluence();
 
     //キルカウントの動作の同期用インスタンス
     private final Object KILL_COUNT_LOCK = new Object();
@@ -195,6 +199,12 @@ public class SclatPlayer {
     
     public ObservableOption getObservableOption() {return observableOption;}
     
+    public List<Gear> getGearList() {return gearList;}
+    
+    public WeaponClass getWeaponClass() {return weaponClass;}
+    
+    public PassiveInfluence getPassiveInfluence() {return passiveInfluence;}
+    
     public void setScoreBoard(SclatScoreboard scoreBoard) {
         this.scoreBoard = scoreBoard;
         if(player != null) player.setScoreboard(scoreBoard.getBukkitScoreboard());
@@ -215,6 +225,7 @@ public class SclatPlayer {
         this.isSquid = false;
         this.isOnInk = false;
         this.isDeath = false;
+        this.gearList.clear();
         this.setFOV(0.1F);
         this.setFly(false);
         this.setWalkSpeed(0.2F);
@@ -344,6 +355,13 @@ public class SclatPlayer {
                 break;
             }
         }
+    }
+    
+    /**
+     * 装備しているギアやメインウエポンからパッシブ効果を作成します
+     */
+    public void createPassiveInfluence(){
+        this.passiveInfluence.createPassiveInfluence(this);
     }
     
     /**

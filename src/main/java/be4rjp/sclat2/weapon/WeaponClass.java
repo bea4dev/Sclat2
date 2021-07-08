@@ -81,4 +81,8 @@ public class WeaponClass {
         player.getInventory().setItem(0, mainWeapon.getItemStack(lang));
         player.getInventory().setItem(2, subWeapon.getItemStack(sclatTeam, lang));
     }
+    
+    public MainWeapon getMainWeapon() {return mainWeapon;}
+    
+    public SubWeapon getSubWeapon() {return subWeapon;}
 }

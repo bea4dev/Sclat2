@@ -4,6 +4,7 @@ import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.block.PaintData;
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.player.passive.Passive;
 import be4rjp.sclat2.util.SclatSound;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Location;
@@ -181,7 +182,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
         if(isSquid && (onInk || onWallInk)){
             if(!(isBeforeSquid && sclatPlayer.isOnInk())){
                 sclatPlayer.playSound(IN_INK_SOUND);
-                sclatPlayer.setWalkSpeed(ON_INK_SPEED);
+                sclatPlayer.setWalkSpeed(ON_INK_SPEED * sclatPlayer.getPassiveInfluence().getInfluence(Passive.IKA_SPEED_UP));
                 sclatPlayer.setFOV(0.1F);
                 sclatPlayer.setFoodLevel(20);
                 PacketPlayOutEntityEffect entityEffect = new PacketPlayOutEntityEffect(sclatPlayer.getEntityID(), ON_INK_EFFECT);
@@ -190,7 +191,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
         }else{
             if(isBeforeSquid && sclatPlayer.isOnInk()){
                 sclatPlayer.playSound(OUT_INK_SOUND);
-                sclatPlayer.setWalkSpeed(NORMAL_SPEED);
+                sclatPlayer.setWalkSpeed(NORMAL_SPEED * sclatPlayer.getPassiveInfluence().getInfluence(Passive.HITO_SPEED_UP));
                 sclatPlayer.setFOV(NORMAL_DEFAULT_FOV);
                 sclatPlayer.setFoodLevel(4);
                 PacketPlayOutRemoveEntityEffect entityEffect = new PacketPlayOutRemoveEntityEffect(sclatPlayer.getEntityID(), MobEffectList.fromId(PotionEffectType.REGENERATION.getId()));

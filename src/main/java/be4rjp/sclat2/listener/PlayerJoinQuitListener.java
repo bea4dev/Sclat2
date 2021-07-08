@@ -10,6 +10,7 @@ import be4rjp.sclat2.match.team.SclatColor;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.packet.PacketHandler;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.player.passive.Gear;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.SclatWeapon;
 import be4rjp.sclat2.weapon.WeaponClass;
@@ -65,8 +66,10 @@ public class PlayerJoinQuitListener implements Listener {
         player.getInventory().addItem(splash_bomb.getItemStack(sclatPlayer.getSclatTeam(), lang));
     
         WeaponClass wakaba = WeaponClass.getWeaponClass("wakaba");
-        if(wakaba == null) sclatPlayer.sendMessage("NULL!");
         sclatPlayer.setWeaponClass(wakaba);
+        
+        sclatPlayer.getGearList().add(Gear.IKA_SPEED_UP);
+        sclatPlayer.createPassiveInfluence();
         
         i++;
     }
