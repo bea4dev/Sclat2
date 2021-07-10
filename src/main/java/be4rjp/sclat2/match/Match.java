@@ -34,6 +34,8 @@ public abstract class Match {
     
     //この試合のマップ
     protected final SclatMap sclatMap;
+    //状態
+    protected MatchStatus matchStatus = MatchStatus.WAITING;
     //試合のスケジューラー
     protected MatchRunnable matchRunnable;
     //この試合のチーム
@@ -126,6 +128,24 @@ public abstract class Match {
      * @return Scoreboard
      */
     public SclatScoreboard getScoreboard() {return scoreboard;}
+    
+    /**
+     * 試合のステータスを取得する
+     * @return
+     */
+    public MatchStatus getMatchStatus() {return matchStatus;}
+    
+    /**
+     * ランダムにチームを取得する
+     * @return
+     */
+    public SclatTeam getRandomTeam() {return sclatTeams.get(new Random().nextInt(sclatTeams.size()));}
+    
+    /**
+     * 試合のステータスを設定する
+     * @param matchStatus
+     */
+    public void setMatchStatus(MatchStatus matchStatus) {this.matchStatus = matchStatus;}
     
     /**
      * この試合のスケジューラーをスタートさせる
@@ -315,5 +335,12 @@ public abstract class Match {
                 return name;
             }
         }
+    }
+    
+    
+    public enum MatchStatus{
+        WAITING,
+        IN_PROGRESS,
+        FINISHED
     }
 }

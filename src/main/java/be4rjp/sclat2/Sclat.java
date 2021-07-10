@@ -2,9 +2,12 @@ package be4rjp.sclat2;
 
 import be4rjp.sclat2.cinema4c.BridgeManager;
 import be4rjp.sclat2.listener.*;
+import be4rjp.sclat2.match.MatchManager;
 import be4rjp.sclat2.match.PlayerLobbyMatch;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.language.MessageManager;
+import be4rjp.sclat2.match.team.SclatColor;
+import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.weapon.WeaponClass;
 import be4rjp.sclat2.weapon.WeaponManager;
 import be4rjp.sclat2.weapon.main.ui.ChargerUI;
@@ -16,6 +19,8 @@ public final class Sclat extends JavaPlugin {
     private static Sclat plugin;
     //ロビー用の試合インスタンス
     private static PlayerLobbyMatch lobbyMatch;
+    //チーム
+    private static SclatTeam lobbyTeam;
     
     public static String VERSION = "v0.0.1 - α";
     
@@ -24,6 +29,7 @@ public final class Sclat extends JavaPlugin {
         // Plugin startup logic
         plugin = this;
     
+        SclatConfig.load();
         MessageManager.loadAllMessage();
         SclatMap.loadAllSclatMap();
     
@@ -40,8 +46,10 @@ public final class Sclat extends JavaPlugin {
         WeaponManager.loadAllWeapon();
         WeaponManager.setupSubWeapon();
         WeaponClass.loadAllClass();
+        MatchManager.load();
 
         lobbyMatch = new PlayerLobbyMatch(null);
+        lobbyTeam = new SclatTeam(lobbyMatch, SclatColor.BLUE);
         
         //For cinema4c extensions
         if(getServer().getPluginManager().getPlugin("Cinema4C") != null){
@@ -63,4 +71,10 @@ public final class Sclat extends JavaPlugin {
      * @return PlayerLobbyMatch
      */
     public static PlayerLobbyMatch getLobbyMatch(){return lobbyMatch;}
+    
+    /**
+     * ロビー用のチームを取得する
+     * @return SclatTeam
+     */
+    public static SclatTeam getLobbyTeam() {return lobbyTeam;}
 }

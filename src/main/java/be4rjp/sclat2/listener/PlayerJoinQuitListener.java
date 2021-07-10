@@ -3,6 +3,7 @@ package be4rjp.sclat2.listener;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.Match;
+import be4rjp.sclat2.match.MatchManager;
 import be4rjp.sclat2.match.NawabariMatch;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.runnable.MatchWaitRunnable;
@@ -27,18 +28,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class PlayerJoinQuitListener implements Listener {
     
     private static int i = 0;
-    private static Match match;
-    private static SclatTeam blue;
-    private static SclatTeam orange;
-    private static MatchWaitRunnable waitRunnable;
+    
     
     static {
-        match = new NawabariMatch(SclatMap.getSclatMap("shionome"));
-        blue = new SclatTeam(match, SclatColor.BLUE);
-        orange = new SclatTeam(match, SclatColor.ORANGE);
-        match.initialize();
-        waitRunnable = new MatchWaitRunnable(match);
-        waitRunnable.start();
+    
     }
 
     @EventHandler
@@ -50,11 +43,7 @@ public class PlayerJoinQuitListener implements Listener {
         sclatPlayer.sendSkinRequest();
         sclatPlayer.setLang(Lang.ja_JP);
 
-        if(i % 2 == 0){
-            orange.join(sclatPlayer);
-        }else{
-            blue.join(sclatPlayer);
-        }
+        MatchManager.getMatchManager("azi").join(sclatPlayer);
         
         Lang lang = sclatPlayer.getLang();
         player.getInventory().clear();
@@ -62,11 +51,8 @@ public class PlayerJoinQuitListener implements Listener {
             player.getInventory().addItem(mainWeapon.getItemStack(lang));
         }
     
-        SubWeapon splash_bomb = (SubWeapon) SclatWeapon.getSclatWeapon("SPLASH_BOMB");
-        player.getInventory().addItem(splash_bomb.getItemStack(sclatPlayer.getSclatTeam(), lang));
-    
-        WeaponClass wakaba = WeaponClass.getWeaponClass("wakaba");
-        sclatPlayer.setWeaponClass(wakaba);
+        WeaponClass weaponClass = WeaponClass.getWeaponClass("3k-scope");
+        sclatPlayer.setWeaponClass(weaponClass);
         
         sclatPlayer.getGearList().add(Gear.IKA_SPEED_UP);
         sclatPlayer.createPassiveInfluence();

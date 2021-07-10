@@ -75,8 +75,6 @@ public class SclatTeam {
         sclatPlayer.setSclatTeam(this);
         teamMembers.add(sclatPlayer);
         sclatPlayer.sendText("match-join");
-        
-        sclatPlayer.teleport(match.getSclatMap().getWaitLocation());
     }
 
     /**

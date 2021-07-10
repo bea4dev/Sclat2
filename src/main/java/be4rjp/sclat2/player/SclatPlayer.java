@@ -4,6 +4,7 @@ import be4rjp.cinema4c.util.SkinManager;
 import be4rjp.parallel.ParallelWorld;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
+import be4rjp.sclat2.match.MatchManager;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.player.death.DeathType;
@@ -90,8 +91,10 @@ public class SclatPlayer {
     private Player player = null;
     //Parallel
     private ParallelWorld parallelWorld;
+    //参加しているMatchManager
+    private MatchManager matchManager = null;
     //所属しているチーム
-    private SclatTeam sclatTeam = null;
+    private SclatTeam sclatTeam = Sclat.getLobbyTeam();
     //スコアボード
     private SclatScoreboard scoreBoard = null;
     //クラス
@@ -164,6 +167,10 @@ public class SclatPlayer {
     
     public void setSclatTeam(SclatTeam sclatTeam) {this.sclatTeam = sclatTeam;}
     
+    public MatchManager getMatchManager() {return matchManager;}
+    
+    public void setMatchManager(MatchManager matchManager) {this.matchManager = matchManager;}
+    
     public int getPaints() {synchronized (PAINT_COUNT_LOCK){return paints;}}
     
     public int getKills() {synchronized (KILL_COUNT_LOCK){return kills;}}
@@ -222,7 +229,8 @@ public class SclatPlayer {
      * 情報をリセットする
      */
     public void reset(){
-        this.sclatTeam = null;
+        this.matchManager = null;
+        this.sclatTeam = Sclat.getLobbyTeam();
         this.scoreBoard = null;
         this.paints = 0;
         this.kills = 0;
@@ -292,7 +300,13 @@ public class SclatPlayer {
      */
     public void setWeaponClass(WeaponClass weaponClass){
         this.weaponClass = weaponClass;
-        weaponClass.setWeaponClass(this);
+    }
+    
+    /**
+     * クラスを装備させる
+     */
+    public void equipWeaponClass(){
+        this.weaponClass.setWeaponClass(this);
     }
     
     /**

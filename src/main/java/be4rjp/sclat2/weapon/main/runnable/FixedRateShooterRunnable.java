@@ -78,7 +78,9 @@ public class FixedRateShooterRunnable extends MainWeaponRunnable {
     
     @Override
     public synchronized void cancel() throws IllegalStateException {
-        timer.cancel();
+        try {
+            timer.cancel();
+        }catch (Exception e){e.printStackTrace();}
         super.cancel();
     }
 }

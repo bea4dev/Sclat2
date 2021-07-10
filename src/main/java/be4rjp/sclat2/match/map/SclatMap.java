@@ -17,6 +17,8 @@ public abstract class SclatMap {
     
     //IDとSclatMapのハッシュマップ
     private static final Map<String, SclatMap> maps = new HashMap<>();
+    //マップのリスト
+    private static final List<SclatMap> mapList = new ArrayList<>();
     
     public static void initialize(){
         maps.clear();
@@ -29,6 +31,13 @@ public abstract class SclatMap {
      * @return SclatMap
      */
     public static SclatMap getSclatMap(String id){return maps.get(id);}
+    
+    /**
+     * ランダムにマップを取得する
+     * @return SclatMap
+     */
+    public static SclatMap getRandomMap(){return mapList.get(new Random().nextInt(mapList.size()));}
+    
     
     
     public static void loadAllSclatMap(){
@@ -66,6 +75,7 @@ public abstract class SclatMap {
     protected SclatMap(String id){
         this.id = id;
         maps.put(id, this);
+        mapList.add(this);
     }
     
     public String getID() {return this.id;}

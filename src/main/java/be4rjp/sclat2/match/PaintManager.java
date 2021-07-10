@@ -26,6 +26,7 @@ public class PaintManager {
     }
     
     public static boolean isCanPaint(Material material, SclatMap sclatMap){
+        if(material == null || sclatMap == null) return false;
         return !(NO_PAINT_BLOCKS.contains(material) || sclatMap.getUnpaintableBlock().contains(material));
     }
 }

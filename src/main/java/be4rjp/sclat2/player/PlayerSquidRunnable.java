@@ -158,7 +158,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
             if(sclatPlayer.isDeath()) showSquid = false;
             
             if(showSquid){
-                if(packetFlag == PacketSendFlag.SENT_DESTROY_PACKET){
+                if(packetFlag == PacketSendFlag.SENT_DESTROY_PACKET && !sclatPlayer.isDeath()){
                     PacketPlayOutSpawnEntityLiving spawn = new PacketPlayOutSpawnEntityLiving(squid);
                     PacketPlayOutEntityMetadata squidMetadata = new PacketPlayOutEntityMetadata(squid.getId(), squid.getDataWatcher(), true);
                     match.getPlayers().forEach(op -> {

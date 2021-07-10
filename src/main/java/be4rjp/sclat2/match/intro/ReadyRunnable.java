@@ -44,6 +44,7 @@ public class ReadyRunnable extends BukkitRunnable {
             match.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendTextTitle("match-ready-go", null, 2, 7, 2));
             match.start();
             match.playSound(GO_SOUND);
+            match.getPlayers().forEach(SclatPlayer::equipWeaponClass);
             this.cancel();
         }
         
