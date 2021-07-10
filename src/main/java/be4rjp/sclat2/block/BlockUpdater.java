@@ -56,11 +56,7 @@ public class BlockUpdater extends BukkitRunnable {
     @Override
     public void run() {
         //Parallelを使ってプレイヤーごとにブロックを設置
-        for(SclatPlayer sclatPlayer : match.getPlayers()){
-            String uuid = sclatPlayer.getUUID();
-            ParallelWorld parallelWorld = ParallelWorld.getParallelWorld(uuid);
-            parallelWorld.setBlocks(blockMap, UpdatePacketType.MULTI_BLOCK_CHANGE);
-        }
+        match.getPlayers().forEach(sclatPlayer -> sclatPlayer.getParallelWorld().setBlocks(blockMap, UpdatePacketType.MULTI_BLOCK_CHANGE));
         
         blockMap.clear();
     }

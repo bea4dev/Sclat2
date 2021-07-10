@@ -1,17 +1,24 @@
 package be4rjp.sclat2.entity;
 
+import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.match.Match;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class SclatEntityTickRunnable extends BukkitRunnable {
     
-    private final SclatEntity sclatEntity;
+    private final Match match;
     
-    public SclatEntityTickRunnable(SclatEntity sclatEntity){
-        this.sclatEntity = sclatEntity;
+    public SclatEntityTickRunnable(Match match){
+        this.match = match;
     }
     
     @Override
     public void run() {
-        sclatEntity.tick();
+        match.getSclatEntities().forEach(SclatEntity::tick);
+    }
+    
+    
+    public void start(){
+        this.runTaskTimerAsynchronously(Sclat.getPlugin(), 0, 1);
     }
 }

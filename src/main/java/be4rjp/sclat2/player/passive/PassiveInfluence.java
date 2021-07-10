@@ -37,7 +37,9 @@ public class PassiveInfluence {
         
         for(Passive passive : Passive.values()){
             float size = (float) passiveList.stream().filter(p -> p == passive).count();
-            float influence = 1.0F + passive.getInfluence() / (passive.getMulti_influence_rate() * size);
+    
+            float influence = 1.0F;
+            if(size != 0.0F) influence = 1.0F + passive.getInfluence() / (passive.getMulti_influence_rate() * size);
             
             passiveInfluenceMap.put(passive, influence);
         }

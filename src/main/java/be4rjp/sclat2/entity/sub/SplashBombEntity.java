@@ -3,6 +3,7 @@ package be4rjp.sclat2.entity.sub;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.entity.SclatEntity;
 import be4rjp.sclat2.entity.SclatEntityTickRunnable;
+import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.LocationUtil;
@@ -29,8 +30,8 @@ public class SplashBombEntity implements SclatEntity {
     private static final SclatSound WARNING_SOUND = new SclatSound(Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1.6F);
     
     private final SclatTeam sclatTeam;
+    private final Match match;
     private final EntityItem entityItem;
-    private final SclatEntityTickRunnable runnable;
     private final SclatPlayer sclatPlayer;
 
     private Location location;
@@ -40,10 +41,12 @@ public class SplashBombEntity implements SclatEntity {
     private int ground = 0;
     private int tick = 0;
     private boolean onGround = false;
+    private boolean isDead = false;
     
 
     public SplashBombEntity(Location location, Vector vector, SclatTeam sclatTeam, SclatPlayer sclatPlayer){
         this.sclatTeam = sclatTeam;
+        this.match = sclatTeam.getMatch();
         this.location = location;
         this.vector = vector;
         this.sclatPlayer = sclatPlayer;
@@ -52,7 +55,7 @@ public class SplashBombEntity implements SclatEntity {
         entityItem.setItemStack(CraftItemStack.asNMSCopy(new ItemStack(sclatTeam.getSclatColor().getWool())));
         entityItem.setMot(new Vec3D(vector.getX(), vector.getY(), vector.getZ()));
         
-        this.runnable = new SclatEntityTickRunnable(this);
+        
     }
 
 
@@ -64,7 +67,8 @@ public class SplashBombEntity implements SclatEntity {
         }
         
         if(entityItem.locY() < 0){
-            runnable.cancel();
+            match.getSclatEntities().remove(this);
+            isDead = true;
         }
         
         Location loc = new Location(location.getWorld(), entityItem.locX(), entityItem.locY(), entityItem.locZ());
@@ -80,7 +84,8 @@ public class SplashBombEntity implements SclatEntity {
         try {
             entityItem.tick();
         }catch (Exception e){
-            runnable.cancel();
+            match.getSclatEntities().remove(this);
+            isDead = true;
         }
         
         if(entityItem.onGround){
@@ -107,22 +112,24 @@ public class SplashBombEntity implements SclatEntity {
             showPlayer.add(sclatPlayer);
             sendSpawnPacket(sclatPlayer);
         }
-        runnable.runTaskTimerAsynchronously(Sclat.getPlugin(), 0, 1);
+        match.getSclatEntities().add(this);
     }
 
     @Override
     public void remove() {
+        isDead = true;
+        
         SubWeapon splash_bomb = (SubWeapon) SclatWeapon.getSclatWeapon("SPLASH_BOMB");
         Location center = new Location(location.getWorld(), entityItem.locX(), entityItem.locY(), entityItem.locZ());
-        SclatWeapon.createInkExplosion(sclatPlayer, splash_bomb, center, 5, 15);
+        SclatWeapon.createInkExplosion(sclatPlayer, splash_bomb, center, 4.5, 15);
         
         showPlayer.forEach(this::sendDestroyPacket);
-        runnable.cancel();
+        match.getSclatEntities().remove(this);
     }
     
     @Override
     public boolean isDead() {
-        return runnable.isCancelled();
+        return this.isDead;
     }
     
     

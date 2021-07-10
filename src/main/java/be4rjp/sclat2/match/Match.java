@@ -3,6 +3,8 @@ package be4rjp.sclat2.match;
 import be4rjp.parallel.ParallelWorld;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.block.PaintData;
+import be4rjp.sclat2.entity.SclatEntity;
+import be4rjp.sclat2.entity.SclatEntityTickRunnable;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.match.runnable.MatchRunnable;
@@ -46,6 +48,10 @@ public abstract class Match {
     protected Set<PlayerSquidRunnable> squidRunnableSet = new ConcurrentSet<>();
     //試合中に動作するスケジューラー
     protected Set<BukkitRunnable> runnableSet = new ConcurrentSet<>();
+    //エンティティ
+    protected Set<SclatEntity> sclatEntities = new ConcurrentSet<>();
+    //エンティティの実行用tickRunnable
+    protected SclatEntityTickRunnable entityTickRunnable = new SclatEntityTickRunnable(this);
     
     //試合のスコアボード
     protected final SclatScoreboard scoreboard;
@@ -67,6 +73,7 @@ public abstract class Match {
         this.startBlockUpdate();
         
         this.getPlayers().forEach(this::initializePlayer);
+        this.entityTickRunnable.start();
     }
     
     /**
@@ -96,6 +103,11 @@ public abstract class Match {
         try {
             this.blockUpdater.cancel();
         }catch (Exception e){/**/}
+        
+        try {
+            this.entityTickRunnable.cancel();
+        }catch (Exception e){/**/}
+        this.sclatEntities.clear();
     }
     
     /**
@@ -135,8 +147,13 @@ public abstract class Match {
     public void startBlockUpdate(){
         this.blockUpdater.start();
     }
-
-
+    
+    /**
+     * この試合で動作しているエンティティを取得する
+     * @return
+     */
+    public Set<SclatEntity> getSclatEntities() {return sclatEntities;}
+    
     /**
      * ブロックアップデーターを取得する
      * @return BlockUpdater

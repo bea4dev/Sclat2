@@ -24,6 +24,7 @@ import java.util.Set;
 public class PlayerSquidRunnable extends BukkitRunnable {
     
     public static final MobEffect ON_INK_EFFECT = new MobEffect(MobEffectList.fromId(PotionEffectType.REGENERATION.getId()), Integer.MAX_VALUE, 0, false, false, true, null);
+    public static final MobEffect ON_INK_SPEED_EFFECT = new MobEffect(MobEffectList.fromId(PotionEffectType.SPEED.getId()), Integer.MAX_VALUE, 0, false, false, true, null);
     public static final MobEffect ON_ENEMY_INK_EFFECT = new MobEffect(MobEffectList.fromId(PotionEffectType.POISON.getId()), Integer.MAX_VALUE, 0, false, false, true, null);
     
     public static final float NORMAL_DEFAULT_FOV = 0.07F;
@@ -186,7 +187,9 @@ public class PlayerSquidRunnable extends BukkitRunnable {
                 sclatPlayer.setFOV(0.1F);
                 sclatPlayer.setFoodLevel(20);
                 PacketPlayOutEntityEffect entityEffect = new PacketPlayOutEntityEffect(sclatPlayer.getEntityID(), ON_INK_EFFECT);
+                PacketPlayOutEntityEffect entityEffectSpeed = new PacketPlayOutEntityEffect(sclatPlayer.getEntityID(), ON_INK_SPEED_EFFECT);
                 sclatPlayer.sendPacket(entityEffect);
+                sclatPlayer.sendPacket(entityEffectSpeed);
             }
         }else{
             if(isBeforeSquid && sclatPlayer.isOnInk()){
@@ -195,7 +198,9 @@ public class PlayerSquidRunnable extends BukkitRunnable {
                 sclatPlayer.setFOV(NORMAL_DEFAULT_FOV);
                 sclatPlayer.setFoodLevel(4);
                 PacketPlayOutRemoveEntityEffect entityEffect = new PacketPlayOutRemoveEntityEffect(sclatPlayer.getEntityID(), MobEffectList.fromId(PotionEffectType.REGENERATION.getId()));
+                PacketPlayOutRemoveEntityEffect entityEffectSpeed = new PacketPlayOutRemoveEntityEffect(sclatPlayer.getEntityID(), MobEffectList.fromId(PotionEffectType.SPEED.getId()));
                 sclatPlayer.sendPacket(entityEffect);
+                sclatPlayer.sendPacket(entityEffectSpeed);
             }
         }
         

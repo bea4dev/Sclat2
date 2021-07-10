@@ -2,7 +2,6 @@ package be4rjp.sclat2.entity.ink;
 
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.entity.SclatEntity;
-import be4rjp.sclat2.entity.SclatEntityTickRunnable;
 import be4rjp.sclat2.event.AsyncInkHitBlockEvent;
 import be4rjp.sclat2.event.AsyncInkHitPlayerEvent;
 import be4rjp.sclat2.match.Match;
@@ -43,13 +42,14 @@ public class InkBullet implements SclatEntity {
     private boolean hitParticle = false;
     private final SclatParticle INK_PARTICLE;
     private final SclatParticle INK_HIT_PARTICLE;
+    private double bulletSize = 0.2;
     
-    private SclatEntityTickRunnable tickRunnable = null;
     private int tick = 0;
     private int fallTick = 0;
     
     private boolean remove = false;
     private int removeTick = 0;
+    private boolean isDead = false;
     
     private Set<SclatPlayer> showPlayer = new HashSet<>();
     
@@ -96,7 +96,7 @@ public class InkBullet implements SclatEntity {
     @Override
     public void tick() {
     
-        if(tick >= 2000 || (remove && removeTick == 1)){
+        if(tick >= 2000 || location.getY() < 0 || (remove && removeTick == 1)){
             remove();
             return;
         }
@@ -207,12 +207,13 @@ public class InkBullet implements SclatEntity {
             
             showPlayer.add(sclatPlayer);
         }
-        tickRunnable = new SclatEntityTickRunnable(this);
-        tickRunnable.runTaskTimerAsynchronously(Sclat.getPlugin(), 0, 1);
+        match.getSclatEntities().add(this);
     }
     
     @Override
     public void remove() {
+        this.isDead = true;
+        
         PacketPlayOutEntityDestroy destroy = new PacketPlayOutEntityDestroy(snowball.getId());
         for(SclatPlayer sclatPlayer : showPlayer) {
             Player player = sclatPlayer.getBukkitPlayer();
@@ -223,13 +224,11 @@ public class InkBullet implements SclatEntity {
             sclatPlayer.sendPacket(destroy);
         }
         
-        try{
-            tickRunnable.cancel();
-        }catch (Exception e){/**/}
+        match.getSclatEntities().remove(this);
     }
     
     @Override
     public boolean isDead() {
-        return tickRunnable.isCancelled();
+        return this.isDead;
     }
 }

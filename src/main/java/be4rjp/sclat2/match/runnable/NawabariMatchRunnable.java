@@ -20,7 +20,6 @@ public class NawabariMatchRunnable extends MatchRunnable{
      */
     public NawabariMatchRunnable(NawabariMatch match, int timeLimit) {
         super(match, timeLimit);
-        
     }
     
     @Override
@@ -44,10 +43,9 @@ public class NawabariMatchRunnable extends MatchRunnable{
         
         if(timeLeft == 0){
             SclatTeam winTeam = match.getWinner();
-            if(winTeam != null){
-                //勝利処理
-                this.cancel();
-            }
+            this.cancel();
+            
+            match.end();
         }
         timeLeft--;
     }

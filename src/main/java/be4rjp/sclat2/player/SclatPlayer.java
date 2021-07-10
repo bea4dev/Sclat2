@@ -1,6 +1,7 @@
 package be4rjp.sclat2.player;
 
 import be4rjp.cinema4c.util.SkinManager;
+import be4rjp.parallel.ParallelWorld;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
@@ -87,6 +88,8 @@ public class SclatPlayer {
     private Lang lang = Lang.ja_JP;
     //プレイヤー
     private Player player = null;
+    //Parallel
+    private ParallelWorld parallelWorld;
     //所属しているチーム
     private SclatTeam sclatTeam = null;
     //スコアボード
@@ -175,6 +178,11 @@ public class SclatPlayer {
         this.health = health;
         PacketPlayOutUpdateHealth updateHealth = new PacketPlayOutUpdateHealth(this.health, this.foodLevel, 0.0F);
         this.sendPacket(updateHealth);
+    }
+    
+    public ParallelWorld getParallelWorld() {
+        if(parallelWorld == null) parallelWorld = ParallelWorld.getParallelWorld(uuid);
+        return parallelWorld;
     }
     
     public void addPaints(int paints) {synchronized (PAINT_COUNT_LOCK){this.paints += paints;}}
