@@ -1,6 +1,7 @@
 package be4rjp.sclat2.listener;
 
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.gui.WeaponClassGUI;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.MatchManager;
@@ -51,11 +52,15 @@ public class PlayerJoinQuitListener implements Listener {
             player.getInventory().addItem(mainWeapon.getItemStack(lang));
         }
     
-        WeaponClass weaponClass = WeaponClass.getWeaponClass("wakaba");
+        WeaponClass weaponClass = WeaponClass.getWeaponClass("3k-scope");
         sclatPlayer.setWeaponClass(weaponClass);
+    
+        for(int index = 0; index < 256; index++) {
+            WeaponClass classBySaveNumber = WeaponClass.getWeaponClassBySaveNumber(index);
+            if (classBySaveNumber == null) break;
+        }
         
-        sclatPlayer.getGearList().add(Gear.IKA_SPEED_UP);
-        sclatPlayer.createPassiveInfluence();
+        WeaponClassGUI.openClassSelectGUI(sclatPlayer);
         
         i++;
     }

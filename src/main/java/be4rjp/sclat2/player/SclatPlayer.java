@@ -310,6 +310,7 @@ public class SclatPlayer {
      */
     public void setWeaponClass(WeaponClass weaponClass){
         this.weaponClass = weaponClass;
+        this.weaponClass.setWeaponClass(this);
     }
     
     /**

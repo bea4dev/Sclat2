@@ -11,12 +11,14 @@ import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.weapon.WeaponClass;
 import be4rjp.sclat2.weapon.WeaponManager;
 import be4rjp.sclat2.weapon.main.ui.ChargerUI;
+import com.samjakob.spigui.SpiGUI;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Sclat extends JavaPlugin {
     
     private static Sclat plugin;
+    private static SpiGUI spiGUI;
     //ロビー用の試合インスタンス
     private static PlayerLobbyMatch lobbyMatch;
     //チーム
@@ -28,6 +30,7 @@ public final class Sclat extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         plugin = this;
+        spiGUI = new SpiGUI(this);
     
         SclatConfig.load();
         MessageManager.loadAllMessage();
@@ -65,7 +68,9 @@ public final class Sclat extends JavaPlugin {
     
     
     public static Sclat getPlugin(){return plugin;}
-
+    
+    public static SpiGUI getSpiGUI() {return spiGUI;}
+    
     /**
      * ロビー用の試合インスタンスを取得する
      * @return PlayerLobbyMatch
