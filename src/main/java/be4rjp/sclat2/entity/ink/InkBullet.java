@@ -61,6 +61,7 @@ public class InkBullet implements SclatEntity {
     
         WorldServer nmsWorld = ((CraftWorld)location.getWorld()).getHandle();
         this.snowball = new EntitySnowball(nmsWorld, location.getX(), location.getY(), location.getZ());
+        this.bulletSize = mainWeapon.getBulletSize();
         
         this.INK_PARTICLE = new BlockParticle(Particle.BLOCK_DUST, 0, 0, -1, 0, 1, team.getSclatColor().getWool().createBlockData());
         this.INK_HIT_PARTICLE = new BlockParticle(Particle.BLOCK_DUST, 5, 0.5, 0.5, 0.5, 1, team.getSclatColor().getWool().createBlockData());

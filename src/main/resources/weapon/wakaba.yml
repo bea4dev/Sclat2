@@ -1,24 +1,24 @@
-type: SHOOTER
+type: FIXED_RATE_SHOOTER
 display-name:
   ja_JP: 'わかばシューター'
   en_US: 'Wakaba Shooter'
 material: WOODEN_HOE
 custom-model-data: 0
-paint-radius: 2.0
+paint-radius: 1.7
 need-ink: 0.015
-damage: 6.0
+damage: 1.0
 particle: true
 sound: 'ENTITY_PIG_STEP/0.3/1.0'
 passive:
   - 'IKA_SPEED_UP'
   - 'HITO_SPEED_UP'
 
-shoot-tick: 2
-fall-tick: 1
-shoot-speed: 1.5
+shoot-tick: 3
+fall-tick: 2
+shoot-speed: 2.8
 recoil:
-  shoot-random: 0.3
+  shoot-random: 0.2
   shoot-max-random: 0.5
   increase-min-tick: 10
   increase-max-tick: 30
-  increase-reset-tick: 35
+  increase-reset-tick: 40

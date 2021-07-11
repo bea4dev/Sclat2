@@ -43,8 +43,10 @@ public class WeaponManager {
         dir.mkdir();
         File[] files = dir.listFiles();
         if(files.length == 0){
+            Sclat.getPlugin().saveResource("weapon/splat_shooter.yml", false);
             Sclat.getPlugin().saveResource("weapon/wakaba.yml", false);
-            Sclat.getPlugin().saveResource("weapon/splat-charger.yml", false);
+            Sclat.getPlugin().saveResource("weapon/splat_charger.yml", false);
+            Sclat.getPlugin().saveResource("weapon/splat_roller.yml", false);
             files = dir.listFiles();
         }
     

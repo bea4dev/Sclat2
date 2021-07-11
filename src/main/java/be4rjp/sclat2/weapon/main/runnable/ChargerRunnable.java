@@ -148,7 +148,7 @@ public class ChargerRunnable extends MainWeaponRunnable{
             if (op.getSclatTeam() == null) continue;
             if (op.isDeath()) continue;
     
-            BoundingBox boundingBox = new BoundingBox(player, 0.0);
+            BoundingBox boundingBox = new BoundingBox(player, charger.getBulletSize());
             if (!rayTrace.intersects(boundingBox, charger.getReach() * (double)charge, 0.5)) continue;
             if (sclatTeam == op.getSclatTeam()) continue;
             

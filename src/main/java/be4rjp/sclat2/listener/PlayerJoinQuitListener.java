@@ -54,10 +54,12 @@ public class PlayerJoinQuitListener implements Listener {
     
         WeaponClass weaponClass = WeaponClass.getWeaponClass("3k-scope");
         sclatPlayer.setWeaponClass(weaponClass);
+        sclatPlayer.createPassiveInfluence();
     
         for(int index = 0; index < 256; index++) {
             WeaponClass classBySaveNumber = WeaponClass.getWeaponClassBySaveNumber(index);
             if (classBySaveNumber == null) break;
+            sclatPlayer.getWeaponPossessionData().giveWeaponClass(classBySaveNumber);
         }
         
         WeaponClassGUI.openClassSelectGUI(sclatPlayer);

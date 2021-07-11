@@ -6,6 +6,7 @@ import be4rjp.sclat2.player.passive.Passive;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.main.Charger;
 import be4rjp.sclat2.weapon.main.FixedRateShooter;
+import be4rjp.sclat2.weapon.main.Roller;
 import be4rjp.sclat2.weapon.main.Shooter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -55,6 +56,8 @@ public abstract class MainWeapon extends SclatWeapon{
     protected SclatSound shootSound = new SclatSound(Sound.ENTITY_PIG_STEP, 0.3F, 1F);
     //武器のパッシブ効果
     protected List<Passive> passiveList = new ArrayList<>();
+    //弾の大きさ
+    protected double bulletSize = 0.2;
     
     public MainWeapon(String id){
         super(id);
@@ -130,6 +133,12 @@ public abstract class MainWeapon extends SclatWeapon{
     public List<Passive> getPassiveList() {return passiveList;}
     
     /**
+     * 弾の大きさを取得する
+     * @return double
+     */
+    public double getBulletSize() {return bulletSize;}
+    
+    /**
      * ymlファイルからロードする
      * @param yml
      */
@@ -158,6 +167,7 @@ public abstract class MainWeapon extends SclatWeapon{
             this.shootSound = sclatSound;
         }
         if(yml.contains("passive")) yml.getStringList("passive").forEach(passiveString -> passiveList.add(Passive.valueOf(passiveString)));
+        if(yml.contains("bullet-size")) this.bulletSize = yml.getDouble("bullet-size");
         
         loadDetailsData();
     }
@@ -172,7 +182,8 @@ public abstract class MainWeapon extends SclatWeapon{
     public enum MainWeaponType{
         SHOOTER(Shooter.class),
         FIXED_RATE_SHOOTER(FixedRateShooter.class),
-        CHARGER(Charger.class);
+        CHARGER(Charger.class),
+        ROLLER(Roller.class);
         
         private final Class<? extends MainWeapon> weaponClass;
         

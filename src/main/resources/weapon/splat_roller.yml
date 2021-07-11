@@ -1,0 +1,26 @@
+type: SHOOTER
+display-name:
+  ja_JP: 'スプラローラー'
+  en_US: 'Splat roller'
+material: WOODEN_HOE
+custom-model-data: 0
+paint-radius: 2.0
+need-ink: 0.015
+damage: 6.0
+particle: true
+bullet-size: 0.2
+sound: 'ENTITY_PIG_STEP/0.3/1.0'
+passive:
+  - 'IKA_SPEED_UP'
+  - 'HITO_SPEED_UP'
+
+shoot-tick: 2
+fall-tick: 2
+shoot-speed: 1.5
+shoot-accuracy: 5.0
+shoot-max-angle: 40.0
+shoot-double-max-angle: 20.0
+roll-width: 3.0
+roll-damage: 25.0
+roll-need-ink: 0.01
+roll-walk-speed: 0.19

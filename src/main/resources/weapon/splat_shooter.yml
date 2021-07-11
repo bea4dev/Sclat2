@@ -1,0 +1,21 @@
+type: SHOOTER
+display-name:
+  ja_JP: 'スプラシューター'
+  en_US: 'Splat Shooter'
+material: STONE_HOE
+custom-model-data: 0
+paint-radius: 1.5
+need-ink: 0.015
+damage: 1.0
+particle: true
+sound: 'ENTITY_PIG_STEP/0.3/1.0'
+
+fall-tick: 2
+shoot-tick: 2
+shoot-speed: 3.0
+recoil:
+  shoot-random: 0.18
+  shoot-max-random: 0.3
+  increase-min-tick: 10
+  increase-max-tick: 30
+  increase-reset-tick: 40
