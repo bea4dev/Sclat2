@@ -35,7 +35,7 @@ public class FixedRateShooter extends MainWeapon {
         if(runnable == null){
             sclatPlayer.clearMainWeaponTasks();
             runnable = new FixedRateShooterRunnable(this, sclatPlayer);
-            runnable.runTaskAsynchronously(Sclat.getPlugin());
+            runnable.runTaskTimerAsynchronously(Sclat.getPlugin(), 0, 1);
             sclatPlayer.getMainWeaponTaskMap().put(this, runnable);
         }
         

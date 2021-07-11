@@ -13,6 +13,10 @@ public abstract class SavableBitData {
     protected long[] getLongs(){return bits.toLongArray();}
 
     public void save_to_sql(){
-
+    
+    }
+    
+    public void load_from_sql(){
+    
     }
 }

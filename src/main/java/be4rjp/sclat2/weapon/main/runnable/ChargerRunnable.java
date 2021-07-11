@@ -1,5 +1,6 @@
 package be4rjp.sclat2.weapon.main.runnable;
 
+import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.PlayerSquidRunnable;
@@ -92,7 +93,12 @@ public class ChargerRunnable extends MainWeaponRunnable{
         
         Match match = sclatTeam.getMatch();
         match.playSound(charger.getShootSound(), sclatPlayer.getLocation());
-        sclatPlayer.setFOV(PlayerSquidRunnable.NORMAL_DEFAULT_FOV);
+        
+        if(sclatTeam == Sclat.getLobbyTeam()){
+            sclatPlayer.setFOV(0.1F);
+        }else {
+            sclatPlayer.setFOV(PlayerSquidRunnable.NORMAL_DEFAULT_FOV);
+        }
     
         Location start = sclatPlayer.getEyeLocation();
         Vector direction = start.getDirection();

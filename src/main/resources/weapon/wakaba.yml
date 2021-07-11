@@ -9,9 +9,12 @@ need-ink: 0.015
 damage: 6.0
 particle: true
 sound: 'ENTITY_PIG_STEP/0.3/1.0'
+passive:
+  - 'IKA_SPEED_UP'
+  - 'HITO_SPEED_UP'
 
-fall-tick: 1
 shoot-tick: 2
+fall-tick: 1
 shoot-speed: 1.5
 recoil:
   shoot-random: 0.3

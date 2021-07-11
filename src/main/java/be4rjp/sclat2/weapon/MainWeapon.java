@@ -7,8 +7,6 @@ import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.weapon.main.Charger;
 import be4rjp.sclat2.weapon.main.FixedRateShooter;
 import be4rjp.sclat2.weapon.main.Shooter;
-import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
-import be4rjp.sclat2.weapon.main.runnable.ShooterRunnable;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -159,6 +157,7 @@ public abstract class MainWeapon extends SclatWeapon{
             SclatSound sclatSound = new SclatSound(sound, volume, pitch);
             this.shootSound = sclatSound;
         }
+        if(yml.contains("passive")) yml.getStringList("passive").forEach(passiveString -> passiveList.add(Passive.valueOf(passiveString)));
         
         loadDetailsData();
     }

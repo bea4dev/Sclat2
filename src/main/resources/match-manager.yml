@@ -2,8 +2,8 @@ match-manager:
   azi:
     display-name: '&6Azi'
     type: 'NAWABARI'
-    min-player: 2
+    min-player: 1
   saba:
     display-name: '&6Saba'
     type: 'NAWABARI'
-    min-player: 2
+    min-player: 1

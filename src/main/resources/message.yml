@@ -6,7 +6,7 @@ ja_JP:
   match-mode: 'ゲームモード'
   match-time: '残り時間'
   match-wait-time: '試合開始まで'
-  match-wait-player: 'プレイヤー待機中 » &r&lあと &a%d 人'
+  match-wait-player: 'プレイヤー待機中 » &r&lあと &a%d&r&l 人'
   match-ready-1: '&7&lR'
   match-ready-2: '&7&lRE'
   match-ready-3: '&7&lREA'

@@ -183,7 +183,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
         if(isSquid && (onInk || onWallInk)){
             if(!(isBeforeSquid && sclatPlayer.isOnInk())){
                 sclatPlayer.playSound(IN_INK_SOUND);
-                sclatPlayer.setWalkSpeed(ON_INK_SPEED * sclatPlayer.getPassiveInfluence().getInfluence(Passive.IKA_SPEED_UP));
+                sclatPlayer.setWalkSpeed(ON_INK_SPEED * sclatPlayer.getPassiveInfluence().getInfluence(Passive.IKA_SPEED_UP) / sclatPlayer.getPassiveInfluence().getInfluence(Passive.IKA_SPEED_DOWN));
                 sclatPlayer.setFOV(0.1F);
                 sclatPlayer.setFoodLevel(20);
                 PacketPlayOutEntityEffect entityEffect = new PacketPlayOutEntityEffect(sclatPlayer.getEntityID(), ON_INK_EFFECT);
@@ -194,7 +194,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
         }else{
             if(isBeforeSquid && sclatPlayer.isOnInk()){
                 sclatPlayer.playSound(OUT_INK_SOUND);
-                sclatPlayer.setWalkSpeed(NORMAL_SPEED * sclatPlayer.getPassiveInfluence().getInfluence(Passive.HITO_SPEED_UP));
+                sclatPlayer.setWalkSpeed(NORMAL_SPEED * sclatPlayer.getPassiveInfluence().getInfluence(Passive.HITO_SPEED_UP) / sclatPlayer.getPassiveInfluence().getInfluence(Passive.HITO_SPEED_DOWN));
                 sclatPlayer.setFOV(NORMAL_DEFAULT_FOV);
                 sclatPlayer.setFoodLevel(4);
                 PacketPlayOutRemoveEntityEffect entityEffect = new PacketPlayOutRemoveEntityEffect(sclatPlayer.getEntityID(), MobEffectList.fromId(PotionEffectType.REGENERATION.getId()));

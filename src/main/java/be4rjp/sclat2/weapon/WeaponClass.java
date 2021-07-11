@@ -15,8 +15,12 @@ import java.util.Map;
 public class WeaponClass {
     
     private static Map<String, WeaponClass> weaponClassMap = new HashMap<>();
+    private static Map<Integer, WeaponClass> saveNumberMap = new HashMap<>();
     
     public static WeaponClass getWeaponClass(String id){return weaponClassMap.get(id);}
+    
+    public static WeaponClass getWeaponClassBySaveNumber(int saveNumber){return saveNumberMap.get(saveNumber);}
+    
     
     public static void loadAllClass(){
         Sclat.getPlugin().getLogger().info("Loading classes...");
@@ -50,6 +54,8 @@ public class WeaponClass {
     private MainWeapon mainWeapon;
     //サブウエポン
     private SubWeapon subWeapon;
+    //武器クラスのセーブ & ロード時の識別番号
+    private int saveNumber = -1;
     
     
     public WeaponClass(String id){
@@ -67,6 +73,9 @@ public class WeaponClass {
         
         if(yml.contains("main-weapon")) this.mainWeapon = MainWeapon.getMainWeapon(yml.getString("main-weapon"));
         if(yml.contains("sub-weapon")) this.subWeapon = (SubWeapon) SclatWeapon.getSclatWeapon(yml.getString("sub-weapon"));
+        if(yml.contains("save-number")) this.saveNumber = yml.getInt("save-number");
+        
+        if(saveNumber != -1) saveNumberMap.put(saveNumber, this);
     }
     
     
@@ -78,11 +87,13 @@ public class WeaponClass {
         
         player.getInventory().clear();
         Lang lang = sclatPlayer.getLang();
-        player.getInventory().setItem(0, mainWeapon.getItemStack(lang));
-        player.getInventory().setItem(2, subWeapon.getItemStack(sclatTeam, lang));
+        if(mainWeapon != null) player.getInventory().setItem(0, mainWeapon.getItemStack(lang));
+        if(subWeapon != null) player.getInventory().setItem(2, subWeapon.getItemStack(sclatTeam, lang));
     }
     
     public MainWeapon getMainWeapon() {return mainWeapon;}
     
     public SubWeapon getSubWeapon() {return subWeapon;}
+    
+    public int getSaveNumber() {return saveNumber;}
 }

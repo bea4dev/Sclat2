@@ -92,6 +92,9 @@ public class InkBullet implements SclatEntity {
     
     public MainWeapon getMainWeapon(){return mainWeapon;}
     
+    public double getBulletSize() {return bulletSize;}
+    
+    public void setBulletSize(double bulletSize) {this.bulletSize = bulletSize;}
     
     @Override
     public void tick() {
@@ -156,7 +159,7 @@ public class InkBullet implements SclatEntity {
                 if (sclatPlayer.getSclatTeam() == null) continue;
                 if (sclatPlayer.isDeath()) continue;
         
-                BoundingBox boundingBox = new BoundingBox(player, 0.2);
+                BoundingBox boundingBox = new BoundingBox(player, bulletSize);
                 if (!rayTrace.intersects(boundingBox, oldDirection.length(), 0.1)) continue;
                 if (this.team == sclatPlayer.getSclatTeam()) continue;
         

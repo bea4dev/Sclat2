@@ -6,9 +6,16 @@ package be4rjp.sclat2.player.passive;
  */
 public enum Passive {
     
+    //効果なし
     NONE(0.0F, 0.0F),
-    IKA_SPEED_UP(0.2F, 0.2F),
-    HITO_SPEED_UP(0.2F, 0.2F);
+    //イカ状態のスピードアップ
+    IKA_SPEED_UP(0.1F, 0.2F),
+    //イカ状態のスピーダウン
+    IKA_SPEED_DOWN(0.1F, 0.2F),
+    //ヒト状態のスピードアップ
+    HITO_SPEED_UP(0.1F, 0.2F),
+    //ヒト状態のスピードダウン
+    HITO_SPEED_DOWN(0.1F, 0.2F);
     
     private final float influence;
     private final float multi_influence_rate;

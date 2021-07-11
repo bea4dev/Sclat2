@@ -51,7 +51,7 @@ public class PlayerJoinQuitListener implements Listener {
             player.getInventory().addItem(mainWeapon.getItemStack(lang));
         }
     
-        WeaponClass weaponClass = WeaponClass.getWeaponClass("3k-scope");
+        WeaponClass weaponClass = WeaponClass.getWeaponClass("wakaba");
         sclatPlayer.setWeaponClass(weaponClass);
         
         sclatPlayer.getGearList().add(Gear.IKA_SPEED_UP);

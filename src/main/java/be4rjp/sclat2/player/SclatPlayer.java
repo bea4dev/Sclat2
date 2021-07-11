@@ -3,6 +3,7 @@ package be4rjp.sclat2.player;
 import be4rjp.cinema4c.util.SkinManager;
 import be4rjp.parallel.ParallelWorld;
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.data.WeaponPossessionData;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.MatchManager;
 import be4rjp.sclat2.match.team.SclatTeam;
@@ -38,7 +39,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class SclatPlayer {
     
-    private static Map<String, SclatPlayer> playerMap = new ConcurrentHashMap<>();
+    private static final Map<String, SclatPlayer> playerMap = new ConcurrentHashMap<>();
     
     /**
      * 指定されたUUIDのSclatPlayerを返します。
@@ -89,6 +90,8 @@ public class SclatPlayer {
     private Lang lang = Lang.ja_JP;
     //プレイヤー
     private Player player = null;
+    //所持している武器クラスのデータ
+    private WeaponPossessionData weaponPossessionData = new WeaponPossessionData();
     //Parallel
     private ParallelWorld parallelWorld;
     //参加しているMatchManager
@@ -132,9 +135,9 @@ public class SclatPlayer {
     //死んでいるかどうか
     private boolean isDeath = false;
     //ギアのリスト
-    private List<Gear> gearList = new CopyOnWriteArrayList<>();
+    private final List<Gear> gearList = new CopyOnWriteArrayList<>();
     //パッシブ効果
-    private PassiveInfluence passiveInfluence = new PassiveInfluence();
+    private final PassiveInfluence passiveInfluence = new PassiveInfluence();
 
     //キルカウントの動作の同期用インスタンス
     private final Object KILL_COUNT_LOCK = new Object();
@@ -152,9 +155,7 @@ public class SclatPlayer {
      * SclatPlayerを新しく作成
      * @param uuid プレイヤーのUUID
      */
-    private SclatPlayer(String uuid){
-        this.uuid = uuid;
-    }
+    private SclatPlayer(String uuid){this.uuid = uuid;}
     
     
     public String getUUID() {return uuid;}
@@ -219,6 +220,8 @@ public class SclatPlayer {
     public WeaponClass getWeaponClass() {return weaponClass;}
     
     public PassiveInfluence getPassiveInfluence() {return passiveInfluence;}
+    
+    public WeaponPossessionData getWeaponPossessionData() {return weaponPossessionData;}
     
     public void setScoreBoard(SclatScoreboard scoreBoard) {
         this.scoreBoard = scoreBoard;
@@ -292,6 +295,13 @@ public class SclatPlayer {
                 skin = SkinManager.getSkin(uuid);
             }
         }.runTaskAsynchronously(Sclat.getPlugin());
+    }
+    
+    /**
+     * 武器クラスをロードする
+     */
+    public void loadWeaponPossessionData(){
+        this.weaponPossessionData.load_from_sql();
     }
     
     /**
