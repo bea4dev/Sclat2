@@ -5,7 +5,6 @@ import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.main.runnable.RollerRunnable;
-import be4rjp.sclat2.weapon.main.runnable.ShooterRunnable;
 
 public class Roller extends MainWeapon {
     

@@ -56,7 +56,7 @@ public class InkBullet implements SclatEntity {
     public InkBullet(SclatTeam team, Location location, MainWeapon mainWeapon){
         this.team = team;
         this.match = team.getMatch();
-        this.location = location;
+        this.location = location.clone();
         this.mainWeapon = mainWeapon;
     
         WorldServer nmsWorld = ((CraftWorld)location.getWorld()).getHandle();
