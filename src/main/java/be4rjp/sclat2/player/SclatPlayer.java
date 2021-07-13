@@ -91,7 +91,7 @@ public class SclatPlayer {
     //プレイヤー
     private Player player = null;
     //所持している武器クラスのデータ
-    private WeaponPossessionData weaponPossessionData = new WeaponPossessionData();
+    private final WeaponPossessionData weaponPossessionData = new WeaponPossessionData();
     //Parallel
     private ParallelWorld parallelWorld;
     //参加しているMatchManager
@@ -122,6 +122,8 @@ public class SclatPlayer {
     private String[] skin = null;
     //どのプレイヤーを表示するかのオプション
     private ObservableOption observableOption = ObservableOption.ALL_PLAYER;
+    //バリア状態であるかどうか
+    private boolean isBarrier = false;
     //イカ状態であるかどうか
     private boolean isSquid = false;
     //インク上にいるかどうか
@@ -197,6 +199,10 @@ public class SclatPlayer {
     
     public void addKills(int kills) {synchronized (KILL_COUNT_LOCK){this.kills += kills;}}
     
+    public boolean isBarrier() {return isBarrier;}
+    
+    public void setBarrier(boolean barrier) {isBarrier = barrier;}
+    
     public boolean isSquid() {return isSquid;}
     
     public void setSquid(boolean squid) {isSquid = squid;}
@@ -241,6 +247,7 @@ public class SclatPlayer {
         this.armor = 0.0F;
         this.ink = 1.0F;
         this.observableOption = ObservableOption.ALL_PLAYER;
+        this.isBarrier = false;
         this.isSquid = false;
         this.isOnInk = false;
         this.isDeath = false;
@@ -756,6 +763,7 @@ public class SclatPlayer {
     public synchronized void givePoisonDamage(float damage){
         if(player == null) return;
         if(this.sclatTeam == null) return;
+        if(this.isBarrier) return;
         
         if(this.health > damage){
             this.health -= damage;
@@ -778,10 +786,15 @@ public class SclatPlayer {
         if(attacker.getBukkitPlayer() == null) return;
         if(this.sclatTeam == null) return;
         
-        if(this.getArmor() > 0.0 && velocity != null && player != null){
+        if(!(this.getArmor() > 0.0 || this.isBarrier) && velocity != null){
             Vector XZVec = new Vector(velocity.getX(), 0.0, velocity.getZ());
             if(XZVec.lengthSquared() > 0.0) XZVec.normalize();
             player.setVelocity(XZVec);
+            this.sclatTeam.getMatch().playSound(REPEL_SOUND);
+        }
+        
+        if(this.isBarrier){
+            return;
         }
         
         if(this.getHealth() + this.getArmor() > damage){

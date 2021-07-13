@@ -82,8 +82,8 @@ public class RollerRunnable extends MainWeaponRunnable{
                 for (double angle = -roller.getShootDoubleMaxAngle(); angle <= roller.getShootDoubleMaxAngle(); angle += roller.getShootAccuracy()) {
                     if(sclatPlayer.consumeInk(roller.getNeedInk())) {
                         InkBullet inkBullet = new InkBullet(sclatTeam, location, roller);
-                        double range = Math.random() / 4;
-                        Vector randomVector = new Vector(Math.random() * range - range / 8.0, Math.random() * range - range / 8.0, Math.random() * range - range / 8.0);
+                        double range = Math.random() / 5;
+                        Vector randomVector = new Vector(Math.random() * range - range / 10.0, Math.random() * range - range / 10.0, Math.random() * range - range / 10.0);
                         inkBullet.shootInitialize(sclatPlayer, ud_direction.clone().rotateAroundAxis(Y, Math.toRadians(angle)).add(randomVector).multiply(roller.getShootSpeed()), roller.getFallTick());
                         inkBullet.spawn();
                     }else{

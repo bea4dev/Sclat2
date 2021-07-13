@@ -29,7 +29,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
     
     public static final float NORMAL_DEFAULT_FOV = 0.07F;
     
-    public static final float ON_INK_RECOVERY = 0.027F;
+    public static final float ON_INK_RECOVERY = 0.025F;
     public static final float NORMAL_RECOVERY = 0.0006F;
     
     public static final float ON_INK_SPEED = 0.25F;
