@@ -54,6 +54,7 @@ public class WeaponClassGUI {
                         sclatPlayer.setWeaponClass(weaponClass);
                         sclatPlayer.createPassiveInfluence();
                         sclatPlayer.sendText("gui-class-selected", mainWeapon.getDisplayName(lang));
+                        sclatPlayer.getSPWeaponProgress().initialize();
                         player.closeInventory();
                     }));
                     Inventory menuInventory = menu.getInventory();

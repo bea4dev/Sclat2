@@ -4,6 +4,7 @@ import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.weapon.special.SpecialWeapon;
 import be4rjp.sclat2.weapon.sub.SubWeapon;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -54,6 +55,8 @@ public class WeaponClass {
     private MainWeapon mainWeapon;
     //サブウエポン
     private SubWeapon subWeapon;
+    //スペシャルウエポン
+    private SpecialWeapon specialWeapon;
     //武器クラスのセーブ & ロード時の識別番号
     private int saveNumber = -1;
     //スペシャルウエポンのチャージに必要な塗りポイント
@@ -75,6 +78,7 @@ public class WeaponClass {
         
         if(yml.contains("main-weapon")) this.mainWeapon = MainWeapon.getMainWeapon(yml.getString("main-weapon"));
         if(yml.contains("sub-weapon")) this.subWeapon = (SubWeapon) SclatWeapon.getSclatWeapon(yml.getString("sub-weapon"));
+        if(yml.contains("special-weapon")) this.specialWeapon = (SpecialWeapon) SclatWeapon.getSclatWeapon(yml.getString("special-weapon"));
         if(yml.contains("save-number")) this.saveNumber = yml.getInt("save-number");
         if(yml.contains("sp-weapon-need-point")) this.spWeaponNeedPoint = yml.getInt("sp-weapon-need-point");
         
@@ -92,11 +96,14 @@ public class WeaponClass {
         Lang lang = sclatPlayer.getLang();
         if(mainWeapon != null) player.getInventory().setItem(0, mainWeapon.getItemStack(lang));
         if(subWeapon != null) player.getInventory().setItem(2, subWeapon.getItemStack(sclatTeam, lang));
+        if(specialWeapon != null) player.getInventory().setItem(4, specialWeapon.getItemStack(lang));
     }
     
     public MainWeapon getMainWeapon() {return mainWeapon;}
     
     public SubWeapon getSubWeapon() {return subWeapon;}
+    
+    public SpecialWeapon getSpecialWeapon() {return specialWeapon;}
     
     public int getSaveNumber() {return saveNumber;}
 

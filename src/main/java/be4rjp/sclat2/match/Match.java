@@ -257,7 +257,7 @@ public abstract class Match {
      * この試合に参加しているプレイヤー全員にパケットを送信する
      * @param packet 送信するパケット
      */
-    public void sendPacket(Packet packet){this.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendPacket(packet));}
+    public void sendPacket(Packet<?> packet){this.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendPacket(packet));}
     
     /**
      * 球状に塗る
@@ -268,10 +268,7 @@ public abstract class Match {
     public synchronized void paint(SclatPlayer sclatPlayer, Location center, double radius){
         SphereBlocks sphereBlocks = new SphereBlocks(radius, center);
         Set<Block> blocks = sphereBlocks.getBlocks();
-        int paint = blocks.size();
-        sclatPlayer.addPaints(paint);
         SclatTeam team = sclatPlayer.getSclatTeam();
-        team.addPaints(paint);
         for (Block block : blocks) {
             if(!PaintManager.isCanPaint(block.getType(), sclatMap)) continue;
             
@@ -281,11 +278,13 @@ public abstract class Match {
                     paintData.getSclatTeam().addPaints(-1);
                     paintData.setSclatTeam(team);
                     team.addPaints(1);
+                    sclatPlayer.addPaints(1);
                     blockUpdater.setBlock(block, team.getSclatColor().getWool());
                 }
             } else {
                 PaintData paintData = new PaintData(this, block, team);
                 paintData.getSclatTeam().addPaints(1);
+                sclatPlayer.addPaints(1);
                 paintDataMap.put(block, paintData);
                 blockUpdater.setBlock(block, team.getSclatColor().getWool());
             }

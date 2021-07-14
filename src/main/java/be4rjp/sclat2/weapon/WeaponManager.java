@@ -1,6 +1,7 @@
 package be4rjp.sclat2.weapon;
 
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.weapon.special.Barrier;
 import be4rjp.sclat2.weapon.sub.SplashBomb;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
@@ -67,5 +68,9 @@ public class WeaponManager {
     
     public static void setupSubWeapon(){
         new SplashBomb("SPLASH_BOMB");
+    }
+    
+    public static void setupSPWeapon(){
+        new Barrier("BARRIER");
     }
 }

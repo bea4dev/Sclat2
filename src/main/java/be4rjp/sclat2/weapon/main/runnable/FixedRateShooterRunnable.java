@@ -27,7 +27,6 @@ public class FixedRateShooterRunnable extends MainWeaponRunnable {
         this.timer = new Timer(true);
         
         soundTick = shooter.getShootTick() % 2 == 0 ? shooter.getShootTick() / 2 : shooter.getShootTick() / 2 + 1;
-        System.out.println(soundTick);
     }
     
     private int taskTick = 0;

@@ -142,6 +142,8 @@ public class SclatPlayer {
     private final PassiveInfluence passiveInfluence = new PassiveInfluence();
     //スペシャルウエポンのチャージ進捗
     private final SPWeaponProgress spWeaponProgress = new SPWeaponProgress(this);
+    //スペシャルウエポンを使用できるようになる時刻
+    private long spWeaponTime = System.currentTimeMillis();
 
     //キルカウントの動作の同期用インスタンス
     private final Object KILL_COUNT_LOCK = new Object();
@@ -153,6 +155,8 @@ public class SclatPlayer {
     private final Object FLY_LOCK = new Object();
     //死亡系の動作の同期用インスタンス
     private final Object DEATH_LOCK = new Object();
+    //スペシャルウエポンの動作の同期用インスタンス
+    private final Object SPECIAL_WEAPON_LOCK = new Object();
     
     
     /**
@@ -235,7 +239,13 @@ public class SclatPlayer {
     public WeaponPossessionData getWeaponPossessionData() {return weaponPossessionData;}
 
     public SPWeaponProgress getSPWeaponProgress() {return spWeaponProgress;}
-
+    
+    public long getCanUseSPWeaponTime() {synchronized (SPECIAL_WEAPON_LOCK){return spWeaponTime;}}
+    
+    public void setCanUseSPWeaponTime(int afterSecond) {synchronized (SPECIAL_WEAPON_LOCK){this.spWeaponTime = System.currentTimeMillis() + (afterSecond * 1000L);}}
+    
+    public boolean isCanUseSPWeapon(){synchronized (SPECIAL_WEAPON_LOCK){return System.currentTimeMillis() >= spWeaponTime;}}
+    
     public void setScoreBoard(SclatScoreboard scoreBoard) {
         this.scoreBoard = scoreBoard;
         if(player != null) player.setScoreboard(scoreBoard.getBukkitScoreboard());
@@ -793,7 +803,7 @@ public class SclatPlayer {
         if(attacker.getBukkitPlayer() == null) return;
         if(this.sclatTeam == null) return;
         
-        if(!(this.getArmor() > 0.0 || this.isBarrier) && velocity != null){
+        if((this.getArmor() > 0.0 || this.isBarrier) && velocity != null){
             Vector XZVec = new Vector(velocity.getX(), 0.0, velocity.getZ());
             if(XZVec.lengthSquared() > 0.0) XZVec.normalize();
             player.setVelocity(XZVec);

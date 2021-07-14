@@ -12,6 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class BarrierRunnable extends BukkitRunnable {
 
     private static final SclatSound END_SPECIAL_WEAPON = new SclatSound(Sound.BLOCK_CHEST_CLOSE, 1.0F, 2.0F);
+    private static final SclatSound USE_SOUND = new SclatSound(Sound.BLOCK_ANVIL_USE, 1.0F, 2.0F);
     
     private final SclatPlayer sclatPlayer;
     private final HeadUpCostume headUpCostume;
@@ -31,9 +32,10 @@ public class BarrierRunnable extends BukkitRunnable {
             this.headUpCostume.spawn();
             sclatPlayer.setBarrier(true);
             sclatPlayer.getSPWeaponProgress().setPaintLock(true);
+            sclatPlayer.playSound(USE_SOUND);
         }
 
-        sclatPlayer.getSPWeaponProgress().setProgress(100 - ((tick / 40) * 100));
+        sclatPlayer.getSPWeaponProgress().setProgress((int) (100.0 - (((double)tick / 40.0) * 100.0)));
 
         if(tick == 40) {//4秒後にバリア解除
             sclatPlayer.setBarrier(false);

@@ -33,7 +33,7 @@ public class SPWeaponProgress {
     public synchronized void addPoint(int point) {
         if (paintLock) return;
 
-        if (this.point + point > maxNeedPoint) {
+        if (this.point + point >= maxNeedPoint) {
             if (this.point != maxNeedPoint) {
                 sclatPlayer.playSound(FINISH_CHARGE_SOUND);
                 sclatPlayer.sendText("sp-weapon-ready");
@@ -43,7 +43,7 @@ public class SPWeaponProgress {
             this.point += point;
         }
 
-        this.progress = (int) (((float) point / (float) maxNeedPoint) * 100.0F);
+        this.progress = (int) (((float) this.point / (float) maxNeedPoint) * 100.0F);
     }
 
     public int getProgress() {return progress;}
@@ -52,8 +52,6 @@ public class SPWeaponProgress {
 
     public void setPoint(int point) {this.point = point;}
 
-    public void setPaintLock(boolean paintLock) {
-        this.paintLock = paintLock;
-    }
+    public void setPaintLock(boolean paintLock) {this.paintLock = paintLock;}
 }
 

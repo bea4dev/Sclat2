@@ -39,10 +39,10 @@ public class NawabariMatchRunnable extends MatchRunnable{
             lines.add("   ");
             lines.add("§6" + MessageManager.getText(lang, "special-weapon") + " »");
             int progress = sclatPlayer.getSPWeaponProgress().getProgress();
-            if(progress >= 100){
+            if(progress == 100){
                 lines.add("§b  ! READY !");
             }else{
-                lines.add("  " + new ProgressBar(15).setProgressPercent(progress).toString("§a") + " §7" + progress + "%");
+                lines.add("  " + new ProgressBar(15).setProgressPercent(progress).toString("§a") + "  " + progress + "%");
             }
             lines.add("    ");
             lines.add("§b" + MessageManager.getText(lang, "match-time") + " » §r§l" + timeLeft/60 + ":" + min);

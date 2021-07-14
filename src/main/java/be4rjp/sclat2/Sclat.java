@@ -48,6 +48,7 @@ public final class Sclat extends JavaPlugin {
         ChargerUI.loadAllUI();
         WeaponManager.loadAllWeapon();
         WeaponManager.setupSubWeapon();
+        WeaponManager.setupSPWeapon();
         WeaponClass.loadAllClass();
         MatchManager.load();
 
