@@ -140,6 +140,8 @@ public class SclatPlayer {
     private final List<Gear> gearList = new CopyOnWriteArrayList<>();
     //パッシブ効果
     private final PassiveInfluence passiveInfluence = new PassiveInfluence();
+    //スペシャルウエポンのチャージ進捗
+    private final SPWeaponProgress spWeaponProgress = new SPWeaponProgress(this);
 
     //キルカウントの動作の同期用インスタンス
     private final Object KILL_COUNT_LOCK = new Object();
@@ -195,7 +197,10 @@ public class SclatPlayer {
         return parallelWorld;
     }
     
-    public void addPaints(int paints) {synchronized (PAINT_COUNT_LOCK){this.paints += paints;}}
+    public void addPaints(int paints) {synchronized (PAINT_COUNT_LOCK){
+        this.paints += paints;
+        this.spWeaponProgress.addPoint(paints);
+    }}
     
     public void addKills(int kills) {synchronized (KILL_COUNT_LOCK){this.kills += kills;}}
     
@@ -228,7 +233,9 @@ public class SclatPlayer {
     public PassiveInfluence getPassiveInfluence() {return passiveInfluence;}
     
     public WeaponPossessionData getWeaponPossessionData() {return weaponPossessionData;}
-    
+
+    public SPWeaponProgress getSPWeaponProgress() {return spWeaponProgress;}
+
     public void setScoreBoard(SclatScoreboard scoreBoard) {
         this.scoreBoard = scoreBoard;
         if(player != null) player.setScoreboard(scoreBoard.getBukkitScoreboard());

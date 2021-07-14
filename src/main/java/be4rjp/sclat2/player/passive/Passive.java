@@ -15,7 +15,10 @@ public enum Passive {
     //ヒト状態のスピードアップ
     HITO_SPEED_UP(0.1F, 0.2F),
     //ヒト状態のスピードダウン
-    HITO_SPEED_DOWN(0.1F, 0.2F);
+    HITO_SPEED_DOWN(0.1F, 0.2F),
+    //スペシャル増加量アップ
+    SPECIAL_UP(0.1F, 0.2F);
+
     
     private final float influence;
     private final float multi_influence_rate;

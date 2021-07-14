@@ -2,3 +2,4 @@ main-weapon: 'wakaba'
 sub-weapon: 'SPLASH_BOMB'
 special-weapon: 'BARRIER'
 save-number: 0
+sp-weapon-need-point: 200

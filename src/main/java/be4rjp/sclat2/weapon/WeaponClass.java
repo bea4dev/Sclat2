@@ -56,6 +56,8 @@ public class WeaponClass {
     private SubWeapon subWeapon;
     //武器クラスのセーブ & ロード時の識別番号
     private int saveNumber = -1;
+    //スペシャルウエポンのチャージに必要な塗りポイント
+    private int spWeaponNeedPoint = 200;
     
     
     public WeaponClass(String id){
@@ -74,6 +76,7 @@ public class WeaponClass {
         if(yml.contains("main-weapon")) this.mainWeapon = MainWeapon.getMainWeapon(yml.getString("main-weapon"));
         if(yml.contains("sub-weapon")) this.subWeapon = (SubWeapon) SclatWeapon.getSclatWeapon(yml.getString("sub-weapon"));
         if(yml.contains("save-number")) this.saveNumber = yml.getInt("save-number");
+        if(yml.contains("sp-weapon-need-point")) this.spWeaponNeedPoint = yml.getInt("sp-weapon-need-point");
         
         if(saveNumber != -1) saveNumberMap.put(saveNumber, this);
     }
@@ -96,4 +99,6 @@ public class WeaponClass {
     public SubWeapon getSubWeapon() {return subWeapon;}
     
     public int getSaveNumber() {return saveNumber;}
+
+    public int getSPWeaponNeedPoint() {return spWeaponNeedPoint;}
 }

@@ -5,6 +5,7 @@ import be4rjp.sclat2.match.NawabariMatch;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.util.ProgressBar;
 import be4rjp.sclat2.util.SclatScoreboard;
 
 import java.util.ArrayList;
@@ -36,7 +37,15 @@ public class NawabariMatchRunnable extends MatchRunnable{
             lines.add(" ");
             lines.add("§a" + MessageManager.getText(lang, "match-mode") + " » §6§l " + match.getType().getDisplayName(lang));
             lines.add("   ");
-            lines.add("§bTime left » §r§l" + timeLeft/60 + ":" + min);
+            lines.add("§6" + MessageManager.getText(lang, "special-weapon") + " »");
+            int progress = sclatPlayer.getSPWeaponProgress().getProgress();
+            if(progress >= 100){
+                lines.add("§b  ! READY !");
+            }else{
+                lines.add("  " + new ProgressBar(15).setProgressPercent(progress).toString("§a") + " §7" + progress + "%");
+            }
+            lines.add("    ");
+            lines.add("§b" + MessageManager.getText(lang, "match-time") + " » §r§l" + timeLeft/60 + ":" + min);
             scoreboard.setSidebarLine(sclatPlayer, lines);
         }
         scoreboard.updateSidebar(match.getPlayers());
