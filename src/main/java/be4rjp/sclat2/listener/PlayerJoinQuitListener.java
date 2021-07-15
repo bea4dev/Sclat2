@@ -12,6 +12,8 @@ import be4rjp.sclat2.match.team.SclatColor;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.packet.PacketHandler;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.player.costume.HeadGear;
+import be4rjp.sclat2.player.costume.HeadGearData;
 import be4rjp.sclat2.player.passive.Gear;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.SclatWeapon;
@@ -61,6 +63,11 @@ public class PlayerJoinQuitListener implements Listener {
             if (classBySaveNumber == null) break;
             sclatPlayer.getWeaponPossessionData().giveWeaponClass(classBySaveNumber);
         }
+        
+        sclatPlayer.getHeadGearPossessionData().addHeadGearData(new HeadGearData(HeadGear.getHeadGearBySaveNumber(1), Gear.IKA_SPEED_UP, Gear.IKA_SPEED_UP, Gear.IKA_SPEED_UP));
+        sclatPlayer.getHeadGearPossessionData().addHeadGearData(new HeadGearData(HeadGear.getHeadGearBySaveNumber(1), Gear.HITO_SPEED_UP, Gear.NO_GEAR, Gear.IKA_SPEED_UP));
+        sclatPlayer.getHeadGearPossessionData().addHeadGearData(new HeadGearData(HeadGear.getHeadGearBySaveNumber(1), Gear.NO_GEAR, Gear.NO_GEAR, Gear.NO_GEAR));
+        sclatPlayer.getHeadGearPossessionData().addHeadGearData(new HeadGearData(HeadGear.getHeadGearBySaveNumber(1), Gear.HITO_SPEED_UP, Gear.HITO_SPEED_UP, Gear.HITO_SPEED_UP));
         
         WeaponClassGUI.openClassSelectGUI(sclatPlayer);
         

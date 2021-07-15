@@ -15,8 +15,8 @@ import java.util.Map;
 
 public class WeaponClass {
     
-    private static Map<String, WeaponClass> weaponClassMap = new HashMap<>();
-    private static Map<Integer, WeaponClass> saveNumberMap = new HashMap<>();
+    private static final Map<String, WeaponClass> weaponClassMap = new HashMap<>();
+    private static final Map<Integer, WeaponClass> saveNumberMap = new HashMap<>();
     
     public static WeaponClass getWeaponClass(String id){return weaponClassMap.get(id);}
     

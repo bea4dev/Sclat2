@@ -9,11 +9,11 @@ public enum Passive {
     //効果なし
     NONE(0.0F, 0.0F),
     //イカ状態のスピードアップ
-    IKA_SPEED_UP(0.1F, 0.2F),
+    IKA_SPEED_UP(0.2F, 0.1F),
     //イカ状態のスピーダウン
     IKA_SPEED_DOWN(0.1F, 0.2F),
     //ヒト状態のスピードアップ
-    HITO_SPEED_UP(0.1F, 0.2F),
+    HITO_SPEED_UP(0.2F, 0.1F),
     //ヒト状態のスピードダウン
     HITO_SPEED_DOWN(0.1F, 0.2F),
     //スペシャル増加量アップ

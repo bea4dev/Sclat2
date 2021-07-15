@@ -3,11 +3,13 @@ package be4rjp.sclat2.player;
 import be4rjp.cinema4c.util.SkinManager;
 import be4rjp.parallel.ParallelWorld;
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.data.HeadGearPossessionData;
 import be4rjp.sclat2.data.WeaponPossessionData;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.MatchManager;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.language.MessageManager;
+import be4rjp.sclat2.player.costume.HeadGearData;
 import be4rjp.sclat2.player.death.DeathType;
 import be4rjp.sclat2.player.death.PlayerDeathManager;
 import be4rjp.sclat2.player.passive.Gear;
@@ -144,6 +146,10 @@ public class SclatPlayer {
     private final SPWeaponProgress spWeaponProgress = new SPWeaponProgress(this);
     //スペシャルウエポンを使用できるようになる時刻
     private long spWeaponTime = System.currentTimeMillis();
+    //装備しているヘッドギア
+    private HeadGearData headGearData = null;
+    //所持しているヘッドギアのデータ
+    private final HeadGearPossessionData headGearPossessionData = new HeadGearPossessionData();
 
     //キルカウントの動作の同期用インスタンス
     private final Object KILL_COUNT_LOCK = new Object();
@@ -246,6 +252,10 @@ public class SclatPlayer {
     
     public boolean isCanUseSPWeapon(){synchronized (SPECIAL_WEAPON_LOCK){return System.currentTimeMillis() >= spWeaponTime;}}
     
+    public HeadGearData getHeadGearData() {return headGearData;}
+    
+    public HeadGearPossessionData getHeadGearPossessionData() {return headGearPossessionData;}
+    
     public void setScoreBoard(SclatScoreboard scoreBoard) {
         this.scoreBoard = scoreBoard;
         if(player != null) player.setScoreboard(scoreBoard.getBukkitScoreboard());
@@ -268,6 +278,7 @@ public class SclatPlayer {
         this.isSquid = false;
         this.isOnInk = false;
         this.isDeath = false;
+        this.headGearData = null;
         this.gearList.clear();
         this.setFOV(0.1F);
         this.setFly(false);
@@ -319,13 +330,6 @@ public class SclatPlayer {
                 skin = SkinManager.getSkin(uuid);
             }
         }.runTaskAsynchronously(Sclat.getPlugin());
-    }
-    
-    /**
-     * 武器クラスをロードする
-     */
-    public void loadWeaponPossessionData(){
-        this.weaponPossessionData.load_from_sql();
     }
     
     /**
@@ -412,6 +416,31 @@ public class SclatPlayer {
                 break;
             }
         }
+    }
+    
+    /**
+     * ヘッドギアを装備させる
+     * @param headGearData
+     */
+    public void setHeadGearData(HeadGearData headGearData){
+        this.headGearData = headGearData;
+        headGearData.setHeadGear(this);
+    }
+    
+    /**
+     * ヘッドギアを装備させる
+     */
+    public void equipHeadGear(){
+        if(player == null || headGearData == null) return;
+        player.getInventory().setHelmet(headGearData.getItemStack(lang));
+    }
+    
+    /**
+     * プレイヤーの帽子を取る
+     */
+    public void removeHelmet(){
+        if(player == null) return;
+        player.getInventory().setHelmet(new org.bukkit.inventory.ItemStack(org.bukkit.Material.AIR));
     }
     
     /**

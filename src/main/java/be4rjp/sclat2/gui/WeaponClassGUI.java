@@ -6,6 +6,7 @@ import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.WeaponClass;
+import be4rjp.sclat2.weapon.special.SpecialWeapon;
 import be4rjp.sclat2.weapon.sub.SubWeapon;
 import com.samjakob.spigui.SGMenu;
 import com.samjakob.spigui.buttons.SGButton;
@@ -42,10 +43,15 @@ public class WeaponClassGUI {
                     
                     ItemStack itemStack = mainWeapon.getItemStack(lang);
                     ItemMeta itemMeta = itemStack.getItemMeta();
-                    List<String> lines = new ArrayList<>();
+                    List<String> lines = itemMeta.getLore();
+                    if(lines == null) lines = new ArrayList<>();
                     
                     SubWeapon subWeapon = weaponClass.getSubWeapon();
+                    lines.add("");
                     if(subWeapon != null) lines.add(MessageManager.getText(lang, "gui-class-sub-weapon") + subWeapon.getDisplayName(lang));
+                    lines.add("");
+                    SpecialWeapon specialWeapon = weaponClass.getSpecialWeapon();
+                    if(specialWeapon != null) lines.add(MessageManager.getText(lang, "gui-class-sp-weapon") + specialWeapon.getDisplayName(lang));
                     
                     itemMeta.setLore(lines);
                     itemStack.setItemMeta(itemMeta);
@@ -56,6 +62,7 @@ public class WeaponClassGUI {
                         sclatPlayer.sendText("gui-class-selected", mainWeapon.getDisplayName(lang));
                         sclatPlayer.getSPWeaponProgress().initialize();
                         player.closeInventory();
+                        HeadGearGUI.openHeadGearSelectGUI(sclatPlayer);
                     }));
                     Inventory menuInventory = menu.getInventory();
     

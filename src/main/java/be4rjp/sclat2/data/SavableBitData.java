@@ -2,7 +2,7 @@ package be4rjp.sclat2.data;
 
 import java.util.BitSet;
 
-public abstract class SavableBitData {
+public abstract class SavableBitData implements SavableData{
 
     private BitSet bits = new BitSet();
 
@@ -12,10 +12,12 @@ public abstract class SavableBitData {
 
     protected long[] getLongs(){return bits.toLongArray();}
 
+    @Override
     public void save_to_sql(){
     
     }
     
+    @Override
     public void load_from_sql(){
     
     }

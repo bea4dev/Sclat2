@@ -133,6 +133,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
                     entityPlayer.setInvisible(true);
                     PacketPlayOutEntityMetadata metadata = new PacketPlayOutEntityMetadata(entityPlayer.getId(), entityPlayer.getDataWatcher(), true);
                     match.getPlayers().forEach(op -> op.sendPacket(metadata));
+                    sclatPlayer.removeHelmet();
                 }
             }else{
                 if(isBeforeSquid){
@@ -140,6 +141,7 @@ public class PlayerSquidRunnable extends BukkitRunnable {
                     entityPlayer.setInvisible(false);
                     PacketPlayOutEntityMetadata metadata = new PacketPlayOutEntityMetadata(entityPlayer.getId(), entityPlayer.getDataWatcher(), true);
                     match.getPlayers().forEach(op -> op.sendPacket(metadata));
+                    sclatPlayer.equipHeadGear();
                 }
             }
             sclatPlayer.setSquid(isSquid);

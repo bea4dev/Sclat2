@@ -8,6 +8,7 @@ import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.match.team.SclatColor;
 import be4rjp.sclat2.match.team.SclatTeam;
+import be4rjp.sclat2.player.costume.HeadGear;
 import be4rjp.sclat2.weapon.WeaponClass;
 import be4rjp.sclat2.weapon.WeaponManager;
 import be4rjp.sclat2.weapon.main.ui.ChargerUI;
@@ -44,12 +45,14 @@ public final class Sclat extends JavaPlugin {
         pluginManager.registerEvents(new Cinema4CListener(), this);
         pluginManager.registerEvents(new CancelListener(), this);
         pluginManager.registerEvents(new ChargeShootListener(), this);
+        pluginManager.registerEvents(new PlayerClickInventoryListener(), this);
     
         ChargerUI.loadAllUI();
         WeaponManager.loadAllWeapon();
         WeaponManager.setupSubWeapon();
         WeaponManager.setupSPWeapon();
         WeaponClass.loadAllClass();
+        HeadGear.loadAllHeadGear();
         MatchManager.load();
 
         lobbyMatch = new PlayerLobbyMatch(null);
