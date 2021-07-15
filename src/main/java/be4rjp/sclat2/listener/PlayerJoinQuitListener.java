@@ -42,7 +42,7 @@ public class PlayerJoinQuitListener implements Listener {
         SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
         sclatPlayer.updateBukkitPlayer();
         sclatPlayer.sendSkinRequest();
-        sclatPlayer.setLang(Lang.ja_JP);
+        sclatPlayer.setLang(i % 2 == 0 ? Lang.ja_JP : Lang.en_US);
 
         MatchManager.getMatchManager("azi").join(sclatPlayer);
         

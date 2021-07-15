@@ -102,17 +102,19 @@ public class SclatScoreboard {
     public void updateSidebar(Set<SclatPlayer> players){
         for(SclatPlayer sclatPlayer : players){
             Set<String> removeLines = playerRemoveLineMap.get(sclatPlayer);
-            if(removeLines == null) continue;
             
-            for(String line : removeLines){
-                PacketPlayOutScoreboardScore scorePacket = new PacketPlayOutScoreboardScore(ScoreboardServer.Action.REMOVE, "sclatSB", line, 0);
+            if(removeLines != null) {
+                for (String line : removeLines) {
+                    PacketPlayOutScoreboardScore scorePacket = new PacketPlayOutScoreboardScore(ScoreboardServer.Action.REMOVE, "sclatSB", line, 0);
+                    sclatPlayer.sendPacket(scorePacket);
+                }
+                removeLines.clear();
+            }
+    
+            for(int index = 0; index < sidebarSize; index++) {
+                PacketPlayOutScoreboardScore scorePacket = new PacketPlayOutScoreboardScore(ScoreboardServer.Action.CHANGE, "sclatSB", "sclatSB" + index, sidebarSize - index - 1);
                 sclatPlayer.sendPacket(scorePacket);
             }
-        }
-        
-        for(int index = 0; index < sidebarSize; index++) {
-            PacketPlayOutScoreboardScore scorePacket = new PacketPlayOutScoreboardScore(ScoreboardServer.Action.CHANGE, "sclatSB", "sclatSB" + index, sidebarSize - index - 1);
-            players.forEach(sclatPlayer -> sclatPlayer.sendPacket(scorePacket));
         }
     }
 }
