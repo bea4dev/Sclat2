@@ -105,6 +105,7 @@ public class IntroManager {
                 EntityPlayer npc = new EntityPlayer(nmsServer, nmsWorld, gameProfile, new PlayerInteractManager(nmsWorld));
                 npc.setLocation(playerLocation.getX(), playerLocation.getY() - 3.5, playerLocation.getZ(), playerLocation.getYaw(), 0);
                 npc.setInvisible(true);
+                npc.getDataWatcher().set( DataWatcherRegistry.a.a(16), (byte)127);
                 PacketPlayOutPlayerInfo info = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc);
                 PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(npc);
                 PacketPlayOutEntityMetadata metadata = new PacketPlayOutEntityMetadata(npc.getId(), npc.getDataWatcher(), true);

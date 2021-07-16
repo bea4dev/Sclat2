@@ -28,24 +28,25 @@ public class HeadGearGUI {
             public void run() {
                 HeadGearPossessionData possessionData = sclatPlayer.getHeadGearPossessionData();
                 for (int index = 0; index < 512; index++) {
-                    if(!possessionData.hasHeadGear(index)) break;
-    
                     HeadGearData headGearData = possessionData.getHeadGearData(index);
+                    if(headGearData == null) break;
+                    
                     menu.addButton(new SGButton(headGearData.getItemStack(sclatPlayer.getLang())).withListener(event -> {
                         sclatPlayer.setHeadGearData(headGearData);
                         sclatPlayer.createPassiveInfluence();
                         sclatPlayer.sendText("gui-head-gear-selected", headGearData.headGear.getDisplayName(lang));
                         player.closeInventory();
                     }));
-                    Inventory menuInventory = menu.getInventory();
-    
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            player.openInventory(menuInventory);
-                        }
-                    }.runTask(Sclat.getPlugin());
                 }
+                
+                Inventory menuInventory = menu.getInventory();
+    
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        player.openInventory(menuInventory);
+                    }
+                }.runTask(Sclat.getPlugin());
             }
         }.runTaskAsynchronously(Sclat.getPlugin());
     }

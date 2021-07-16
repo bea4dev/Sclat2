@@ -1,16 +1,20 @@
 package be4rjp.sclat2.match.intro;
 
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.player.costume.HeadGearData;
 import be4rjp.sclat2.util.particle.BlockParticle;
 import be4rjp.sclat2.util.particle.SclatParticle;
 import be4rjp.sclat2.util.SclatSound;
+import be4rjp.sclat2.weapon.WeaponClass;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
 
@@ -55,11 +59,31 @@ public class SquidRunnable extends BukkitRunnable {
             PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(npc);
             PacketPlayOutEntityMetadata metadata = new PacketPlayOutEntityMetadata(npc.getId(), npc.getDataWatcher(), true);
             PacketPlayOutEntityDestroy destroy = new PacketPlayOutEntityDestroy(squid.getId());
+    
+            WeaponClass weaponClass = sclatPlayer.getWeaponClass();
+            PacketPlayOutEntityEquipment weapon = null;
+            if(weaponClass != null) {
+                if(weaponClass.getMainWeapon() != null) {
+                    weapon = new PacketPlayOutEntityEquipment(npc.getId(), EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(weaponClass.getMainWeapon().getItemStack(Lang.en_US)));
+                }
+            }
+            
+            PacketPlayOutEntityEquipment helmet = null;
+            HeadGearData headGearData = sclatPlayer.getHeadGearData();
+            if(headGearData != null){
+                if(headGearData.headGear != null){
+                    helmet = new PacketPlayOutEntityEquipment(npc.getId(), EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(headGearData.getItemStack(Lang.en_US)));
+                }
+            }
+            
+            
             PacketPlayOutAnimation animation = new PacketPlayOutAnimation(npc, 0);
             for(SclatPlayer sclatPlayer : match.getPlayers()){
                 sclatPlayer.sendPacket(teleport);
                 sclatPlayer.sendPacket(metadata);
                 sclatPlayer.sendPacket(destroy);
+                if(weapon != null) sclatPlayer.sendPacket(weapon);
+                if(helmet != null) sclatPlayer.sendPacket(helmet);
                 sclatPlayer.sendPacket(animation);
                 sclatPlayer.playSound(SQUID_SWIM, location);
             }

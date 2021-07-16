@@ -42,7 +42,7 @@ public class PassiveInfluence {
             if(size != 0){
                 float sum = 0.0F;
                 for(int i = 1; i <= size; i++){
-                    sum += passive.getInfluence() / (passive.getMulti_influence_rate() * (float) size);
+                    sum += passive.getInfluence() / (passive.getMulti_influence_rate() * (float) i);
                 }
                 influence = 1.0F + sum;
             }
