@@ -40,23 +40,29 @@ public class PlayerJoinQuitListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
+        player.getInventory().clear();
         
         SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
         sclatPlayer.updateBukkitPlayer();
         sclatPlayer.sendSkinRequest();
-        sclatPlayer.setLang(i % 2 == 0 ? Lang.ja_JP : Lang.en_US);
+        
+        try {
+            sclatPlayer.loadAchievementFromSQL();
+        }catch (Exception e){
+            player.sendMessage("§cFailed to connect to MySQL database!");
+            player.sendMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        
+        sclatPlayer.setLang(Lang.en_US);
+        
+        
+        //sclatPlayer.setLang(i % 2 == 0 ? Lang.ja_JP : Lang.en_US);
 
-        MatchManager.getMatchManager("azi").join(sclatPlayer);
+        //MatchManager.getMatchManager("azi").join(sclatPlayer);
         
         Lang lang = sclatPlayer.getLang();
-        player.getInventory().clear();
-        for(MainWeapon mainWeapon : MainWeapon.getMainWeaponList()){
-            player.getInventory().addItem(mainWeapon.getItemStack(lang));
-        }
-    
-        WeaponClass weaponClass = WeaponClass.getWeaponClass("3k-scope");
-        sclatPlayer.setWeaponClass(weaponClass);
-        sclatPlayer.createPassiveInfluence();
+        
     
         for(int index = 0; index < 256; index++) {
             WeaponClass classBySaveNumber = WeaponClass.getWeaponClassBySaveNumber(index);
@@ -94,6 +100,15 @@ public class PlayerJoinQuitListener implements Listener {
     @EventHandler
     public void onleave(PlayerQuitEvent event){
         Player player = event.getPlayer();
+    
+        SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
+        try {
+            sclatPlayer.saveAchievementToSQL();
+        }catch (Exception e){
+            Sclat.getPlugin().getLogger().info("§cFailed to connect to MySQL database!");
+            Sclat.getPlugin().getLogger().info(e.getMessage());
+            e.printStackTrace();
+        }
         
         try {
             Channel channel = ((CraftPlayer)player).getHandle().playerConnection.networkManager.channel;

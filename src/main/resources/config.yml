@@ -1,0 +1,8 @@
+my-sql:
+  host: 'localhost'
+  port: 3306
+  data-base: 'data-base-name'
+  status-table: 'table-name'
+  equipment-table: 'equipment-table'
+  user: 'user'
+  password: 'password'

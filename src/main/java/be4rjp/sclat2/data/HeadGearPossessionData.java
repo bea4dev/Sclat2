@@ -11,10 +11,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HeadGearPossessionData extends SavableByteData{
     
-    private final List<HeadGearData> headGearDataList = new CopyOnWriteArrayList<>();
+    private final List<HeadGearData> headGearDataList = new ArrayList<>();
     
     public HeadGearPossessionData() {
-        super(2560);
+        super(2560 + 5);
     }
     
     /**
@@ -52,6 +52,8 @@ public class HeadGearPossessionData extends SavableByteData{
         
         for(int index = 0; index < 512; index++){
             byte[] data = Arrays.copyOfRange(bytes, index * 5, index * 5 + 5);
+            
+            if(data[0] == 0 && data[1] == 0) break;
     
             int headGearNumber = (data[0] & 0xFF) << 8 | (data[1] & 0xFF);
             HeadGear headGear = HeadGear.getHeadGearBySaveNumber(headGearNumber);
@@ -86,5 +88,19 @@ public class HeadGearPossessionData extends SavableByteData{
     
     private static void indexCheck(int index){
         if (index >= 512) throw new IllegalArgumentException("The index must be less than 512.");
+    }
+    
+    
+    @Override
+    public byte[] write_to_byte_array() {
+        this.writeToByteArray();
+        return super.write_to_byte_array();
+    }
+    
+    
+    @Override
+    public void load_from_byte_array(byte[] data) {
+        super.load_from_byte_array(data);
+        this.loadFromByteArray();
     }
 }

@@ -1,11 +1,19 @@
 package be4rjp.sclat2.data;
 
+import be4rjp.sclat2.data.sql.SQLConnection;
+
 /**
  * SQLに保存可能なデータ
  */
 public interface SavableData {
     
-    void save_to_sql();
+    /**
+     * byte配列にデータを書き込みます
+     */
+    byte[] write_to_byte_array();
     
-    void load_from_sql();
+    /**
+     * byte配列からデータを読み込みます
+     */
+    void load_from_byte_array(byte[] data);
 }

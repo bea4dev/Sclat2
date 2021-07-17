@@ -3,8 +3,10 @@ package be4rjp.sclat2.player;
 import be4rjp.cinema4c.util.SkinManager;
 import be4rjp.parallel.ParallelWorld;
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.data.AchievementData;
 import be4rjp.sclat2.data.HeadGearPossessionData;
 import be4rjp.sclat2.data.WeaponPossessionData;
+import be4rjp.sclat2.data.sql.SQLDriver;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.MatchManager;
 import be4rjp.sclat2.match.team.SclatTeam;
@@ -110,6 +112,8 @@ public class SclatPlayer {
     private int paints = 0;
     //キルカウント
     private int kills = 0;
+    //ランク
+    private int rank = 0;
     //メインウエポンのスケジューラーのマップ
     private final Map<MainWeapon, MainWeaponRunnable> mainWeaponTaskMap = new ConcurrentHashMap<>();
     //プレイヤーの体力
@@ -148,8 +152,12 @@ public class SclatPlayer {
     private long spWeaponTime = System.currentTimeMillis();
     //装備しているヘッドギア
     private HeadGearData headGearData = null;
+    //装備しているヘッドギアの番号
+    private int headGearNumber = 0;
     //所持しているヘッドギアのデータ
     private final HeadGearPossessionData headGearPossessionData = new HeadGearPossessionData();
+    //実績データ
+    private final AchievementData achievementData = new AchievementData(this);
 
     //キルカウントの動作の同期用インスタンス
     private final Object KILL_COUNT_LOCK = new Object();
@@ -163,6 +171,8 @@ public class SclatPlayer {
     private final Object DEATH_LOCK = new Object();
     //スペシャルウエポンの動作の同期用インスタンス
     private final Object SPECIAL_WEAPON_LOCK = new Object();
+    //ランク系の動作の同期用インスタンス
+    private final Object RANK_LOCK = new Object();
     
     
     /**
@@ -256,15 +266,33 @@ public class SclatPlayer {
     
     public HeadGearPossessionData getHeadGearPossessionData() {return headGearPossessionData;}
     
+    public int getHeadGearNumber() {return headGearNumber;}
+    
+    public int getWeaponClassNumber() {
+        if(weaponClass == null) return 0;
+        if(weaponClass.getSaveNumber() < 0) return 0;
+        return weaponClass.getSaveNumber();
+    }
+    
     public void setScoreBoard(SclatScoreboard scoreBoard) {
         this.scoreBoard = scoreBoard;
         if(player != null) player.setScoreboard(scoreBoard.getBukkitScoreboard());
     }
     
+    public int getRank() {synchronized (RANK_LOCK){return rank;}}
+    
+    public void addRank(int rank){synchronized (RANK_LOCK){this.rank += rank;}}
+    
+    public AchievementData getAchievementData() {return achievementData;}
+    
     /**
      * 情報をリセットする
      */
     public void reset(){
+        this.achievementData.addKill(kills);
+        this.achievementData.addPaint(paints);
+        this.achievementData.addRank(rank);
+        
         this.matchManager = null;
         this.sclatTeam = Sclat.getLobbyTeam();
         this.scoreBoard = null;
@@ -292,6 +320,20 @@ public class SclatPlayer {
      */
     public Player getBukkitPlayer(){
         return player;
+    }
+    
+    /**
+     * プレイヤーの実績データをSQLからロードする
+     */
+    public void loadAchievementFromSQL() throws Exception{
+        SQLDriver.loadAchievementData(this.achievementData);
+    }
+    
+    /**
+     * プレイヤーの実績データをSQLに保存する
+     */
+    public void saveAchievementToSQL() throws Exception{
+        SQLDriver.saveAchievementData(this.achievementData);
     }
     
     /**
@@ -345,6 +387,7 @@ public class SclatPlayer {
      * クラスを装備させる
      */
     public void equipWeaponClass(){
+        if(weaponClass == null || player == null) return;
         this.weaponClass.setWeaponClass(this);
     }
     
@@ -422,8 +465,9 @@ public class SclatPlayer {
      * ヘッドギアを装備させる
      * @param headGearData
      */
-    public void setHeadGearData(HeadGearData headGearData){
+    public void setHeadGearData(HeadGearData headGearData, int headGearNumber){
         this.headGearData = headGearData;
+        this.headGearNumber = headGearNumber;
         headGearData.setHeadGear(this);
     }
     

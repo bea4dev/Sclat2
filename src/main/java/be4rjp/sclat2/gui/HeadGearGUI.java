@@ -31,8 +31,9 @@ public class HeadGearGUI {
                     HeadGearData headGearData = possessionData.getHeadGearData(index);
                     if(headGearData == null) break;
                     
+                    int headGearNumber = index;
                     menu.addButton(new SGButton(headGearData.getItemStack(sclatPlayer.getLang())).withListener(event -> {
-                        sclatPlayer.setHeadGearData(headGearData);
+                        sclatPlayer.setHeadGearData(headGearData, headGearNumber);
                         sclatPlayer.createPassiveInfluence();
                         sclatPlayer.sendText("gui-head-gear-selected", headGearData.headGear.getDisplayName(lang));
                         player.closeInventory();
