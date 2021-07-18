@@ -1,9 +1,10 @@
 package be4rjp.sclat2.match.runnable;
 
 import be4rjp.sclat2.language.Lang;
+import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.NawabariMatch;
-import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.language.MessageManager;
+import be4rjp.sclat2.match.result.ResultRunnable;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.ProgressBar;
 import be4rjp.sclat2.util.SclatScoreboard;
@@ -26,7 +27,7 @@ public class NawabariMatchRunnable extends MatchRunnable{
     @Override
     public void run() {
     
-        String min = String.format("%02d", timeLeft%60);
+        String min = String.format("%02d", timeLeft % 60);
         //スコアボード
         SclatScoreboard scoreboard = match.getScoreboard();
         for(SclatPlayer sclatPlayer : match.getPlayers()) {
@@ -45,16 +46,15 @@ public class NawabariMatchRunnable extends MatchRunnable{
                 lines.add("  " + new ProgressBar(15).setProgressPercent(progress).toString("§a") + "  " + progress + "%");
             }
             lines.add("    ");
-            lines.add("§b" + MessageManager.getText(lang, "match-time") + " » §r§l" + timeLeft/60 + ":" + min);
+            lines.add("§b" + MessageManager.getText(lang, "match-time") + " » §r§l" + timeLeft / 60 + ":" + min);
             scoreboard.setSidebarLine(sclatPlayer, lines);
         }
         scoreboard.updateSidebar(match.getPlayers());
         
         if(timeLeft == 0){
-            SclatTeam winTeam = match.getWinner();
             this.cancel();
-            
-            match.end();
+            match.finish();
+            new ResultRunnable(match).start();
         }
         timeLeft--;
     }

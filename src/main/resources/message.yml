@@ -1,5 +1,6 @@
 ja_JP:
   none: ''
+  none-s: '%s'
   word-sec: '秒'
   match-join: '&a試合に参加しました'
   match-map: 'マップ'
@@ -45,8 +46,12 @@ ja_JP:
   gear-NO_GEAR: 'ギアなし'
   gear-IKA_SPEED_UP: 'イカダッシュ速度アップ'
   gear-HITO_SPEED_UP: 'ヒトダッシュ速度アップ'
+  match-result-draw: '引き分け！'
+  match-result-win: '&aYou win!'
+  match-result-lose: '&cYou lose...'
 en_US:
   none: ''
+  none-s: '%s'
   word-sec: 'sec'
   match-join: '&aYou have joined the game.'
   match-map: 'Map'
@@ -92,3 +97,6 @@ en_US:
   gear-NO_GEAR: 'No gear'
   gear-IKA_SPEED_UP: 'Squid speed up'
   gear-HITO_SPEED_UP: 'Human speed up'
+  match-result-draw: 'Draw!'
+  match-result-win: '&aYou win!'
+  match-result-lose: '&cYou lose...'

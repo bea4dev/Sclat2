@@ -8,6 +8,10 @@ public class ProgressBar {
     private final int maxLength;
     //進捗率(%)
     private double percent = 0;
+    //枠の有無
+    private boolean frame = true;
+    //空の部分の色
+    private String emptyColor = "§7";
 
     /**
      * プログレスバーを作成する
@@ -55,17 +59,19 @@ public class ProgressBar {
 
         String m = "|";
         StringBuilder ms = new StringBuilder();
-        ms.append("§r§7[");
+        ms.append("§r§7");
+        if(frame) ms.append("[");
         ms.append(barColor);
         for (int i = 0; i < value; i++){
             ms.append(m);
         }
-        ms.append("§7");
+        ms.append(emptyColor);
         int rem = maxLength - value;
         for (int i1 = 0; i1 < rem; i1++){
             ms.append(m);
         }
-        ms.append("]§r");
+        if(frame) ms.append("§7]");
+        ms.append("§r");
         return ms.toString();
     }
 
@@ -83,5 +89,25 @@ public class ProgressBar {
         }else {
             return toString(ChatColor.GREEN.toString());
         }
+    }
+    
+    
+    /**
+     * フレームの有無を設定する
+     * @param frame
+     */
+    public ProgressBar setFrame(boolean frame) {
+        this.frame = frame;
+        return this;
+    }
+    
+    
+    /**
+     * 空の部分の色を設定します
+     * @param emptyColor
+     */
+    public ProgressBar setEmptyColor(String emptyColor) {
+        this.emptyColor = emptyColor;
+        return this;
     }
 }

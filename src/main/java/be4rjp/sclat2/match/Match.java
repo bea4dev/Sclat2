@@ -72,6 +72,7 @@ public abstract class Match {
      */
     public void start(){
         this.matchRunnable.start();
+        this.matchStatus = MatchStatus.IN_PROGRESS;
         this.startBlockUpdate();
         
         this.getPlayers().forEach(this::initializePlayer);
@@ -93,19 +94,30 @@ public abstract class Match {
     /**
      * 終了処理
      */
-    public void end(){
+    public void finish(){
+        this.scoreboard.getBukkitScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+        this.matchStatus = MatchStatus.FINISHED;
         for(BukkitRunnable runnable : runnableSet){
             try {
                 runnable.cancel();
             }catch (Exception e){/**/}
         }
         
+        try {
+            this.matchRunnable.cancel();
+        }catch (Exception e){/**/}
+    }
+    
+    /**
+     * 後片付け
+     */
+    public void end(){
         this.getPlayers().forEach(SclatPlayer::reset);
         this.getPlayers().forEach(sclatPlayer -> ParallelWorld.removeParallelWorld(sclatPlayer.getUUID()));
         try {
             this.blockUpdater.cancel();
         }catch (Exception e){/**/}
-        
+    
         try {
             this.entityTickRunnable.cancel();
         }catch (Exception e){/**/}

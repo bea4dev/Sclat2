@@ -59,7 +59,7 @@ public class PlayerJoinQuitListener implements Listener {
         
         //sclatPlayer.setLang(i % 2 == 0 ? Lang.ja_JP : Lang.en_US);
 
-        //MatchManager.getMatchManager("azi").join(sclatPlayer);
+        MatchManager.getMatchManager("azi").join(sclatPlayer);
         
         Lang lang = sclatPlayer.getLang();
         

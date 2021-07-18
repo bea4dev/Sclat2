@@ -20,7 +20,7 @@ public class PlayerLobbyMatch extends Match{
     }
     
     @Override
-    public void end() {
+    public void finish() {
     
     }
     
