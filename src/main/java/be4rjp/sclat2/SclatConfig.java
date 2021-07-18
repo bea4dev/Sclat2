@@ -1,5 +1,7 @@
 package be4rjp.sclat2;
 
+import be4rjp.sclat2.util.ConfigUtil;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -7,8 +9,12 @@ import java.io.File;
 public class SclatConfig {
     
     private static MySQLConfig mySQLConfig;
+    
+    private static Location lobbyLocation;
+    
     public static MySQLConfig getMySQLConfig(){return mySQLConfig;}
     
+    public static Location getLobbyLocation() {return lobbyLocation;}
     
     public static void load(){
         File file = new File("plugins/Sclat2", "config.yml");
@@ -28,6 +34,8 @@ public class SclatConfig {
         String user = yml.getString("my-sql.user");
         String password = yml.getString("my-sql.password");
         mySQLConfig = new MySQLConfig(host, port, database, table, user, password);
+        
+        lobbyLocation = ConfigUtil.getLocationByString(yml.getString("lobby-location"));
     }
     
     

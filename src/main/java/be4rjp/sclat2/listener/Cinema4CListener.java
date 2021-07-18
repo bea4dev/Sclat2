@@ -9,7 +9,6 @@ import be4rjp.sclat2.match.intro.IntroManager;
 import be4rjp.sclat2.match.intro.ReadyRunnable;
 import be4rjp.sclat2.player.SclatPlayer;
 import net.minecraft.server.v1_15_R1.EntityPlayer;
-import net.minecraft.server.v1_15_R1.EntitySquid;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_15_R1.PacketPlayOutPlayerInfo;
 import org.bukkit.event.EventHandler;

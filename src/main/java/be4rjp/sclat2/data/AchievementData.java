@@ -10,6 +10,8 @@ public class AchievementData {
     private int kill = 0;
     private int rank = 0;
     
+    private int coin = 0;
+    
     private final WeaponPossessionData weaponPossessionData;
     private final HeadGearPossessionData headGearPossessionData;
     
@@ -26,17 +28,23 @@ public class AchievementData {
     
     public int getRank() {return rank;}
     
+    public synchronized int getCoin() {return coin;}
+    
     public void addKill(int kill){this.kill += kill;}
     
     public void addPaint(int paint){this.paint += paint;}
     
     public void addRank(int rank){this.rank += rank;}
     
+    public synchronized void addCoin(int coin){this.coin += coin;}
+    
     public void setKill(int kill) {this.kill = kill;}
     
     public void setPaint(int paint) {this.paint = paint;}
     
     public void setRank(int rank) {this.rank = rank;}
+    
+    public synchronized void setCoin(int coin) {this.coin = coin;}
     
     public HeadGearPossessionData getHeadGearPossessionData() {return headGearPossessionData;}
     

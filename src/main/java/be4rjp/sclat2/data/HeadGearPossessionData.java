@@ -7,7 +7,6 @@ import be4rjp.sclat2.player.passive.Gear;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HeadGearPossessionData extends SavableByteData{
     

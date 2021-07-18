@@ -6,3 +6,5 @@ my-sql:
   equipment-table: 'equipment-table'
   user: 'user'
   password: 'password'
+
+lobby-location: 'world, 0, 0, 0'

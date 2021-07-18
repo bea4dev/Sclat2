@@ -8,11 +8,17 @@ import be4rjp.sclat2.match.result.ResultRunnable;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.util.ProgressBar;
 import be4rjp.sclat2.util.SclatScoreboard;
+import be4rjp.sclat2.util.SclatSound;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Sound;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NawabariMatchRunnable extends MatchRunnable{
+    
+    private static final SclatSound FINISH_SOUND = new SclatSound(Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 3.0F, 1.3F);
     
     /**
      * 試合のスケジューラーを作成します。
@@ -55,6 +61,9 @@ public class NawabariMatchRunnable extends MatchRunnable{
             this.cancel();
             match.finish();
             new ResultRunnable(match).start();
+            match.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendTextTitle("none-s", new Object[]{ChatColor.YELLOW + "=================== Finish! ==================="}, "none", new Object[]{}, 0, 200, 20));
+            match.getPlayers().forEach(sclatPlayer -> sclatPlayer.setGameMode(GameMode.SPECTATOR));
+            match.playSound(FINISH_SOUND);
         }
         timeLeft--;
     }

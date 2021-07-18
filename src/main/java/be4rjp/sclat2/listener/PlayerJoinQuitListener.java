@@ -40,6 +40,7 @@ public class PlayerJoinQuitListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
+        player.setWalkSpeed(0.2F);
         player.getInventory().clear();
         
         SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
