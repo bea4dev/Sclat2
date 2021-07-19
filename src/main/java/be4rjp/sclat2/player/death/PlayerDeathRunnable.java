@@ -120,11 +120,8 @@ public class PlayerDeathRunnable extends BukkitRunnable {
             target.sendPacket(camera);
         }
         target.sendPacket(destroy);
-        target.setGameMode(GameMode.ADVENTURE);
-        target.setHealth(20.0F);
-        target.setDeath(false);
         target.resetTitle();
-        target.teleport(respawnLocation);
+        target.respawn(respawnLocation);
         super.cancel();
     }
     

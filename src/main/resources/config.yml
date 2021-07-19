@@ -7,4 +7,5 @@ my-sql:
   user: 'user'
   password: 'password'
 
-lobby-location: 'world, 0, 0, 0'
+join-location: 'world, 0.0, 0.0, 0.0'
+lobby-location: 'world, 0.0, 0.0, 0.0'

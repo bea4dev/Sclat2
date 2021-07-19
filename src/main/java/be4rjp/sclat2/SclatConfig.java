@@ -10,6 +10,8 @@ public class SclatConfig {
     
     private static MySQLConfig mySQLConfig;
     
+    
+    
     private static Location lobbyLocation;
     
     public static MySQLConfig getMySQLConfig(){return mySQLConfig;}

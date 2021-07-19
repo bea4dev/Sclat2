@@ -236,9 +236,9 @@ public class SclatPlayer {
     
     public void setOnInk(boolean onInk) {isOnInk = onInk;}
 
-    public boolean isDeath() {return isDeath;}
+    public boolean isDeath() {synchronized (DEATH_LOCK){return isDeath;}}
 
-    public void setDeath(boolean death) {isDeath = death;}
+    public void setDeath(boolean death) {synchronized (DEATH_LOCK){isDeath = death;}}
 
     public SclatScoreboard getScoreBoard() {return scoreBoard;}
     
@@ -716,7 +716,7 @@ public class SclatPlayer {
      * パケットを送信します
      * @param packet 送信するパケット
      */
-    public void sendPacket(Packet packet){
+    public void sendPacket(Packet<?> packet){
         if(player == null) return;
         EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
         entityPlayer.playerConnection.sendPacket(packet);
@@ -763,6 +763,24 @@ public class SclatPlayer {
         }.runTask(Sclat.getPlugin());
     }
     
+    /**
+     * リスポーンさせます
+     * @param location テレポート先
+     */
+    public void respawn(Location location){
+        long time = System.currentTimeMillis();
+        this.teleportTime = time;
+        this.setHealth(20.0F);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (player == null) return;
+                PaperLib.teleportAsync(player, location);
+                player.setGameMode(GameMode.ADVENTURE);
+                setDeath(false);
+            }
+        }.runTask(Sclat.getPlugin());
+    }
     
     /**
      * ゲームモードを変更します

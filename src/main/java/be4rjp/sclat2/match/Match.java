@@ -1,6 +1,5 @@
 package be4rjp.sclat2.match;
 
-import be4rjp.parallel.ParallelWorld;
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.block.PaintData;
 import be4rjp.sclat2.entity.SclatEntity;
@@ -97,6 +96,13 @@ public abstract class Match {
     public void finish(){
         this.scoreboard.getBukkitScoreboard().clearSlot(DisplaySlot.SIDEBAR);
         this.matchStatus = MatchStatus.FINISHED;
+    
+        for(PlayerSquidRunnable squidRunnable : squidRunnableSet){
+            try{
+                squidRunnable.cancel();
+            }catch (Exception e){/**/}
+        }
+        
         for(BukkitRunnable runnable : runnableSet){
             try {
                 runnable.cancel();
@@ -113,7 +119,7 @@ public abstract class Match {
      */
     public void end(){
         this.getPlayers().forEach(SclatPlayer::reset);
-        this.getPlayers().forEach(sclatPlayer -> ParallelWorld.removeParallelWorld(sclatPlayer.getUUID()));
+        this.getPlayers().forEach(sclatPlayer -> sclatPlayer.getParallelWorld().removeAll());
         try {
             this.blockUpdater.cancel();
         }catch (Exception e){/**/}

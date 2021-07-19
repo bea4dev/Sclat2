@@ -246,4 +246,17 @@ public class PlayerSquidRunnable extends BukkitRunnable {
         SENT_SPAWN_PACKET,
         SENT_DESTROY_PACKET,
     }
+    
+    
+    @Override
+    public synchronized void cancel() throws IllegalStateException {
+        PacketPlayOutRemoveEntityEffect entityEffect = new PacketPlayOutRemoveEntityEffect(sclatPlayer.getEntityID(), MobEffectList.fromId(PotionEffectType.REGENERATION.getId()));
+        PacketPlayOutRemoveEntityEffect entityEffectSpeed = new PacketPlayOutRemoveEntityEffect(sclatPlayer.getEntityID(), MobEffectList.fromId(PotionEffectType.SPEED.getId()));
+        PacketPlayOutRemoveEntityEffect entityEffectPoison = new PacketPlayOutRemoveEntityEffect(sclatPlayer.getEntityID(), MobEffectList.fromId(PotionEffectType.POISON.getId()));
+        sclatPlayer.sendPacket(entityEffect);
+        sclatPlayer.sendPacket(entityEffectSpeed);
+        sclatPlayer.sendPacket(entityEffectPoison);
+        
+        super.cancel();
+    }
 }

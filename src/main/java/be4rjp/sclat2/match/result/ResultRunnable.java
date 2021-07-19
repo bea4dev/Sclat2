@@ -43,5 +43,5 @@ public class ResultRunnable extends BukkitRunnable {
         this.cancel();
     }
     
-    public void start(){this.runTaskTimerAsynchronously(Sclat.getPlugin(), 40, 10);}
+    public void start(){this.runTaskTimerAsynchronously(Sclat.getPlugin(), 60, 10);}
 }
