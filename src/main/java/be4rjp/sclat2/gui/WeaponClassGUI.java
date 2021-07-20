@@ -62,7 +62,6 @@ public class WeaponClassGUI {
                         sclatPlayer.sendText("gui-class-selected", mainWeapon.getDisplayName(lang));
                         sclatPlayer.getSPWeaponProgress().initialize();
                         player.closeInventory();
-                        HeadGearGUI.openHeadGearSelectGUI(sclatPlayer);
                     }));
                     Inventory menuInventory = menu.getInventory();
     

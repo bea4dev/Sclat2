@@ -10,11 +10,13 @@ public class SclatConfig {
     
     private static MySQLConfig mySQLConfig;
     
-    
+    private static Location joinLocation;
     
     private static Location lobbyLocation;
     
     public static MySQLConfig getMySQLConfig(){return mySQLConfig;}
+    
+    public static Location getJoinLocation() {return joinLocation;}
     
     public static Location getLobbyLocation() {return lobbyLocation;}
     
@@ -37,6 +39,7 @@ public class SclatConfig {
         String password = yml.getString("my-sql.password");
         mySQLConfig = new MySQLConfig(host, port, database, table, user, password);
         
+        joinLocation = ConfigUtil.getLocationByString(yml.getString("join-location"));
         lobbyLocation = ConfigUtil.getLocationByString(yml.getString("lobby-location"));
     }
     

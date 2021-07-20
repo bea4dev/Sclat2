@@ -76,6 +76,9 @@ public abstract class SclatWeapon {
         }
     }
 
+    
+    public String getId(){return id;}
+    
     /**
      * 一発分のダメージを取得する
      * @return double

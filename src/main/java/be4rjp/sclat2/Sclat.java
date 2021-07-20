@@ -1,6 +1,7 @@
 package be4rjp.sclat2;
 
 import be4rjp.sclat2.cinema4c.BridgeManager;
+import be4rjp.sclat2.gui.MainMenuItem;
 import be4rjp.sclat2.listener.*;
 import be4rjp.sclat2.match.MatchManager;
 import be4rjp.sclat2.match.PlayerLobbyMatch;
@@ -54,6 +55,8 @@ public final class Sclat extends JavaPlugin {
         WeaponClass.loadAllClass();
         HeadGear.loadAllHeadGear();
         MatchManager.load();
+        
+        new MainMenuItem();
 
         lobbyMatch = new PlayerLobbyMatch(null);
         lobbyTeam = new SclatTeam(lobbyMatch, SclatColor.BLUE);

@@ -1,6 +1,8 @@
 package be4rjp.sclat2.listener;
 
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.SclatConfig;
+import be4rjp.sclat2.gui.MainMenuItem;
 import be4rjp.sclat2.gui.WeaponClassGUI;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.Match;
@@ -21,12 +23,19 @@ import be4rjp.sclat2.weapon.WeaponClass;
 import be4rjp.sclat2.weapon.sub.SubWeapon;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
+import io.papermc.lib.PaperLib;
+import org.bukkit.Instrument;
+import org.bukkit.Note;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PlayerJoinQuitListener implements Listener {
     
@@ -40,43 +49,41 @@ public class PlayerJoinQuitListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        player.setWalkSpeed(0.2F);
-        player.getInventory().clear();
-        
-        SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
-        sclatPlayer.updateBukkitPlayer();
-        sclatPlayer.sendSkinRequest();
-        
-        try {
-            sclatPlayer.loadAchievementFromSQL();
-        }catch (Exception e){
-            player.sendMessage("§cFailed to connect to MySQL database!");
-            player.sendMessage(e.getMessage());
-            e.printStackTrace();
-        }
-        
-        sclatPlayer.setLang(Lang.en_US);
-        
-        
-        //sclatPlayer.setLang(i % 2 == 0 ? Lang.ja_JP : Lang.en_US);
-
-        MatchManager.getMatchManager("azi").join(sclatPlayer);
-        
-        Lang lang = sclatPlayer.getLang();
-        
+        PaperLib.teleportAsync(player, SclatConfig.getJoinLocation());
     
-        for(int index = 0; index < 256; index++) {
-            WeaponClass classBySaveNumber = WeaponClass.getWeaponClassBySaveNumber(index);
-            if (classBySaveNumber == null) break;
-            sclatPlayer.getWeaponPossessionData().giveWeaponClass(classBySaveNumber);
-        }
-        
-        sclatPlayer.getHeadGearPossessionData().addHeadGearData(new HeadGearData(HeadGear.getHeadGearBySaveNumber(1), Gear.IKA_SPEED_UP, Gear.IKA_SPEED_UP, Gear.IKA_SPEED_UP));
-        sclatPlayer.getHeadGearPossessionData().addHeadGearData(new HeadGearData(HeadGear.getHeadGearBySaveNumber(1), Gear.HITO_SPEED_UP, Gear.NO_GEAR, Gear.IKA_SPEED_UP));
-        sclatPlayer.getHeadGearPossessionData().addHeadGearData(new HeadGearData(HeadGear.getHeadGearBySaveNumber(1), Gear.NO_GEAR, Gear.NO_GEAR, Gear.NO_GEAR));
-        sclatPlayer.getHeadGearPossessionData().addHeadGearData(new HeadGearData(HeadGear.getHeadGearBySaveNumber(1), Gear.HITO_SPEED_UP, Gear.HITO_SPEED_UP, Gear.HITO_SPEED_UP));
-        
-        WeaponClassGUI.openClassSelectGUI(sclatPlayer);
+    
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.setWalkSpeed(0.2F);
+                player.getInventory().clear();
+    
+                SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
+                sclatPlayer.updateBukkitPlayer();
+                sclatPlayer.sendSkinRequest();
+    
+                try {
+                    sclatPlayer.loadAchievementFromSQL();
+                }catch (Exception e){
+                    player.playNote(player.getLocation(), Instrument.BASS_GUITAR, Note.flat(0, Note.Tone.G));
+                    Date dateObj = new Date();
+                    SimpleDateFormat format = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
+                    player.sendMessage("§c§n以下の理由により正常にセーブデータを読み込むことができませんでした。");
+                    player.sendMessage("§c§n再度接続し直しても同じエラーが出る場合は運営に報告してください。");
+                    player.sendMessage("§c§nThe save data could not be loaded properly for the following reasons.");
+                    player.sendMessage("§c§nIf you still get the same error after trying to connect again, please report it to the administrators.");
+                    player.sendMessage("");
+                    player.sendMessage("§eError (" + format.format(dateObj) + ") : ");
+                    player.sendMessage(e.getMessage());
+                    e.printStackTrace();
+                    
+                    return;
+                }
+                
+                sclatPlayer.teleport(SclatConfig.getLobbyLocation());
+                player.getInventory().setItem(6, MainMenuItem.getItemStack(sclatPlayer.getLang()));
+            }
+        }.runTaskAsynchronously(Sclat.getPlugin());
         
         i++;
     }
@@ -102,14 +109,17 @@ public class PlayerJoinQuitListener implements Listener {
     public void onleave(PlayerQuitEvent event){
         Player player = event.getPlayer();
     
-        SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
-        try {
-            sclatPlayer.saveAchievementToSQL();
-        }catch (Exception e){
-            Sclat.getPlugin().getLogger().info("§cFailed to connect to MySQL database!");
-            Sclat.getPlugin().getLogger().info(e.getMessage());
-            e.printStackTrace();
-        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
+                try {
+                    sclatPlayer.saveAchievementToSQL();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }.runTaskAsynchronously(Sclat.getPlugin());
         
         try {
             Channel channel = ((CraftPlayer)player).getHandle().playerConnection.networkManager.channel;
@@ -121,5 +131,7 @@ public class PlayerJoinQuitListener implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    
+        PaperLib.teleportAsync(player, SclatConfig.getJoinLocation());
     }
 }

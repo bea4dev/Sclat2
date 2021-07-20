@@ -36,7 +36,7 @@ public class PlayerItemClickListener implements Listener {
                 SclatTeam sclatTeam = sclatPlayer.getSclatTeam();
                 if(sclatTeam == null) return;
                 Match.MatchStatus matchStatus = sclatTeam.getMatch().getMatchStatus();
-                if(matchStatus == Match.MatchStatus.FINISHED || matchStatus == Match.MatchStatus.WAITING) return;
+                if((matchStatus == Match.MatchStatus.FINISHED || matchStatus == Match.MatchStatus.WAITING) && !sclatWeapon.getId().endsWith("nw")) return;
                 
                 AsyncUseWeaponEvent weaponEvent = new AsyncUseWeaponEvent(sclatPlayer, sclatWeapon, event.getAction());
                 Sclat.getPlugin().getServer().getPluginManager().callEvent(weaponEvent);
