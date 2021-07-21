@@ -1,7 +1,7 @@
 package be4rjp.sclat2.weapon.main.runnable;
 
 import be4rjp.sclat2.player.SclatPlayer;
-import be4rjp.sclat2.weapon.MainWeapon;
+import be4rjp.sclat2.weapon.main.MainWeapon;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public abstract class MainWeaponRunnable extends BukkitRunnable {

@@ -6,6 +6,8 @@ import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.data.AchievementData;
 import be4rjp.sclat2.data.HeadGearPossessionData;
 import be4rjp.sclat2.data.WeaponPossessionData;
+import be4rjp.sclat2.data.settings.PlayerSettings;
+import be4rjp.sclat2.data.settings.Settings;
 import be4rjp.sclat2.data.sql.SQLDriver;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.MatchManager;
@@ -19,7 +21,7 @@ import be4rjp.sclat2.player.passive.PassiveInfluence;
 import be4rjp.sclat2.util.particle.SclatParticle;
 import be4rjp.sclat2.util.SclatScoreboard;
 import be4rjp.sclat2.util.SclatSound;
-import be4rjp.sclat2.weapon.MainWeapon;
+import be4rjp.sclat2.weapon.main.MainWeapon;
 import be4rjp.sclat2.weapon.SclatWeapon;
 import be4rjp.sclat2.weapon.WeaponClass;
 import be4rjp.sclat2.weapon.main.runnable.MainWeaponRunnable;
@@ -142,6 +144,8 @@ public class SclatPlayer {
     private int foodLevel = 20;
     //死んでいるかどうか
     private boolean isDeath = false;
+    //ボムラッシュを使用しているかどうか
+    private boolean isUsingBombRush = false;
     //ギアのリスト
     private final List<Gear> gearList = new CopyOnWriteArrayList<>();
     //パッシブ効果
@@ -158,6 +162,8 @@ public class SclatPlayer {
     private final HeadGearPossessionData headGearPossessionData = new HeadGearPossessionData();
     //実績データ
     private final AchievementData achievementData = new AchievementData(this);
+    //プレイヤーの設定
+    private final PlayerSettings playerSettings = new PlayerSettings();
 
     //キルカウントの動作の同期用インスタンス
     private final Object KILL_COUNT_LOCK = new Object();
@@ -240,6 +246,10 @@ public class SclatPlayer {
 
     public void setDeath(boolean death) {synchronized (DEATH_LOCK){isDeath = death;}}
 
+    public boolean isUsingBombRush() {return isUsingBombRush;}
+
+    public void setUsingBombRush(boolean usingBombRush) {isUsingBombRush = usingBombRush;}
+
     public SclatScoreboard getScoreBoard() {return scoreBoard;}
     
     public String[] getSkin() {return skin;}
@@ -284,7 +294,9 @@ public class SclatPlayer {
     public void addRank(int rank){synchronized (RANK_LOCK){this.rank += rank;}}
     
     public AchievementData getAchievementData() {return achievementData;}
-    
+
+    public PlayerSettings getPlayerSettings() {return playerSettings;}
+
     /**
      * 情報をリセットする
      */
@@ -306,6 +318,7 @@ public class SclatPlayer {
         this.isSquid = false;
         this.isOnInk = false;
         this.isDeath = false;
+        this.isUsingBombRush = false;
         this.headGearData = null;
         this.gearList.clear();
         this.setFOV(0.1F);
@@ -842,6 +855,18 @@ public class SclatPlayer {
      */
     public void spawnParticle(SclatParticle particle, Location location){
         if(player == null) return;
+        particle.spawn(player, location);
+    }
+
+    /**
+     * パーティクルを表示する
+     * @param particle SclatParticle
+     * @param location パーティクルを表示する座標
+     * @param settings パーティクルを表示するかどうかの設置項目
+     */
+    public void spawnParticle(SclatParticle particle, Location location, Settings settings){
+        if(player == null) return;
+        if(!this.playerSettings.getSettings(settings)) return;
         particle.spawn(player, location);
     }
     

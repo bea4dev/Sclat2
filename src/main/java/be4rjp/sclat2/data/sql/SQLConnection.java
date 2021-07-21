@@ -23,10 +23,8 @@ public class SQLConnection {
     
         connection = DriverManager.getConnection("jdbc:mysql://" + this.ip + ":" + this.port + "/" + this.database + "?autoReconnect=true&useSSL=false", this.username, this.password);
         if (connection != null) {
-            Sclat.getPlugin().getLogger().info("Connected to MySQL database.");
             this.connected = true;
         } else {
-            Sclat.getPlugin().getLogger().warning("Failed to connect to MySQL database!");
             this.connected = false;
         }
     }

@@ -1,8 +1,7 @@
 package be4rjp.sclat2.event;
 
 import be4rjp.sclat2.player.SclatPlayer;
-import be4rjp.sclat2.weapon.MainWeapon;
-import be4rjp.sclat2.weapon.SclatWeapon;
+import be4rjp.sclat2.weapon.main.MainWeapon;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.Action;

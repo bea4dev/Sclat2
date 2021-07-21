@@ -2,7 +2,7 @@ package be4rjp.sclat2.listener;
 
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.player.SclatPlayer;
-import be4rjp.sclat2.weapon.MainWeapon;
+import be4rjp.sclat2.weapon.main.MainWeapon;
 import be4rjp.sclat2.weapon.SclatWeapon;
 import be4rjp.sclat2.weapon.WeaponManager;
 import be4rjp.sclat2.weapon.main.runnable.ChargerRunnable;

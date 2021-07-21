@@ -5,6 +5,7 @@ import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.weapon.WeaponManager;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -37,9 +38,7 @@ public class SplashBomb extends SubWeapon{
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(this.getDisplayName(lang));
         itemStack.setItemMeta(itemMeta);
-    
-        net.minecraft.server.v1_15_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        Objects.requireNonNull(nmsItemStack.getTag()).setString("swid", id);
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+
+        return WeaponManager.writeNBTTag(this, itemStack);
     }
 }

@@ -1,25 +1,22 @@
-package be4rjp.sclat2.weapon;
+package be4rjp.sclat2.weapon.main;
 
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.player.SclatPlayer;
 import be4rjp.sclat2.player.passive.Passive;
 import be4rjp.sclat2.util.SclatSound;
-import be4rjp.sclat2.weapon.main.Charger;
-import be4rjp.sclat2.weapon.main.FixedRateShooter;
-import be4rjp.sclat2.weapon.main.Roller;
-import be4rjp.sclat2.weapon.main.Shooter;
+import be4rjp.sclat2.weapon.SclatWeapon;
+import be4rjp.sclat2.weapon.WeaponManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class MainWeapon extends SclatWeapon{
+public abstract class MainWeapon extends SclatWeapon {
     
     //識別IDとメインウエポンのマップ
     private static Map<String, MainWeapon> mainWeaponMap = new ConcurrentHashMap<>();
@@ -74,10 +71,8 @@ public abstract class MainWeapon extends SclatWeapon{
         itemMeta.setDisplayName(this.getDisplayName(lang));
         itemMeta.setCustomModelData(modelID);
         itemStack.setItemMeta(itemMeta);
-    
-        net.minecraft.server.v1_15_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        Objects.requireNonNull(nmsItemStack.getTag()).setString("swid", id);
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+
+        return WeaponManager.writeNBTTag(this, itemStack);
     }
     
     /**
@@ -109,12 +104,7 @@ public abstract class MainWeapon extends SclatWeapon{
      * @return SclatSound
      */
     public SclatSound getShootSound() {return shootSound;}
-    
-    
-    @Override
-    public void onLeftClick(SclatPlayer sclatPlayer){
-        //None
-    }
+
     
     @Override
     public abstract void onRightClick(SclatPlayer sclatPlayer);

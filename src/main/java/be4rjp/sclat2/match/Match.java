@@ -2,6 +2,7 @@ package be4rjp.sclat2.match;
 
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.block.PaintData;
+import be4rjp.sclat2.data.settings.Settings;
 import be4rjp.sclat2.entity.SclatEntity;
 import be4rjp.sclat2.entity.SclatEntityTickRunnable;
 import be4rjp.sclat2.language.Lang;
@@ -270,6 +271,14 @@ public abstract class Match {
      * @param location パーティクルを表示する座標
      */
     public void spawnParticle(SclatParticle particle, Location location){this.getPlayers().forEach(sclatPlayer -> sclatPlayer.spawnParticle(particle, location));}
+
+    /**
+     * この試合に参加しているプレイヤー全員にパーティクルを表示する
+     * @param particle パーティクル
+     * @param location パーティクルを表示する座標
+     * @param settings パーティクルを表示するかどうかの設置項目
+     */
+    public void spawnParticle(SclatParticle particle, Location location, Settings settings){this.getPlayers().forEach(sclatPlayer -> sclatPlayer.spawnParticle(particle, location, settings));}
     
     /**
      * この試合に参加しているプレイヤー全員にパケットを送信する

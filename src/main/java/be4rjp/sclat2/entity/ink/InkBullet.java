@@ -1,6 +1,7 @@
 package be4rjp.sclat2.entity.ink;
 
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.data.settings.Settings;
 import be4rjp.sclat2.entity.SclatEntity;
 import be4rjp.sclat2.event.AsyncInkHitBlockEvent;
 import be4rjp.sclat2.event.AsyncInkHitPlayerEvent;
@@ -11,7 +12,7 @@ import be4rjp.sclat2.util.*;
 import be4rjp.sclat2.util.RayTrace;
 import be4rjp.sclat2.util.particle.BlockParticle;
 import be4rjp.sclat2.util.particle.SclatParticle;
-import be4rjp.sclat2.weapon.MainWeapon;
+import be4rjp.sclat2.weapon.main.MainWeapon;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -43,6 +44,8 @@ public class InkBullet implements SclatEntity {
     private final SclatParticle INK_PARTICLE;
     private final SclatParticle INK_HIT_PARTICLE;
     private double bulletSize = 0.2;
+    private double gravity = -0.12;
+    private boolean particle = true;
     
     private int tick = 0;
     private int fallTick = 0;
@@ -96,7 +99,11 @@ public class InkBullet implements SclatEntity {
     public double getBulletSize() {return bulletSize;}
     
     public void setBulletSize(double bulletSize) {this.bulletSize = bulletSize;}
-    
+
+    public void setGravity(double gravity) {this.gravity = gravity;}
+
+    public void setParticle(boolean particle) {this.particle = particle;}
+
     @Override
     public void tick() {
     
@@ -183,14 +190,14 @@ public class InkBullet implements SclatEntity {
         if(tick >= fallTick && tick <= fallTick + 10) {
             //direction.normalize().multiply(0.9);
             //direction.add(new Vector(0, -0.21, 0));
-            direction = direction.add(new Vector(0, -0.12, 0));
+            direction = direction.add(new Vector(0, gravity, 0));
         }
         location.add(direction);
     
         snowball.setPosition(location.getX(), location.getY(), location.getZ());
         snowball.setMot(direction.getX(), direction.getY(), direction.getZ());
         
-        if(tick != 0 && !remove) match.spawnParticle(INK_PARTICLE, oldLocation);
+        if(tick != 0 && !remove && particle) match.spawnParticle(INK_PARTICLE, oldLocation, Settings.INK_ORBIT_PARTICLE);
         
         tick++;
     }

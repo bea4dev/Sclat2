@@ -1,6 +1,7 @@
 package be4rjp.sclat2.weapon;
 
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.weapon.main.MainWeapon;
 import be4rjp.sclat2.weapon.special.Barrier;
 import be4rjp.sclat2.weapon.sub.SplashBomb;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -8,6 +9,7 @@ import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.util.Objects;
 
 public class WeaponManager {
     
@@ -63,6 +65,13 @@ public class WeaponManager {
                 }catch (Exception e){e.printStackTrace();}
             }
         }
+    }
+
+
+    public static ItemStack writeNBTTag(SclatWeapon sclatWeapon, ItemStack itemStack){
+        net.minecraft.server.v1_15_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        Objects.requireNonNull(nmsItemStack.getTag()).setString("swid", sclatWeapon.getId());
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
     
     

@@ -14,10 +14,5 @@ public abstract class SpecialWeapon extends SclatWeapon {
     @Override
     public abstract void onRightClick(SclatPlayer sclatPlayer);
     
-    @Override
-    public void onLeftClick(SclatPlayer sclatPlayer) {
-    
-    }
-    
     public abstract ItemStack getItemStack(Lang lang);
 }

@@ -4,6 +4,7 @@ import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.weapon.main.MainWeapon;
 import be4rjp.sclat2.weapon.special.SpecialWeapon;
 import be4rjp.sclat2.weapon.sub.SubWeapon;
 import org.bukkit.configuration.file.YamlConfiguration;

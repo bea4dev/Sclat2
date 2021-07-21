@@ -2,7 +2,6 @@ package be4rjp.sclat2.weapon.main;
 
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.player.SclatPlayer;
-import be4rjp.sclat2.weapon.MainWeapon;
 import be4rjp.sclat2.weapon.main.runnable.ShooterRunnable;
 
 public class Shooter extends MainWeapon {

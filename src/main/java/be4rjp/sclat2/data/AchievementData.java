@@ -1,5 +1,6 @@
 package be4rjp.sclat2.data;
 
+import be4rjp.sclat2.data.progress.ProgressData;
 import be4rjp.sclat2.player.SclatPlayer;
 
 public class AchievementData {
@@ -9,11 +10,11 @@ public class AchievementData {
     private int paint = 0;
     private int kill = 0;
     private int rank = 0;
-    
     private int coin = 0;
     
     private final WeaponPossessionData weaponPossessionData;
     private final HeadGearPossessionData headGearPossessionData;
+    private final ProgressData progressData = new ProgressData();
     
     public AchievementData(SclatPlayer sclatPlayer){
         this.sclatPlayer = sclatPlayer;
@@ -49,6 +50,8 @@ public class AchievementData {
     public HeadGearPossessionData getHeadGearPossessionData() {return headGearPossessionData;}
     
     public WeaponPossessionData getWeaponPossessionData() {return weaponPossessionData;}
-    
+
+    public ProgressData getProgressData() {return progressData;}
+
     public SclatPlayer getSclatPlayer() {return sclatPlayer;}
 }

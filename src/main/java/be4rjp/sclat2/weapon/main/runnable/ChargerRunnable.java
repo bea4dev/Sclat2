@@ -1,6 +1,7 @@
 package be4rjp.sclat2.weapon.main.runnable;
 
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.data.settings.Settings;
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.PlayerSquidRunnable;
@@ -66,7 +67,7 @@ public class ChargerRunnable extends MainWeaponRunnable{
             for (Vector vector : positions) {
                 Location position = vector.toLocation(sclatPlayer.getLocation().getWorld());
                 for(SclatPlayer matchPlayer : sclatTeam.getMatch().getPlayers()){
-                    if(sclatPlayer != matchPlayer) matchPlayer.spawnParticle(CHARGE_PARTICLE, position);
+                    if(sclatPlayer != matchPlayer) matchPlayer.spawnParticle(CHARGE_PARTICLE, position, Settings.CHARGE_LASER_PARTICLE);
                 }
             }
         }

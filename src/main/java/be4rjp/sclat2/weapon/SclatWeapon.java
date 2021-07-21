@@ -7,6 +7,7 @@ import be4rjp.sclat2.util.LocationUtil;
 import be4rjp.sclat2.util.SclatSound;
 import be4rjp.sclat2.util.math.Sphere;
 import be4rjp.sclat2.util.particle.BlockParticle;
+import be4rjp.sclat2.weapon.sub.SubWeapon;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -101,7 +102,14 @@ public abstract class SclatWeapon {
      * この武器を持って左クリックしたときの処理
      * @param sclatPlayer
      */
-    public abstract void onLeftClick(SclatPlayer sclatPlayer);
+    public void onLeftClick(SclatPlayer sclatPlayer){
+        WeaponClass weaponClass = sclatPlayer.getWeaponClass();
+        if(weaponClass == null) return;
+        SubWeapon subWeapon = weaponClass.getSubWeapon();
+        if(subWeapon == null) return;
+
+        subWeapon.onRightClick(sclatPlayer);
+    }
     
     
     
