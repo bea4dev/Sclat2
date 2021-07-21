@@ -1,4 +1,4 @@
-package be4rjp.sclat2.gui;
+package be4rjp.sclat2.gui.pagination;
 
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.language.MessageManager;
@@ -8,22 +8,22 @@ import com.samjakob.spigui.item.ItemBuilder;
 import com.samjakob.spigui.pagination.SGPaginationButtonBuilder;
 import com.samjakob.spigui.pagination.SGPaginationButtonType;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LanguagePaginationButtonBuilder  implements SGPaginationButtonBuilder {
-    
+public class CloseMenuPaginationButtonBuilder implements SGPaginationButtonBuilder{
     private static Map<Lang, SGPaginationButtonBuilder> buttonBuilderMap = new HashMap<>();
     
     public static SGPaginationButtonBuilder getPaginationButtonBuilder(Lang lang){
-        return buttonBuilderMap.computeIfAbsent(lang, k -> new LanguagePaginationButtonBuilder(lang));
+        return buttonBuilderMap.computeIfAbsent(lang, k -> new CloseMenuPaginationButtonBuilder(lang));
     }
     
     
     private final Lang lang;
     
-    public LanguagePaginationButtonBuilder(Lang lang){
+    public CloseMenuPaginationButtonBuilder(Lang lang){
         this.lang = lang;
     }
     
@@ -40,13 +40,16 @@ public class LanguagePaginationButtonBuilder  implements SGPaginationButtonBuild
                     inventory.previousPage(event.getWhoClicked());
                 });
                 else return null;
-            
+        
             case CURRENT_BUTTON:
-                return new SGButton(new ItemBuilder(Material.NAME_TAG)
-                        .name(String.format(MessageManager.getText(lang, "gui-page-current"), (inventory.getCurrentPage() + 1), inventory.getMaxPage()))
-                        .build()
-                ).withListener(event -> event.setCancelled(true));
-            
+                return new SGButton(new ItemBuilder(Material.BARRIER)
+                        .name(MessageManager.getText(lang, "gui-main-menu-close")).build()
+                ).withListener(event -> {
+                    if(!(event.getWhoClicked() instanceof Player)) return;
+                    Player player = (Player) event.getWhoClicked();
+                    player.closeInventory();
+                });
+        
             case NEXT_BUTTON:
                 if (inventory.getCurrentPage() < inventory.getMaxPage() - 1) return new SGButton(new ItemBuilder(Material.ARROW)
                         .name("&a&l" + MessageManager.getText(lang, "gui-page-next") + " \u2192")
@@ -57,11 +60,10 @@ public class LanguagePaginationButtonBuilder  implements SGPaginationButtonBuild
                     inventory.nextPage(event.getWhoClicked());
                 });
                 else return null;
-            
+        
             case UNASSIGNED:
             default:
                 return null;
         }
     }
 }
-

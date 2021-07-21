@@ -2,6 +2,7 @@ package be4rjp.sclat2.gui;
 
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.data.HeadGearPossessionData;
+import be4rjp.sclat2.gui.pagination.BackMenuPaginationButtonBuilder;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.player.SclatPlayer;
@@ -22,7 +23,7 @@ public class HeadGearGUI {
         String menuName = MessageManager.getText(sclatPlayer.getLang(), "gui-head-gear-select");
     
         SGMenu menu = Sclat.getSpiGUI().create(menuName, 4);
-        menu.setPaginationButtonBuilder(LanguagePaginationButtonBuilder.getPaginationButtonBuilder(lang));
+        menu.setPaginationButtonBuilder(BackMenuPaginationButtonBuilder.getPaginationButtonBuilder(lang));
         new BukkitRunnable() {
             @Override
             public void run() {

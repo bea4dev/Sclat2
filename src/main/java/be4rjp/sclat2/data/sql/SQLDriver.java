@@ -15,7 +15,7 @@ public class SQLDriver {
     public static void loadAchievementData(AchievementData achievementData) throws Exception{
         SclatConfig.MySQLConfig mySQLConfig = SclatConfig.getMySQLConfig();
         String uuid = achievementData.getSclatPlayer().getUUID();
-        String notExistExecute = "INSERT INTO " + mySQLConfig.table + "(uuid, lang, kills, paints, ranks, coin, weapon, gear, equip, head, progress, settings) VALUES('" + uuid + "', 0, 0, 0, 0, 0, '" + new String(new byte[32]) + "', '" + new String(new byte[2564]) + "', 0, 1, 0, 4294967295);";
+        String notExistExecute = "INSERT INTO " + mySQLConfig.table + "(uuid, lang, kills, paints, ranks, coin, weapon, gear, equip, head, progress, settings) VALUES('" + uuid + "', 0, 0, 0, 0, 0, '" + new String(new byte[32]) + "', '" + new String(new byte[2564]) + "', 0, 1, 0, '4294967295');";
         
         SQLConnection sqlConnection = new SQLConnection(mySQLConfig.ip, mySQLConfig.port, mySQLConfig.database, mySQLConfig.username, mySQLConfig.password);
         createTable(sqlConnection);

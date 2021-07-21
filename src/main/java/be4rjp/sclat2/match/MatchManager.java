@@ -11,10 +11,7 @@ import io.netty.util.internal.ConcurrentSet;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class MatchManager {
     
@@ -27,6 +24,8 @@ public class MatchManager {
      * @return MatchManager
      */
     public static MatchManager getMatchManager(String name){return matchManagerMap.get(name);}
+    
+    public static Collection<MatchManager> getMatchManagers(){return matchManagerMap.values();}
     
     
     public static void load() {
@@ -74,9 +73,47 @@ public class MatchManager {
         if(match == null) createMatch();
         if(match.getMatchStatus() == Match.MatchStatus.FINISHED) createMatch();
         
+        if(joinedPlayers.size() == 8){
+            sclatPlayer.sendText("match-join-cannot-number");
+            return;
+        }
+    
+        if(match.getMatchStatus() == Match.MatchStatus.IN_PROGRESS) {
+            switch (type) {
+                case NAWABARI: {
+                    SclatTeam team0 = match.getSclatTeams().get(0);
+                    SclatTeam team1 = match.getSclatTeams().get(1);
+            
+                    int team0PlayerCount = team0.getTeamMembers().size();
+                    int team1PlayerCount = team1.getTeamMembers().size();
+            
+                    if(team0PlayerCount == 4 && team1PlayerCount == 4){
+                        sclatPlayer.sendText("match-join-cannot-number");
+                        return;
+                    }
+            
+                    int teamNumber = 0;
+                    if (team0PlayerCount >= team1PlayerCount) {
+                        team1.join(sclatPlayer);
+                        teamNumber = 1;
+                    }else{
+                        team0.join(sclatPlayer);
+                    }
+                    
+                    sclatPlayer.teleport(match.getSclatMap().getTeamLocation(teamNumber));
+                    
+                    sclatPlayer.setScoreBoard(match.getScoreboard());
+                    break;
+                }
+            }
+        }
+    
+    
         sclatPlayer.teleport(match.getSclatMap().getWaitLocation());
         joinedPlayers.add(sclatPlayer);
         sclatPlayer.setMatchManager(this);
+    
+        sclatPlayer.sendText("match-join");
     }
     
     private void createMatch(){
@@ -100,6 +137,8 @@ public class MatchManager {
     public SclatScoreboard getScoreboard() {return scoreboard;}
     
     public MatchManageType getType() {return type;}
+    
+    public Match getMatch() {return match;}
     
     public enum MatchManageType{
         NAWABARI

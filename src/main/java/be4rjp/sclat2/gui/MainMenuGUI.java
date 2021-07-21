@@ -1,6 +1,8 @@
 package be4rjp.sclat2.gui;
 
 import be4rjp.sclat2.Sclat;
+import be4rjp.sclat2.gui.pagination.BackMenuPaginationButtonBuilder;
+import be4rjp.sclat2.gui.pagination.CloseMenuPaginationButtonBuilder;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.language.MessageManager;
 import be4rjp.sclat2.player.SclatPlayer;
@@ -21,7 +23,7 @@ public class MainMenuGUI {
         String menuName = MessageManager.getText(sclatPlayer.getLang(), "gui-main-menu");
     
         SGMenu menu = Sclat.getSpiGUI().create(menuName, 5);
-        menu.setPaginationButtonBuilder(LanguagePaginationButtonBuilder.getPaginationButtonBuilder(lang));
+        menu.setPaginationButtonBuilder(CloseMenuPaginationButtonBuilder.getPaginationButtonBuilder(lang));
     
        new BukkitRunnable() {
             @Override
