@@ -5,6 +5,7 @@ import be4rjp.sclat2.gui.pagination.BackMenuPaginationButtonBuilder;
 import be4rjp.sclat2.gui.pagination.CloseMenuPaginationButtonBuilder;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.language.MessageManager;
+import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.player.SclatPlayer;
 import com.samjakob.spigui.SGMenu;
 import com.samjakob.spigui.buttons.SGButton;
@@ -19,6 +20,13 @@ public class MainMenuGUI {
         Player player = sclatPlayer.getBukkitPlayer();
         if(player == null) return;
     
+        SclatTeam sclatTeam = sclatPlayer.getSclatTeam();
+        if(sclatTeam != null){
+            if(sclatTeam != Sclat.getLobbyTeam()){
+                return;
+            }
+        }
+    
         Lang lang = sclatPlayer.getLang();
         String menuName = MessageManager.getText(sclatPlayer.getLang(), "gui-main-menu");
     
@@ -30,7 +38,7 @@ public class MainMenuGUI {
             public void run() {
                 menu.setButton(10, new SGButton(new ItemBuilder(Material.LIME_STAINED_GLASS)
                         .name(MessageManager.getText(lang, "gui-main-menu-join")).lore(MessageManager.getText(lang, "gui-main-menu-join-des")).build())
-                        .withListener(event -> sclatPlayer.sendMessage("join!")));
+                        .withListener(event -> player.openInventory(MatchManagerGUI.getMatchManagerGUI(lang).getMenu().getInventory())));
     
                 menu.setButton(12, new SGButton(new ItemBuilder(Material.WOODEN_HOE)
                         .name(MessageManager.getText(lang, "gui-main-menu-weapon")).lore(MessageManager.getText(lang, "gui-main-menu-weapon-des")).build())
@@ -43,9 +51,6 @@ public class MainMenuGUI {
                 menu.setButton(16, new SGButton(new ItemBuilder(Material.PLAYER_HEAD).skullOwner(player.getName()).name(MessageManager.getText(lang, "gui-main-menu-status"))
                         .lore("", "&r&eCoin : " + sclatPlayer.getAchievementData().getCoin(), "&r&6Rank : " + sclatPlayer.getAchievementData().getRank(),
                                 "&r&bKill : " + sclatPlayer.getAchievementData().getKill(), "&r&aPaint : " + sclatPlayer.getAchievementData().getPaint()).build()));
-                
-                menu.setButton(34, new SGButton(new ItemBuilder(Material.BARRIER).name(MessageManager.getText(lang, "gui-main-menu-close")).build())
-                        .withListener(event -> event.getWhoClicked().closeInventory()));
     
                 Inventory inventory = menu.getInventory();
     

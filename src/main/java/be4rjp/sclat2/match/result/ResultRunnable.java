@@ -6,6 +6,7 @@ import be4rjp.sclat2.entity.SclatEntity;
 import be4rjp.sclat2.match.Match;
 import be4rjp.sclat2.match.map.SclatMap;
 import be4rjp.sclat2.player.ObservableOption;
+import be4rjp.sclat2.player.SclatPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -40,6 +41,7 @@ public class ResultRunnable extends BukkitRunnable {
         }
         
         new NawabariResultRunnable(match).start();
+        match.getPlayers().forEach(SclatPlayer::setLobbyItem);
         this.cancel();
     }
     

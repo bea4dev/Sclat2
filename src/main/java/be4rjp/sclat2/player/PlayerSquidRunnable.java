@@ -55,8 +55,11 @@ public class PlayerSquidRunnable extends BukkitRunnable {
         squid.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
         squid.setCustomName(CraftChatMessage.fromStringOrNull(sclatPlayer.getDisplayName()));
         squid.setCustomNameVisible(true);
-        if(sclatPlayer.getSclatTeam() != null){
-            sclatPlayer.getSclatTeam().getScoreBoardTeam().addEntry(squid.getBukkitEntity().getUniqueId().toString());
+        
+        SclatTeam sclatTeam = sclatPlayer.getSclatTeam();
+        if(sclatTeam != null){
+            sclatTeam.getScoreBoardTeam().addEntry(squid.getBukkitEntity().getUniqueId().toString());
+            sclatTeam.getMatch().getSquidRunnableSet().add(this);
         }
         
         sclatPlayer.setFOV(0.1F);
@@ -64,9 +67,6 @@ public class PlayerSquidRunnable extends BukkitRunnable {
     
     @Override
     public void run() {
-        if(!sclatPlayer.isOnline()){
-            this.cancel();
-        }
         
         SclatTeam sclatTeam = sclatPlayer.getSclatTeam();
         if(sclatTeam == null) return;

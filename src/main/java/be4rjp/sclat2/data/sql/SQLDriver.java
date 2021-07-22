@@ -2,20 +2,24 @@ package be4rjp.sclat2.data.sql;
 
 import be4rjp.sclat2.SclatConfig;
 import be4rjp.sclat2.data.AchievementData;
+import be4rjp.sclat2.data.HeadGearPossessionData;
+import be4rjp.sclat2.data.WeaponPossessionData;
 import be4rjp.sclat2.language.Lang;
+import be4rjp.sclat2.player.costume.HeadGear;
 import be4rjp.sclat2.player.costume.HeadGearData;
+import be4rjp.sclat2.player.passive.Gear;
 import be4rjp.sclat2.weapon.WeaponClass;
 
 public class SQLDriver {
     
     public static void createTable(SQLConnection sqlConnection) throws Exception{
-        sqlConnection.execute("CREATE TABLE IF NOT EXISTS " + SclatConfig.getMySQLConfig().table + " (uuid VARCHAR(36), lang TINYINT, kills INT, paints INT, ranks INT, coin INT, weapon VARBINARY(32), gear VARBINARY(2565), equip TINYINT UNSIGNED, head SMALLINT, progress INT UNSIGNED, settings INT UNSIGNED);");
+        sqlConnection.execute("CREATE TABLE IF NOT EXISTS " + SclatConfig.getMySQLConfig().table + " (uuid VARCHAR(36), lang TINYINT, kills INT, paints INT, ranks INT, coin INT, weapon VARBINARY(32), gear VARBINARY(2565), equip TINYINT UNSIGNED, head SMALLINT, progress INT, settings INT);");
     }
     
     public static void loadAchievementData(AchievementData achievementData) throws Exception{
         SclatConfig.MySQLConfig mySQLConfig = SclatConfig.getMySQLConfig();
         String uuid = achievementData.getSclatPlayer().getUUID();
-        String notExistExecute = "INSERT INTO " + mySQLConfig.table + "(uuid, lang, kills, paints, ranks, coin, weapon, gear, equip, head, progress, settings) VALUES('" + uuid + "', 0, 0, 0, 0, 0, '" + new String(new byte[32]) + "', '" + new String(new byte[2564]) + "', 0, 1, 0, '4294967295');";
+        String notExistExecute = "INSERT INTO " + mySQLConfig.table + "(uuid, lang, kills, paints, ranks, coin, weapon, gear, equip, head, progress, settings) VALUES('" + uuid + "', 0, 0, 0, 0, 0, '" + new String(new byte[32]) + "', '" + new String(new byte[2564]) + "', 0, 0, 0, 2147483647);";
         
         SQLConnection sqlConnection = new SQLConnection(mySQLConfig.ip, mySQLConfig.port, mySQLConfig.database, mySQLConfig.username, mySQLConfig.password);
         createTable(sqlConnection);
@@ -39,12 +43,23 @@ public class SQLDriver {
         achievementData.getHeadGearPossessionData().load_from_byte_array(gear);
         achievementData.getProgressData().setByCombinedID(progress);
         achievementData.getSclatPlayer().getPlayerSettings().setByCombinedID(settings);
-        achievementData.getSclatPlayer().setWeaponClass(WeaponClass.getWeaponClassBySaveNumber(equip));
-        achievementData.getSclatPlayer().equipWeaponClass();
-        
+    
+        HeadGearPossessionData headGearPossessionData = achievementData.getHeadGearPossessionData();
+        if(headGearPossessionData.getHeadGearData(0) == null){
+            headGearPossessionData.addHeadGearData(new HeadGearData(HeadGear.getHeadGearBySaveNumber(1), Gear.NO_GEAR, Gear.NO_GEAR, Gear.NO_GEAR));
+        }
         HeadGearData headGearData = achievementData.getHeadGearPossessionData().getHeadGearData(head);
         if(headGearData != null) achievementData.getSclatPlayer().setHeadGearData(headGearData, head);
         achievementData.getSclatPlayer().equipHeadGear();
+    
+        WeaponPossessionData weaponPossessionData = achievementData.getWeaponPossessionData();
+        if(!weaponPossessionData.hasWeaponClass(WeaponClass.getWeaponClassBySaveNumber(0))){
+            weaponPossessionData.giveWeaponClass(WeaponClass.getWeaponClassBySaveNumber(0));
+        }
+        achievementData.getSclatPlayer().setWeaponClass(WeaponClass.getWeaponClassBySaveNumber(equip));
+        achievementData.getSclatPlayer().equipWeaponClass();
+        
+        achievementData.getSclatPlayer().createPassiveInfluence();
         
         sqlConnection.close();
     }

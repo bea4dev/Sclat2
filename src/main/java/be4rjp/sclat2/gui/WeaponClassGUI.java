@@ -58,7 +58,7 @@ public class WeaponClassGUI {
                     itemStack.setItemMeta(itemMeta);
                     
                     menu.addButton(new SGButton(itemStack).withListener(event -> {
-                        sclatPlayer.setWeaponClass(weaponClass);
+                        sclatPlayer.setLobbyItem();
                         sclatPlayer.createPassiveInfluence();
                         sclatPlayer.sendText("gui-class-selected", mainWeapon.getDisplayName(lang));
                         sclatPlayer.getSPWeaponProgress().initialize();

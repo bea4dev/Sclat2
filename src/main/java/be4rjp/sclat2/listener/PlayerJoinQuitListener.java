@@ -2,9 +2,18 @@ package be4rjp.sclat2.listener;
 
 import be4rjp.sclat2.Sclat;
 import be4rjp.sclat2.SclatConfig;
+import be4rjp.sclat2.data.HeadGearPossessionData;
+import be4rjp.sclat2.data.WeaponPossessionData;
 import be4rjp.sclat2.gui.MainMenuItem;
+import be4rjp.sclat2.match.Match;
+import be4rjp.sclat2.match.MatchManager;
+import be4rjp.sclat2.match.team.SclatTeam;
 import be4rjp.sclat2.packet.PacketHandler;
 import be4rjp.sclat2.player.SclatPlayer;
+import be4rjp.sclat2.player.costume.HeadGear;
+import be4rjp.sclat2.player.costume.HeadGearData;
+import be4rjp.sclat2.player.passive.Gear;
+import be4rjp.sclat2.weapon.WeaponClass;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 import io.papermc.lib.PaperLib;
@@ -22,13 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PlayerJoinQuitListener implements Listener {
-    
-    private static int i = 0;
-    
-    
-    static {
-    
-    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
@@ -64,12 +66,52 @@ public class PlayerJoinQuitListener implements Listener {
                     return;
                 }
                 
-                sclatPlayer.teleport(SclatConfig.getLobbyLocation());
-                player.getInventory().setItem(6, MainMenuItem.getItemStack(sclatPlayer.getLang()));
+                sclatPlayer.setLoadedSaveData(true);
+    
+                
+                SclatTeam sclatTeam = sclatPlayer.getSclatTeam();
+                
+                if(sclatTeam != null) {
+                    if(sclatTeam == Sclat.getLobbyTeam()){
+                        MatchManager matchManager = sclatPlayer.getMatchManager();
+                        if(matchManager != null){
+                            Match match = matchManager.getMatch();
+                            if(match != null){
+                                sclatPlayer.teleport(match.getSclatMap().getWaitLocation());
+                                sclatPlayer.setLobbyItem();
+                                return;
+                            }
+                        }
+                        
+                        sclatPlayer.setLobbyItem();
+                    }
+                    
+                    if(sclatTeam != Sclat.getLobbyTeam()) {
+                        Match match = sclatTeam.getMatch();
+    
+                        switch (match.getMatchStatus()) {
+                            case WAITING: {
+                                sclatPlayer.teleport(match.getSclatMap().getWaitLocation());
+                                sclatPlayer.setLobbyItem();
+                                break;
+                            }
+        
+                            case IN_PROGRESS: {
+                                match.teleportToTeamLocation(sclatPlayer);
+                                break;
+                            }
+        
+                            default: {
+                                sclatPlayer.reset();
+                                sclatPlayer.teleport(SclatConfig.getLobbyLocation());
+                                sclatPlayer.setLobbyItem();
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }.runTaskAsynchronously(Sclat.getPlugin());
-        
-        i++;
     }
     
     
@@ -98,7 +140,7 @@ public class PlayerJoinQuitListener implements Listener {
             public void run() {
                 SclatPlayer sclatPlayer = SclatPlayer.getSclatPlayer(player);
                 try {
-                    sclatPlayer.saveAchievementToSQL();
+                    if(sclatPlayer.isLoadedSaveData()) sclatPlayer.saveAchievementToSQL();
                 }catch (Exception e){
                     e.printStackTrace();
                 }

@@ -113,6 +113,8 @@ public abstract class Match {
         try {
             this.matchRunnable.cancel();
         }catch (Exception e){/**/}
+        
+        this.getPlayers().forEach(SclatPlayer::clearMainWeaponTasks);
     }
     
     /**
@@ -120,7 +122,6 @@ public abstract class Match {
      */
     public void end(){
         this.getPlayers().forEach(SclatPlayer::reset);
-        this.getPlayers().forEach(sclatPlayer -> sclatPlayer.getParallelWorld().removeAll());
         try {
             this.blockUpdater.cancel();
         }catch (Exception e){/**/}
@@ -153,6 +154,12 @@ public abstract class Match {
      * @return
      */
     public MatchStatus getMatchStatus() {return matchStatus;}
+    
+    /**
+     * プレイヤーのイカの動作スケジューラーを全て取得する
+     * @return
+     */
+    public Set<PlayerSquidRunnable> getSquidRunnableSet() {return squidRunnableSet;}
     
     /**
      * ランダムにチームを取得する

@@ -9,6 +9,7 @@ import be4rjp.sclat2.data.WeaponPossessionData;
 import be4rjp.sclat2.data.settings.PlayerSettings;
 import be4rjp.sclat2.data.settings.Settings;
 import be4rjp.sclat2.data.sql.SQLDriver;
+import be4rjp.sclat2.gui.MainMenuItem;
 import be4rjp.sclat2.language.Lang;
 import be4rjp.sclat2.match.MatchManager;
 import be4rjp.sclat2.match.team.SclatTeam;
@@ -96,6 +97,8 @@ public class SclatPlayer {
     private Lang lang = Lang.ja_JP;
     //プレイヤー
     private Player player = null;
+    //セーブデータを正しくロードできたかどうか
+    private boolean loadedSaveData = false;
     //所持している武器クラスのデータ
     private final WeaponPossessionData weaponPossessionData = new WeaponPossessionData();
     //Parallel
@@ -193,6 +196,10 @@ public class SclatPlayer {
     public Lang getLang() {return lang;}
     
     public void setLang(Lang lang) {this.lang = lang;}
+    
+    public boolean isLoadedSaveData() {return loadedSaveData;}
+    
+    public void setLoadedSaveData(boolean loadedSaveData) {this.loadedSaveData = loadedSaveData;}
     
     public SclatTeam getSclatTeam() {return sclatTeam;}
     
@@ -305,9 +312,13 @@ public class SclatPlayer {
         this.achievementData.addPaint(paints);
         this.achievementData.addRank(rank);
         
+        if(parallelWorld != null) parallelWorld.removeAll();
+        
+        if(matchManager != null) matchManager.getJoinedPlayers().remove(this);
         this.matchManager = null;
+        if(sclatTeam != null) sclatTeam.getTeamMembers().remove(this);
         this.sclatTeam = Sclat.getLobbyTeam();
-        this.scoreBoard = null;
+        this.setScoreBoard(Sclat.getLobbyMatch().getScoreboard());
         this.paints = 0;
         this.kills = 0;
         this.health = 20.0F;
@@ -402,6 +413,23 @@ public class SclatPlayer {
     public void equipWeaponClass(){
         if(weaponClass == null || player == null) return;
         this.weaponClass.setWeaponClass(this);
+    }
+    
+    /**
+     * メインメニューを渡す
+     */
+    public void setMainMenu(){
+        if(player == null) return;
+        player.getInventory().setItem(6, MainMenuItem.getItemStack(lang));
+    }
+    
+    /**
+     * ロビー上で装備させるアイテムを渡す
+     */
+    public void setLobbyItem(){
+        this.equipWeaponClass();
+        this.equipHeadGear();
+        this.setMainMenu();
     }
     
     /**

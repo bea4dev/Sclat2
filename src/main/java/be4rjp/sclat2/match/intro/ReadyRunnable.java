@@ -34,6 +34,11 @@ public class ReadyRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
+        if(count == 0){
+            match.getPlayers().forEach(SclatPlayer::equipWeaponClass);
+            match.getPlayers().forEach(SclatPlayer::equipHeadGear);
+        }
+        
         match.getPlayers().forEach(match::teleportToTeamLocation);
         
         if(count > 10 && count < 17){
@@ -44,8 +49,6 @@ public class ReadyRunnable extends BukkitRunnable {
             match.getPlayers().forEach(sclatPlayer -> sclatPlayer.sendTextTitle("match-ready-go", null, 2, 7, 2));
             match.start();
             match.playSound(GO_SOUND);
-            match.getPlayers().forEach(SclatPlayer::equipWeaponClass);
-            match.getPlayers().forEach(SclatPlayer::equipHeadGear);
             this.cancel();
         }
         

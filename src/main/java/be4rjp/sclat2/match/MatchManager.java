@@ -77,6 +77,8 @@ public class MatchManager {
             sclatPlayer.sendText("match-join-cannot-number");
             return;
         }
+        
+        sclatPlayer.reset();
     
         if(match.getMatchStatus() == Match.MatchStatus.IN_PROGRESS) {
             switch (type) {
@@ -131,6 +133,8 @@ public class MatchManager {
         waitRunnable = new MatchWaitRunnable(this, match, minPlayer);
         waitRunnable.start();
     }
+    
+    public String getDisplayName() {return displayName;}
     
     public Set<SclatPlayer> getJoinedPlayers() {return joinedPlayers;}
     
